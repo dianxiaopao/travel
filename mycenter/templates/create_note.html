@@ -1,0 +1,111 @@
+{% extends "base_with_menu.html" %}
+{% block title %} 写攻略 {% endblock title %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/jquery.Jcrop.css">
+<style>
+    .fileinput-button {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .fileinput-button span {
+        font-size: 6rem;
+        color: #3C3C3C;
+    }
+
+    .fileinput-button input {
+        position: absolute;
+        right: 0px;
+        height: 6rem;
+        top: 0px;
+        opacity: 0;
+        -ms-filter: 'alpha(opacity=0)';
+    }
+
+    #again_title_img {
+        background-color: rgba(100, 100, 100, 0.5);
+        font-size: 2rem;
+        margin-left: 10%;
+        cursor: pointer;
+        visibility: hidden;
+    }
+
+</style>
+<div class="container">
+    <button type="button" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
+    <button type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
+    <input type="text" id="title_name_uuid" hidden value="{{ uuid }}">
+</div>
+<div id="t_img_con_back" class="jumbotron">
+    <div class="container">
+        <div style="width: 60%;margin-left: 20%;margin-top: 100px">
+            <table id="upload_title_img_laber">
+                <tr>
+                    <td>
+                        <form class="form-horizontal" id="upload_title_form" enctype="multipart/form-data" method="post"
+                              novalidate
+                        >
+                            {% csrf_token %}
+                        <span class="fileinput-button">
+                            <span class="glyphicon glyphicon-picture"></span>
+                            <input id="note_title_img" name="files[]" type="file">
+                        </span>
+                        </form>
+                    </td>
+                    <td style="padding-left: 2rem">
+                        <h2>选择攻略头图
+                            <small>图片尽量大</small>
+                        </h2>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <span id="again_title_img">重设图片</span>
+        <div class="input-group input-group-lg" style="width: 80%;margin: auto">
+            <input type="text" class="form-control" placeholder="填写游记标题">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div style="width: 80%;margin: auto;background-color: #dee9e4">
+        {{uuid}}
+        正文
+        <div>
+            <div class="edit_object _j_editobject">
+                <ul>
+                    <li class="eo_word _j_add_text_btn">
+                        <a role="button" title="添加文字">添加文字</a></li>
+                    <li class="eo_pic _j_uploadbtncnt">
+                        <a class="_j_uploadboxbtn" role="button" title="添加照片">添加照片</a>
+                            <span class="close _j_close_mobile_notice"></span>
+                    </li>
+                    <li class="eo_video _j_add_movie_btn">
+                        <a role="button" title="添加视频">添加视频</a>
+                    </li>
+                    <li class="eo_title _j_add_paragraph_title_btn">
+                        <a role="button" title="添加段落标题">添加段落标题</a>
+                            <i></i>
+                            <span>添加段落标题</span>
+                        </a>
+                        <span class="eo_title_tips _j_paragraphtip" title="更多详情"></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+<script src="/static/js/vendor/jquery.ui.widget.js"></script>
+<script src="/static/js/vendor/jquery.iframe-transport.js"></script>
+<script src="/static/js/vendor/jquery.fileupload.js"></script>
+<script src="/static/js/vendor/jquery.fileupload-process.js"></script>
+<script src="/static/js/vendor/jquery.fileupload-validate.js"></script>
+<script src="/static/js/vendor/jquery.Jcrop.js"></script>
+
+
+<script src="/static/js/create_note.js"></script>
+{% endblock content %}
