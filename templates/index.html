@@ -2,21 +2,21 @@
 {% block title %} 首页 {% endblock title %}
 {% block content %}
 <div class="container" style="min-height: 60rem">
-    <p>这才是首页</p>
-    <div id="file_test">
-        <file-upload
-                :options="file_options"
-                v-on:upload_validation="upload_validation"
-        >
-        </file-upload>
-    </div>
+    <p>首页</p>
+{#    <div id="file_test">#}
+{#        <file-upload#}
+{#                :options="file_options"#}
+{#                v-on:upload_validation="upload_validation"#}
+{#        >#}
+{#        </file-upload>#}
+{#    </div>#}
 
 
 
 
 
 
-<button type="button" id="default_uoload_button">开始上传</button>
+{#<button type="button" id="default_uoload_button">开始上传</button>#}
 </div>
 <script src="/static/js/vendor/vue.js"></script>
 <script src="/static/js/vendor/jquery.ui.widget.js"></script>
@@ -27,25 +27,25 @@
 <script src="/static/js/vendor-components/file_upload.js"></script>
 
 <script>
-    var upload_title_img = new Vue({
-        el: '#file_test',
-        data:{
-            file_options:{
-                'url_prefix': '/mycenter/note/create/',
-                'singleFile':true,
-                'autoUpload':true,
-                'file_size':50,
-                'file_count_size':5,
-                'show_file_name':true,
-                'start_upload_button':'default_uoload_button',
-            }
-        },
-        methods:{
-            upload_validation:function (err_msg) {
-//                console.log(err_msg)
-            }
-        }
-    })
+{#    var upload_title_img = new Vue({#}
+{#        el: '#file_test',#}
+{#        data:{#}
+{#            file_options:{#}
+{#                'url_prefix': '/mycenter/note/create/',#}
+{#                'singleFile':true,#}
+{#                'autoUpload':true,#}
+{#                'file_size':50,#}
+{#                'file_count_size':5,#}
+{#                'show_file_name':true,#}
+{#                'start_upload_button':'default_uoload_button',#}
+{#            }#}
+{#        },#}
+{#        methods:{#}
+{#            upload_validation:function (err_msg) {#}
+{#//                console.log(err_msg)#}
+{#            }#}
+{#        }#}
+{#    })#}
 </script>
 
 {% endblock content %}

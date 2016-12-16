@@ -75,7 +75,7 @@ $(document).ready(function () {
                     "background": "url(/" + path + ")",
                     "background-size": '100%',
                 });
-                $('.fileinput-button').css("display","none")
+                $('.fileinput-button','.add_img_con').css("display","none")
             })
         }
     })
