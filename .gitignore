@@ -5,5 +5,4 @@ local_settings.py
 media/OldImgFile/*
 static/media/images/*
 
-*/.idea/*
 */migrations/0*.*
