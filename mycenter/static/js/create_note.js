@@ -20,23 +20,47 @@ uploader.fileupload(
         add: function (e, data) {
             data.submit().success(function (result, textStatus, jqXHR) {
                 result = JSON.parse(result);
+                result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
                 $.post('/mycenter/note/create/show_title_img/', result, function (res) {
                     res = JSON.parse(res);
-                    res.path=res.path.toString().split('\\').join('/')
+                    res.path = res.path.toString().split('\\').join('/')
                     $('#t_img_con_back').css({
-                        "background":"url(/"+res.path+")",
-                        "background-size":'100%',
+                        "background": "url(/" + res.path + ")",
+                        "background-size": '100%',
                     });
-                    $('#upload_title_img_laber').css({"visibility":"hidden"})
-                    $('#again_title_img').css({"visibility":"inherit"}).off('click').on('click',function () {
-                        $(this).css('visibility','hidden')
-                        $('#upload_title_img_laber').css({"visibility":"inherit"})
+                    $('#upload_title_img_laber').css({"visibility": "hidden"})
+                    $('#again_title_img').css({"visibility": "inherit"}).off('click').on('click', function () {
+                        $(this).css('visibility', 'hidden')
+                        $('#upload_title_img_laber').css({"visibility": "inherit"})
                     })
                 });
-
             })
         }
     });
-window.onbeforeunload=function (e) {
+$(document).ready(function () {
+    $("body").on("click", "#test", function (data) {
+        console.log('-')
+    })
+    $("body").on("change", "#guide_title", function () {
+        var data = {
+            "title": $(this).val().toString(),
+            "uuid": $("#articles_uuid").val().toString()
+        };
+        data['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
+        $.post('/mycenter/note/create/create_title/', data, function (result) {
+            result = JSON.parse(result)
+            if(result.error_msg){
+                alert(result.error_msg)
+            }else {
+                console.log(result)
+            }
+        })
+
+    })
+
+
+});
+
+window.onbeforeunload = function (e) {
     return false;
 }

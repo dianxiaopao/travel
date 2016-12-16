@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Guidebody(models.Model):
-    title_id = models.ForeignKey(u'guides.GuideTitle',verbose_name=u'文件夹id')
+    title_id = models.ForeignKey(u'guides.GuideTitle',verbose_name=u'文章标题id')
     s_title = models.CharField(u'段落标题', max_length=256, null=True)
     s_body = models.TextField(u'段落正文', null=True)
     image_path = models.CharField(u'图片路径', max_length=256, null=True)
@@ -18,9 +18,9 @@ class Guidebody(models.Model):
 
     parent = models.IntegerField(u'上一条记录',null=True)
 
-    author_id = models.CharField(u'创建者', max_length=256, null=True)
-    write_user = models.CharField(u'更新人', max_length=256, null=True)
+    create_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='创建人')
     create_date = models.DateTimeField(u'创建时间', auto_now_add=True)
+    write_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='更新人')
     write_date = models.DateTimeField(u'更新时间', auto_now=True)
 
     def __str__(self):

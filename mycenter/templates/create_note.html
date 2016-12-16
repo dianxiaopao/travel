@@ -40,36 +40,41 @@
 </div>
 <div id="t_img_con_back" class="jumbotron">
     <div class="container">
-        <div style="width: 60%;margin-left: 20%;margin-top: 100px">
-            <table id="upload_title_img_laber">
-                <tr>
-                    <td>
-                        <form class="form-horizontal" id="upload_title_form" enctype="multipart/form-data" method="post"
-                              novalidate
-                        >
-                            {% csrf_token %}
+        <form class="form-horizontal" id="upload_title_form" enctype="multipart/form-data" method="post"
+              novalidate
+        >
+            {% csrf_token %}
+            <div style="width: 60%;margin-left: 20%;margin-top: 100px">
+                <table id="upload_title_img_laber">
+                    <tr>
+                        <td>
+
                         <span class="fileinput-button">
                             <span class="glyphicon glyphicon-picture"></span>
                             <input id="note_title_img" name="files[]" type="file">
+
                         </span>
-                        </form>
-                    </td>
-                    <td style="padding-left: 2rem">
-                        <h2>选择攻略头图
-                            <small>图片尽量大</small>
-                        </h2>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <span id="again_title_img">重设图片</span>
-        <div class="input-group input-group-lg" style="width: 80%;margin: auto">
-            <input type="text" class="form-control" placeholder="填写游记标题">
-        </div>
+                            <input type="text" name="uuid" id="articles_uuid" value={{uuid}}>
+
+                        </td>
+                        <td style="padding-left: 2rem">
+                            <h2>选择攻略头图
+                                <small>图片尽量大</small>
+                            </h2>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <span id="again_title_img">重设图片</span>
+            <div class="input-group input-group-lg" style="width: 80%;margin: auto">
+                <input type="text" id="guide_title" name="guide_title" class="form-control" placeholder="填写游记标题">
+            </div>
+        </form>
     </div>
 </div>
 <div class="container">
     <div style="width: 80%;margin: auto;background-color: #dee9e4">
+        <button type="button" id="test">点击</button>
         {{uuid}}
         正文
         <div>
@@ -79,15 +84,15 @@
                         <a role="button" title="添加文字">添加文字</a></li>
                     <li class="eo_pic _j_uploadbtncnt">
                         <a class="_j_uploadboxbtn" role="button" title="添加照片">添加照片</a>
-                            <span class="close _j_close_mobile_notice"></span>
+                        <span class="close _j_close_mobile_notice"></span>
                     </li>
                     <li class="eo_video _j_add_movie_btn">
                         <a role="button" title="添加视频">添加视频</a>
                     </li>
                     <li class="eo_title _j_add_paragraph_title_btn">
                         <a role="button" title="添加段落标题">添加段落标题</a>
-                            <i></i>
-                            <span>添加段落标题</span>
+                        <i></i>
+                        <span>添加段落标题</span>
                         </a>
                         <span class="eo_title_tips _j_paragraphtip" title="更多详情"></span>
                     </li>
