@@ -4,3 +4,5 @@
 local_settings.py
 media/OldImgFile/*
 static/media/images/*
+
+*/migrations/0*.*
