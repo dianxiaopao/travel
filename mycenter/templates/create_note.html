@@ -2,6 +2,7 @@
 {% block title %} 写攻略 {% endblock title %}
 {% block content %}
 <link rel="stylesheet" href="/static/css/jquery.Jcrop.css">
+<link rel="stylesheet" href="/static/css/edit_guide.css">
 <style>
     .fileinput-button {
         position: relative;
@@ -70,29 +71,40 @@
         </form>
     </div>
 </div>
-<div class="container">
-    <div style="width: 80%;margin: auto;background-color: #dee9e4">
-        <button type="button" id="test">点击</button>
-        {{uuid}}
-        正文
-        <hr>
-        <div>
-            <div class="edit_object">
-                <ul>
-                    <li class="eo_word _j_add_text_btn">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        <a role="button" title="添加文字">添加文字</a>
-                    <li class="eo_pic _j_uploadbtncnt">
-                        <span class="glyphicon glyphicon-picture"></span>
-                        <a class="_j_uploadboxbtn" role="button" title="添加照片">添加照片</a>
-                    </li>
-                    <li class="eo_title _j_add_paragraph_title_btn">
-                        <span class="glyphicon glyphicon-align-left"></span>
-                        <a role="button" title="添加段落标题">添加段落标题</a>
-                    </li>
-                </ul>
+<div class="container" style="min-height: 600px">
+    <div class="c_n_edit_container">
+
+        <div class="col-lg-9">
+            <div class="add_button add_button_show">
+                <a role="button" class="glyphicon glyphicon-plus show_edit_box_btn" title="添加"></a>
+                <div class="edit_object">
+                    <ul>
+                        <li class="eo_word _j_add_text_btn">
+                            <a role="button" class="edit_add_text" title="添加文字">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                添加文字</a>
+                        <li class="eo_pic _j_uploadbtncnt">
+                            <a class="_j_uploadboxbtn" role="button" title="添加照片">
+                                <span class="glyphicon glyphicon-picture"></span>
+                                添加照片</a>
+                        </li>
+                        <li class="eo_title _j_add_paragraph_title_btn">
+                            <a role="button" title="添加段落标题">
+                                <span class="glyphicon glyphicon-align-left"></span>
+                                添加段落标题</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="add_text_con">
+                <textarea class="textarea_text" placeholder="在这儿添加文章文字......"></textarea>
+                <button type="button" class="btn">完成</button>
             </div>
         </div>
+        <div class="col-lg-3">
+            这里是文章标题
+        </div>
+
     </div>
 </div>
 <script src="/static/js/vendor/jquery.ui.widget.js"></script>

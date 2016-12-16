@@ -39,9 +39,10 @@ uploader.fileupload(
     });
 $(document).ready(function () {
     $("body").on("click", "#test", function (data) {
-        console.log('-')
+        console.log($("input[name='csrfmiddlewaretoken']").val())
     })
     $("body").on("change", "#guide_title", function () {
+        //上传文章标题
         var data = {
             "title": $(this).val().toString(),
             "uuid": $("#articles_uuid").val().toString()
@@ -56,11 +57,24 @@ $(document).ready(function () {
             }
         })
 
-    })
+    });
 
+    $("body").on("click",".edit_add_text",function () {
+        //点击添加文字显示出来多行文本框
+        $(".add_text_con").css('display','block')
+    })
+    $("body").on("click",".show_edit_box_btn",function () {
+        //点击加号显示选项
+        if($(".add_button").hasClass("add_button_show")){
+            $(".add_button").removeClass("add_button_show")
+        }else{
+            $(".add_button").addClass("add_button_show")
+        }
+
+    })
 
 });
 
 window.onbeforeunload = function (e) {
-    return false;
+    // return false;
 }
