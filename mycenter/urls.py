@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^note/create/upload_title_img/$', views.mycenter_vilews.title_img),
     url(r'^note/create/show_title_img/$', views.mycenter_vilews.show_title_img),
     url(r'^note/create/create_title/$', views.mycenter_vilews.create_title),
+    url(r'^note/create/upload_img/$', views.mycenter_vilews.upload_img),
 ]
 
 urls = urlpatterns

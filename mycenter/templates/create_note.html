@@ -1,119 +1,111 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 写攻略 {% endblock title %}
 {% block content %}
-<link rel="stylesheet" href="/static/css/jquery.Jcrop.css">
-<link rel="stylesheet" href="/static/css/edit_guide.css">
-<style>
-    .fileinput-button {
-        position: relative;
-        display: inline-block;
-        overflow: hidden;
-        cursor: pointer;
-    }
+    <link rel="stylesheet" href="/static/css/jquery.Jcrop.css">
+    <link rel="stylesheet" href="/static/css/edit_guide.css">
+    <style>
 
-    .fileinput-button span {
-        font-size: 6rem;
-        color: #3C3C3C;
-    }
+        #again_title_img {
+            background-color: rgba(100, 100, 100, 0.5);
+            font-size: 2rem;
+            margin-left: 10%;
+            cursor: pointer;
+            visibility: hidden;
+        }
 
-    .fileinput-button input {
-        position: absolute;
-        right: 0px;
-        height: 6rem;
-        top: 0px;
-        opacity: 0;
-        -ms-filter: 'alpha(opacity=0)';
-    }
 
-    #again_title_img {
-        background-color: rgba(100, 100, 100, 0.5);
-        font-size: 2rem;
-        margin-left: 10%;
-        cursor: pointer;
-        visibility: hidden;
-    }
-
-</style>
-<div class="container">
-    <button type="button" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
-    <button type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
-    <input type="text" id="title_name_uuid" hidden value="{{ uuid }}">
-</div>
-<div id="t_img_con_back" class="jumbotron">
+    </style>
     <div class="container">
-        <form class="form-horizontal" id="upload_title_form" enctype="multipart/form-data" method="post"
-              novalidate
-        >
-            {% csrf_token %}
-            <div style="width: 60%;margin-left: 20%;margin-top: 100px">
-                <table id="upload_title_img_laber">
-                    <tr>
-                        <td>
+        <button type="button" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
+        <button type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
+        <input type="text" id="title_name_uuid" hidden value="{{ uuid }}">
+    </div>
+    <div id="t_img_con_back" class="jumbotron">
+        <div class="container">
+            <form class="form-horizontal" id="upload_title_form" enctype="multipart/form-data" method="post"
+                  novalidate
+            >
+                {% csrf_token %}
+                <div style="width: 60%;margin-left: 20%;margin-top: 100px">
+                    <table id="upload_title_img_laber">
+                        <tr>
+                            <td>
                         <span class="fileinput-button">
                             <span class="glyphicon glyphicon-picture"></span>
                             <input id="note_title_img" name="files[]" type="file">
 
                         </span>
-                            <input type="text" hidden name="uuid" id="articles_uuid" value={{uuid}}>
-                        </td>
-                        <td style="padding-left: 2rem">
-                            <h2>选择攻略头图
-                                <small>图片尽量大</small>
-                            </h2>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <span id="again_title_img">重设图片</span>
-            <div class="input-group input-group-lg" style="width: 80%;margin: auto">
-                <input type="text" id="guide_title" name="guide_title" class="form-control" placeholder="填写游记标题">
-            </div>
-        </form>
+                                <input type="text" hidden name="uuid" id="articles_uuid" value={{ uuid }}>
+                            </td>
+                            <td style="padding-left: 2rem">
+                                <h2>选择攻略头图
+                                    <small>图片尽量大</small>
+                                </h2>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <span id="again_title_img">重设图片</span>
+                <div class="input-group input-group-lg" style="width: 80%;margin: auto">
+                    <input type="text" id="guide_title" name="guide_title" class="form-control" placeholder="填写游记标题">
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-<div class="container" style="min-height: 600px">
-    <div class="c_n_edit_container">
+    <div class="container" style="min-height: 600px">
+        <div class="c_n_edit_container">
 
-        <div class="col-lg-9">
-            <div class="add_button add_button_show">
-                <a role="button" class="glyphicon glyphicon-plus show_edit_box_btn" title="添加"></a>
-                <div class="edit_object">
-                    <ul>
-                        <li class="eo_word _j_add_text_btn">
-                            <a role="button" class="edit_add_text" title="添加文字">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                                添加文字</a>
-                        <li class="eo_pic _j_uploadbtncnt">
-                            <a class="_j_uploadboxbtn" role="button" title="添加照片">
-                                <span class="glyphicon glyphicon-picture"></span>
-                                添加照片</a>
-                        </li>
-                        <li class="eo_title _j_add_paragraph_title_btn">
-                            <a role="button" title="添加段落标题">
-                                <span class="glyphicon glyphicon-align-left"></span>
-                                添加段落标题</a>
-                        </li>
-                    </ul>
+            <div class="col-lg-9">
+                <div class="add_button add_button_show">
+                    <a role="button" class="glyphicon glyphicon-plus show_edit_box_btn" title="添加"></a>
+                    <div class="edit_object">
+                        <ul>
+                            <li class="eo_word _j_add_text_btn">
+                                <a role="button" class="edit_add_text" title="添加文字">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    添加文字</a>
+                            <li class="eo_pic _j_uploadbtncnt">
+                                <a class="_j_uploadboxbtn" role="button" title="添加照片">
+                                    <span class="glyphicon glyphicon-picture"></span>
+                                    添加照片</a>
+                            </li>
+                            <li class="eo_title _j_add_paragraph_title_btn">
+                                <a role="button" title="添加段落标题">
+                                    <span class="glyphicon glyphicon-align-left"></span>
+                                    添加段落标题</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="add_text_con">
+                    <textarea class="textarea_text" placeholder="在这儿添加文章文字......"></textarea>
+                    <button type="button" class="btn">完成</button>
+                </div>
+                <div class="add_img_con">
+                 <span class="fileinput-button">
+                     <div>
+                            <span class="glyphicon glyphicon-picture"></span>
+                            <input id="note_img_content" name="files" type="file">
+                         上传文件
+                         </div>
+                        </span>
+
+
                 </div>
             </div>
-            <div class="add_text_con">
-                <textarea class="textarea_text" placeholder="在这儿添加文章文字......"></textarea>
-                <button type="button" class="btn">完成</button>
+            <div class="col-lg-3">
+                这里是文章标题
             </div>
-        </div>
-        <div class="col-lg-3">
-            这里是文章标题
-        </div>
 
+        </div>
     </div>
-</div>
-<script src="/static/js/vendor/jquery.ui.widget.js"></script>
-<script src="/static/js/vendor/jquery.iframe-transport.js"></script>
-<script src="/static/js/vendor/jquery.fileupload.js"></script>
-<script src="/static/js/vendor/jquery.fileupload-process.js"></script>
-<script src="/static/js/vendor/jquery.fileupload-validate.js"></script>
-<script src="/static/js/vendor/jquery.Jcrop.js"></script>
+    <script src="/static/js/vendor/jquery.ui.widget.js"></script>
+    <script src="/static/js/vendor/jquery.iframe-transport.js"></script>
+    <script src="/static/js/vendor/jquery.fileupload.js"></script>
+    <script src="/static/js/vendor/jquery.fileupload-process.js"></script>
+    <script src="/static/js/vendor/jquery.fileupload-validate.js"></script>
+    <script src="/static/js/vendor/jquery.Jcrop.js"></script>
 
 
-<script src="/static/js/create_note.js"></script>
+    <script src="/static/js/create_note.js"></script>
 {% endblock content %}

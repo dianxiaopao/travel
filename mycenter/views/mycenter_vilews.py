@@ -27,9 +27,11 @@ def CreateNote(request):
 def title_img(request):
     models = ImgMaterial
     method = request.method.lower()
+
     if method == 'post':
+        result = {}
         try:
-            result = {}
+
             f = request.FILES.get('files[]')
 
             uuid_name = shortuuid.uuid()
@@ -148,3 +150,64 @@ def create_title(request):
 
     elif method == 'get':
         pass
+
+
+@csrf_exempt
+def upload_img(request):
+    result = {}
+    method = request.method.lower()
+    if method == 'post':
+        try:
+            f = request.FILES.get('files')
+            uuid_name = shortuuid.uuid()
+            image_name = uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_name))
+            file_dir = os.path.join(settings.MEDIA_ROOT, 'OldImgFile')
+            if os.path.exists(file_dir) == False:  # 如果文件夹不存在就创建它
+                os.makedirs(file_dir)
+
+            img_alias = str(image_name) + str('.') + str(f.name.split('.')[-1])
+
+            file_path = os.path.join(file_dir, img_alias)
+            fobj = open(file_path, 'wb')
+            for chrunk in f.chunks():
+                filecontent = base64.b64encode(chrunk)
+                fobj.write(filecontent)
+            fobj.close()  # 文件保存完毕
+
+
+
+
+
+            # 把文件信息写到数据库
+            img_d_obj = {
+                'name': f.name, 'file_size': f.size, 'old_path': file_dir, 'alias': img_alias
+            }
+            new_obj = ImgMaterial.objects.get_or_create(alias=img_alias, defaults=img_d_obj)[0]
+            # new_obj.save()  # 把上传的图片信息保存到数据库中
+            # 解码到static文件下
+            relative_path = os.path.join('static', 'media', 'images', img_alias)
+            image_new_path = os.path.join(settings.BASE_DIR, relative_path)
+            with open(file_path) as f:
+                temporary_file = open(image_new_path, 'wb')
+                temporary_file.write(base64.b64decode(f.read()))
+                temporary_file.close()
+
+
+            new_obj.new_path = os.path.join(settings.BASE_DIR, 'static', 'media', 'images')
+            new_obj.save()
+            result['path'] = relative_path
+
+
+
+        except Exception, e:
+            _trackback = traceback.format_exc()
+            err_msg = e.message
+            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                err_msg = e.faultCode
+            result['error_msg'] = err_msg
+            result['trackback'] = _trackback
+        finally:
+            return HttpResponse(json.dumps(result))
+
+    if method == 'get':
+        return HttpResponse(json.dumps('对不起没有get请求的的后台'))

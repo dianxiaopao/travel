@@ -1,22 +1,9 @@
-/**
- * Created by frowlwood on 2016/11/24.
- */
 var uploader = $('#note_title_img');
 uploader.fileupload(
     {
         url: '/mycenter/note/create/upload_title_img/',
         autoUpload: false,
         maxFileSize: 5 * 1024 * 1024,
-        processfail: function (e, data) {
-            //单个文件上传失败
-            //支持上传的最大文件、
-            //单次允许上传的文件数
-        },
-        processdone: function (e, data) {
-            if (self.datafile == undefined) {
-                self.datafile = data;
-            }
-        },
         add: function (e, data) {
             data.submit().success(function (result, textStatus, jqXHR) {
                 result = JSON.parse(result);
@@ -24,6 +11,7 @@ uploader.fileupload(
                 $.post('/mycenter/note/create/show_title_img/', result, function (res) {
                     res = JSON.parse(res);
                     res.path = res.path.toString().split('\\').join('/')
+                    console.log("标题图片",res.path)
                     $('#t_img_con_back').css({
                         "background": "url(/" + res.path + ")",
                         "background-size": '100%',
@@ -50,28 +38,48 @@ $(document).ready(function () {
         data['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
         $.post('/mycenter/note/create/create_title/', data, function (result) {
             result = JSON.parse(result)
-            if(result.error_msg){
+            if (result.error_msg) {
                 alert(result.error_msg)
-            }else {
+            } else {
                 console.log(result)
             }
         })
 
     });
 
-    $("body").on("click",".edit_add_text",function () {
+    $("body").on("click", ".edit_add_text", function () {
         //点击添加文字显示出来多行文本框
-        $(".add_text_con").css('display','block')
+        $(".add_text_con").css('display', 'block')
     })
-    $("body").on("click",".show_edit_box_btn",function () {
+    $("body").on("click", ".show_edit_box_btn", function () {
         //点击加号显示选项
-        if($(".add_button").hasClass("add_button_show")){
+        if ($(".add_button").hasClass("add_button_show")) {
             $(".add_button").removeClass("add_button_show")
-        }else{
+        } else {
             $(".add_button").addClass("add_button_show")
         }
 
     })
+    var upload_img_content = $("#note_img_content")
+    upload_img_content.fileupload({
+        url: '/mycenter/note/create/upload_img/',
+        autoUpload: false,
+        maxFileSize: 5 * 1024 * 1024,
+        add: function (e, data) {
+            data.submit().success(function (result, textStatus, jqXHR) {
+                console.log(result)
+                result = JSON.parse(result);
+                var path = result.path.toString().split('\\').join('/')
+                console.log(path)
+                $('.add_img_con').css({
+                    "background": "url(/" + path + ")",
+                    "background-size": '100%',
+                });
+                $('.fileinput-button').css("display","none")
+            })
+        }
+    })
+
 
 });
 
