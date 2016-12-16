@@ -48,14 +48,12 @@
                 <table id="upload_title_img_laber">
                     <tr>
                         <td>
-
                         <span class="fileinput-button">
                             <span class="glyphicon glyphicon-picture"></span>
                             <input id="note_title_img" name="files[]" type="file">
 
                         </span>
                             <input type="text" hidden name="uuid" id="articles_uuid" value={{uuid}}>
-
                         </td>
                         <td style="padding-left: 2rem">
                             <h2>选择攻略头图
@@ -77,31 +75,24 @@
         <button type="button" id="test">点击</button>
         {{uuid}}
         正文
+        <hr>
         <div>
-            <div class="edit_object _j_editobject">
+            <div class="edit_object">
                 <ul>
                     <li class="eo_word _j_add_text_btn">
-                        <a role="button" title="添加文字">添加文字</a></li>
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        <a role="button" title="添加文字">添加文字</a>
                     <li class="eo_pic _j_uploadbtncnt">
+                        <span class="glyphicon glyphicon-picture"></span>
                         <a class="_j_uploadboxbtn" role="button" title="添加照片">添加照片</a>
-                        <span class="close _j_close_mobile_notice"></span>
-                    </li>
-                    <li class="eo_video _j_add_movie_btn">
-                        <a role="button" title="添加视频">添加视频</a>
                     </li>
                     <li class="eo_title _j_add_paragraph_title_btn">
+                        <span class="glyphicon glyphicon-align-left"></span>
                         <a role="button" title="添加段落标题">添加段落标题</a>
-                        <i></i>
-                        <span>添加段落标题</span>
-                        </a>
-                        <span class="eo_title_tips _j_paragraphtip" title="更多详情"></span>
                     </li>
                 </ul>
             </div>
-
         </div>
-
-
     </div>
 </div>
 <script src="/static/js/vendor/jquery.ui.widget.js"></script>
