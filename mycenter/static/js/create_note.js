@@ -70,7 +70,7 @@ $(document).ready(function () {
                 console.log(result)
                 result = JSON.parse(result);
                 var path = result.path.toString().split('\\').join('/')
-                console.log(path)
+                console.log(path);
                 $('.add_img_con').css({
                     "background": "url(/" + path + ")",
                     "background-size": '100%',
