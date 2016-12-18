@@ -11,7 +11,7 @@ uploader.fileupload(
                 $.post('/mycenter/note/create/show_title_img/', result, function (res) {
                     res = JSON.parse(res);
                     res.path = res.path.toString().split('\\').join('/')
-                    console.log("标题图片",res.path)
+                    console.log("标题图片", res.path)
                     $('#t_img_con_back').css({
                         "background": "url(/" + res.path + ")",
                         "background-size": '100%',
@@ -58,36 +58,37 @@ $(document).ready(function () {
 
     $("body").on("click", ".edit_add_text", function () {
         //点击添加文字显示出来多行文本框
-        $(".edit_content").css("display","none")
+        $(".edit_content").css("display", "none")
         $(".add_text_con").css('display', 'block')
     });
-    $("body").on("click",".edit_add_image",function () {
+    $("body").on("click", ".edit_add_image", function () {
         // 点击添加照片显示选择文件的页面
-        $(".edit_content").css("display","none")
-        $(".add_img_con").css("display","block")
+        $(".edit_content").css("display", "none")
+        $(".add_img_con").css("display", "block")
     });
-    $("body").on("click",".edit_add_title",function () {
+    $("body").on("click", ".edit_add_title", function () {
         // 添加段落标题
-        $(".edit_content").css("display","none")
-        $(".add_title_con").css("display","block")
-    })
-
+        $(".edit_content").css("display", "none")
+        $(".add_title_con").css("display", "block")
+    });
+    console.log($("#articles_uuid").val())
     var upload_img_content = $("#note_img_content")
     upload_img_content.fileupload({
-        url: '/mycenter/note/create/upload_img/',
+        url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val()+'',
         autoUpload: false,
         maxFileSize: 5 * 1024 * 1024,
         add: function (e, data) {
             data.submit().success(function (result, textStatus, jqXHR) {
-                console.log(result)
                 result = JSON.parse(result);
-                var path = result.path.toString().split('\\').join('/')
+                var path = result.path.toString().split('\\').join('/');
                 console.log(path);
-                $('.add_img_con').css({
-                    "background": "url(/" + path + ")",
-                    "background-size": '100%',
-                });
-                $('.fileinput-button','.add_img_con').css("display","none")
+                var img_html = '<div class="g_img_content">' +
+                    '<a href="#" role="button">' +
+                    '<img style="width: 100%" src="/' + path + '" alt="图片">' +
+                    '</a>' +
+                    '</div>';
+                $(".add_button_show").append(img_html);
+                $('.add_img_con', '.add_button_show').css("display", "none")
             })
         }
     })

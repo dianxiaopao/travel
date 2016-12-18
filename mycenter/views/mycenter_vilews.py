@@ -3,6 +3,7 @@ from django.shortcuts import render
 from mycenter.models.img_material import ImgMaterial
 
 from guides.models.guide_title import GuideTitle
+from guides.models.guide_content import Guidebody
 from django.http import HttpResponse, Http404
 from django.conf import settings
 
@@ -152,6 +153,44 @@ def create_title(request):
         pass
 
 
+def upload_file(f):
+    res_and_obj={}
+    result = {}
+    uuid_name = shortuuid.uuid()
+    image_name = uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_name))
+    file_dir = os.path.join(settings.MEDIA_ROOT, 'OldImgFile')
+    if os.path.exists(file_dir) == False:  # 如果文件夹不存在就创建它
+        os.makedirs(file_dir)
+
+    img_alias = str(image_name) + str('.') + str(f.name.split('.')[-1])
+
+    file_path = os.path.join(file_dir, img_alias)
+    fobj = open(file_path, 'wb')
+    for chrunk in f.chunks():
+        filecontent = base64.b64encode(chrunk)
+        fobj.write(filecontent)
+    fobj.close()  # 文件保存完毕
+
+    # 把文件信息写到数据库
+    img_d_obj = {
+        'name': f.name, 'file_size': f.size, 'old_path': file_dir, 'alias': img_alias
+    }
+    new_obj = ImgMaterial.objects.get_or_create(alias=img_alias, defaults=img_d_obj)[0]
+    # 解码到static文件下
+    relative_path = os.path.join('static', 'media', 'images', img_alias)
+    image_new_path = os.path.join(settings.BASE_DIR, relative_path)
+    with open(file_path) as f:
+        temporary_file = open(image_new_path, 'wb')
+        temporary_file.write(base64.b64decode(f.read()))
+        temporary_file.close()
+    new_obj.new_path = os.path.join(settings.BASE_DIR, 'static', 'media', 'images')
+    new_obj.save()
+    result['path'] = relative_path
+    res_and_obj['result']=result
+    res_and_obj['file_obj'] = new_obj
+    return res_and_obj
+
+
 @csrf_exempt
 def upload_img(request):
     result = {}
@@ -159,43 +198,21 @@ def upload_img(request):
     if method == 'post':
         try:
             f = request.FILES.get('files')
-            uuid_name = shortuuid.uuid()
-            image_name = uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_name))
-            file_dir = os.path.join(settings.MEDIA_ROOT, 'OldImgFile')
-            if os.path.exists(file_dir) == False:  # 如果文件夹不存在就创建它
-                os.makedirs(file_dir)
+            res_and_obj = upload_file(f)
+            img_obj=res_and_obj['file_obj']
 
-            img_alias = str(image_name) + str('.') + str(f.name.split('.')[-1])
-
-            file_path = os.path.join(file_dir, img_alias)
-            fobj = open(file_path, 'wb')
-            for chrunk in f.chunks():
-                filecontent = base64.b64encode(chrunk)
-                fobj.write(filecontent)
-            fobj.close()  # 文件保存完毕
+            uuid = request.GET.get("uuid")
+            title_obj = GuideTitle.objects.get_or_create(uuid=uuid)[0]
+            title_obj.source='user create'
+            title_obj.save()
+            body_uuid = shortuuid.uuid()
+            body_text=Guidebody(uuid=body_uuid,title_id=title_obj.id,image_path=img_obj.new_path,image_name=img_obj.name)
+            body_text.image_location='all'
+            body_text.save()
+            result["img_uuid"]=body_text.uuid
 
 
 
-
-
-            # 把文件信息写到数据库
-            img_d_obj = {
-                'name': f.name, 'file_size': f.size, 'old_path': file_dir, 'alias': img_alias
-            }
-            new_obj = ImgMaterial.objects.get_or_create(alias=img_alias, defaults=img_d_obj)[0]
-            # new_obj.save()  # 把上传的图片信息保存到数据库中
-            # 解码到static文件下
-            relative_path = os.path.join('static', 'media', 'images', img_alias)
-            image_new_path = os.path.join(settings.BASE_DIR, relative_path)
-            with open(file_path) as f:
-                temporary_file = open(image_new_path, 'wb')
-                temporary_file.write(base64.b64decode(f.read()))
-                temporary_file.close()
-
-
-            new_obj.new_path = os.path.join(settings.BASE_DIR, 'static', 'media', 'images')
-            new_obj.save()
-            result['path'] = relative_path
 
 
 
@@ -207,7 +224,7 @@ def upload_img(request):
             result['error_msg'] = err_msg
             result['trackback'] = _trackback
         finally:
-            return HttpResponse(json.dumps(result))
+            return HttpResponse(json.dumps(res_and_obj['result']))
 
     if method == 'get':
         return HttpResponse(json.dumps('对不起没有get请求的的后台'))

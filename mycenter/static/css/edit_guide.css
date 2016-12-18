@@ -136,9 +136,12 @@
 }
 .add_title_con button {
     margin-right: 10%;
-    /*color: red;*/
 }
 .add_title_con input{
     margin-left: 10%;
     width: 80%;
+}
+.g_img_content{
+    padding-top: 3rem;
+    margin-bottom: 5rem;
 }

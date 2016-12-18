@@ -4,7 +4,8 @@ from django.db import models
 
 
 class Guidebody(models.Model):
-    title_id = models.ForeignKey(u'guides.GuideTitle',verbose_name=u'文章标题id')
+    uuid = models.CharField('uuid', max_length=256)
+    title = models.ForeignKey(u'guides.GuideTitle',verbose_name=u'文章标题id')
     s_title = models.CharField(u'段落标题', max_length=256, null=True)
     s_body = models.TextField(u'段落正文', null=True)
     image_path = models.CharField(u'图片路径', max_length=256, null=True)
@@ -12,10 +13,8 @@ class Guidebody(models.Model):
     image_msg=models.CharField(u'图片说明',max_length=256,null=True)
     image_location=models.CharField(u'位置',max_length=256,null=True)
 
-    image_explain = models.TextField(u'段落正文', null=True)
-    pviews = models.IntegerField(u'阅读量', default=0, null=True)
-    collection = models.IntegerField(u'收藏量', default=0, null=True)
-
+    image_explain = models.TextField(u'图片描述正文', null=True)
+    numbers=models.CharField(u'文章序号',max_length=256,null=True)
     parent = models.IntegerField(u'上一条记录',null=True)
 
     create_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='创建人')
