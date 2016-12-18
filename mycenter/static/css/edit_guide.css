@@ -7,14 +7,14 @@
 }
 
 .fileinput-button span {
-    font-size: 6rem;
+    font-size: 6em;
     color: #3C3C3C;
 }
 
 .fileinput-button input {
     position: absolute;
     right: 0px;
-    height: 6rem;
+    height: 6em;
     top: 0px;
     opacity: 0;
     -ms-filter: 'alpha(opacity=0)';
@@ -103,7 +103,8 @@
     /*border: 1px solid red;*/
 }
 
-.add_img_con {
+.add_img_con, .add_section_title {
+    display: none;
     padding-top: 5rem;
     height: 20rem;
     /*line-height: 20rem;*/
@@ -126,4 +127,18 @@
     width: 30rem;
     height: 8rem;
     background-color: #3C3C3C
+}
+.add_title_con{
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    display: none;
+    text-align: right;
+}
+.add_title_con button {
+    margin-right: 10%;
+    /*color: red;*/
+}
+.add_title_con input{
+    margin-left: 10%;
+    width: 80%;
 }

@@ -46,11 +46,6 @@ $(document).ready(function () {
         })
 
     });
-
-    $("body").on("click", ".edit_add_text", function () {
-        //点击添加文字显示出来多行文本框
-        $(".add_text_con").css('display', 'block')
-    })
     $("body").on("click", ".show_edit_box_btn", function () {
         //点击加号显示选项
         if ($(".add_button").hasClass("add_button_show")) {
@@ -59,7 +54,24 @@ $(document).ready(function () {
             $(".add_button").addClass("add_button_show")
         }
 
+    });
+
+    $("body").on("click", ".edit_add_text", function () {
+        //点击添加文字显示出来多行文本框
+        $(".edit_content").css("display","none")
+        $(".add_text_con").css('display', 'block')
+    });
+    $("body").on("click",".edit_add_image",function () {
+        // 点击添加照片显示选择文件的页面
+        $(".edit_content").css("display","none")
+        $(".add_img_con").css("display","block")
+    });
+    $("body").on("click",".edit_add_title",function () {
+        // 添加段落标题
+        $(".edit_content").css("display","none")
+        $(".add_title_con").css("display","block")
     })
+
     var upload_img_content = $("#note_img_content")
     upload_img_content.fileupload({
         url: '/mycenter/note/create/upload_img/',
