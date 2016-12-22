@@ -71,17 +71,33 @@ $(document).ready(function () {
         $(".edit_content").css("display", "none")
         $(".add_title_con").css("display", "block")
     });
-    console.log($("#articles_uuid").val())
+    $("body").on("click", ".add_title_btn", function () {
+        console.log(this)
+    })
+    $("body").on("click", ".add_text_btn", function () {
+        var text_val = $(".textarea_text", ".add_text_con").val();
+        var data={
+            "text":text_val,
+            "title_uuid":$("#articles_uuid").val(),
+            'csrfmiddlewaretoken':$("input[name='csrfmiddlewaretoken']").val(),
+            "body_uuid":$(".textarea_text").attr("title")
+        }
+        $.post("/mycenter/note/create/edit_text/", data, function (result) {
+            result = JSON.parse(result)
+            var body_text='<div class="body_text_val"><p title="'+result.body_uuid+'">'+result.text+'</p></div>'
+            $(".add_button_show").append(body_text);
+            $('.add_text_con', '.add_button_show').css("display", "none")
+        })
+    })
     var upload_img_content = $("#note_img_content")
     upload_img_content.fileupload({
-        url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val()+'',
+        url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val() + '',
         autoUpload: false,
         maxFileSize: 5 * 1024 * 1024,
         add: function (e, data) {
             data.submit().success(function (result, textStatus, jqXHR) {
                 result = JSON.parse(result);
                 var path = result.path.toString().split('\\').join('/');
-                console.log(path);
                 var img_html = '<div class="g_img_content">' +
                     '<a href="#" role="button">' +
                     '<img style="width: 100%" src="/' + path + '" alt="图片">' +

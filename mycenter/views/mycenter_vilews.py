@@ -154,7 +154,7 @@ def create_title(request):
 
 
 def upload_file(f):
-    res_and_obj={}
+    res_and_obj = {}
     result = {}
     uuid_name = shortuuid.uuid()
     image_name = uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid_name))
@@ -186,7 +186,7 @@ def upload_file(f):
     new_obj.new_path = os.path.join(settings.BASE_DIR, 'static', 'media', 'images')
     new_obj.save()
     result['path'] = relative_path
-    res_and_obj['result']=result
+    res_and_obj['result'] = result
     res_and_obj['file_obj'] = new_obj
     return res_and_obj
 
@@ -199,17 +199,18 @@ def upload_img(request):
         try:
             f = request.FILES.get('files')
             res_and_obj = upload_file(f)
-            img_obj=res_and_obj['file_obj']
+            img_obj = res_and_obj['file_obj']
 
             uuid = request.GET.get("uuid")
             title_obj = GuideTitle.objects.get_or_create(uuid=uuid)[0]
-            title_obj.source='user create'
+            title_obj.source = 'user create'
             title_obj.save()
             body_uuid = shortuuid.uuid()
-            body_text=Guidebody(uuid=body_uuid,title_id=title_obj.id,image_path=img_obj.new_path,image_name=img_obj.name)
-            body_text.image_location='all'
+            body_text = Guidebody(uuid=body_uuid, title_id=title_obj.id, image_path=img_obj.new_path,
+                                  image_name=img_obj.name)
+            body_text.image_location = 'all'
             body_text.save()
-            result["img_uuid"]=body_text.uuid
+            result["img_uuid"] = body_text.uuid
 
 
 
@@ -228,3 +229,46 @@ def upload_img(request):
 
     if method == 'get':
         return HttpResponse(json.dumps('对不起没有get请求的的后台'))
+
+
+def edit_text(request):
+    result = {}
+    method = request.method.lower()
+    if method == 'post':
+        try:
+            uuid = request.POST.get("title_uuid")
+            text_val = request.POST.get("text")
+            body_uuid = request.POST.get("body_uuid")
+
+            title_obj = GuideTitle.objects.get_or_create(uuid=uuid)[0]
+            title_obj.source = 'user create'
+            title_obj.save()
+            if body_uuid:
+                body_obj = Guidebody.objects.filter(uuid=body_uuid,title_id=title_obj.id)
+                if body_obj:
+                    body_obj[0].s_body = text_val
+                    body_obj[0].title_obj.id
+                    body_obj[0].save()
+                    result["body_uuid"] = body_obj.uuid
+                    result["text"] = body_obj.s_body
+                else:
+                    body_uuid = shortuuid.uuid()
+                    body_obj = Guidebody(uuid=body_uuid, s_body=text_val, title_id=title_obj.id)
+                    body_obj.save()
+                    result["body_uuid"] = body_obj.uuid
+                    result["text"] = body_obj.s_body
+            else:
+                body_uuid = shortuuid.uuid()
+                body_obj = Guidebody(uuid=body_uuid, s_body=text_val, title_id=title_obj.id)
+                body_obj.save()
+                result["body_uuid"] = body_obj.uuid
+                result["text"] = body_obj.s_body
+        except Exception, e:
+            _trackback = traceback.format_exc()
+            err_msg = e.message
+            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                err_msg = e.faultCode
+            result['error_msg'] = err_msg
+            result['trackback'] = _trackback
+        finally:
+            return HttpResponse(json.dumps(result))
