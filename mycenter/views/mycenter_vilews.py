@@ -213,10 +213,6 @@ def upload_img(request):
             result["img_uuid"] = body_text.uuid
 
 
-
-
-
-
         except Exception, e:
             _trackback = traceback.format_exc()
             err_msg = e.message
