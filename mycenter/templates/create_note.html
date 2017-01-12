@@ -13,7 +13,6 @@
             visibility: hidden;
         }
 
-
     </style>
     <div class="container">
         <button type="button" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
@@ -47,41 +46,45 @@
                 </div>
                 <span id="again_title_img">重设图片</span>
                 <div class="input-group input-group-lg" style="width: 80%;margin: auto">
-                    <input type="text" id="guide_title" name="guide_title" class="form-control" placeholder="填写游记标题">
+                    <input type="text" id="guide_title" name="guide_title" class="form-control"
+                           placeholder="填写游记标题">
                 </div>
             </form>
         </div>
     </div>
-    <div class="container" style="min-height: 600px">
-        <div class="c_n_edit_container">
+    <div class="container">
 
-            <div class="col-lg-9">
-                <div title="" class="add_button add_button_show">
-                    <a role="button" class="glyphicon glyphicon-plus show_edit_box_btn" title="添加"></a>
-                    <div class="edit_object">
-                        <ul>
-                            <li class="eo_word _j_add_text_btn">
-                                <a role="button" class="edit_add_text" title="添加文字">
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                    添加文字</a>
-                            <li class="eo_pic _j_uploadbtncnt">
-                                <a class="edit_add_image" role="button" title="添加照片">
-                                    <span class="glyphicon glyphicon-picture"></span>
-                                    添加照片</a>
-                            </li>
-                            <li class="eo_title _j_add_paragraph_title_btn">
-                                <a role="button" class="edit_add_title" title="添加段落标题">
-                                    <span class="glyphicon glyphicon-align-left"></span>
-                                    添加段落标题</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="edit_content add_text_con">
-                        <textarea class="textarea_text" title="jBFXkthrQ6WEuVogk3k8fM"
-                                  placeholder="在这儿添加文章文字......"></textarea>
-                        <button type="button" class="add_text_btn btn">完成</button>
-                    </div>
-                    <div class="edit_content add_img_con">
+        <div class="col-lg-9">
+            <div id="containe_body">
+                <div class="edit_container" title="{{ uuid }}">
+                    <div class="c_n_edit_container">
+
+                        <div title="" class="add_button add_button_show">
+                            <a role="button" class="glyphicon glyphicon-plus show_edit_box_btn" title="添加"></a>
+                            <div class="edit_object">
+                                <ul>
+                                    <li class="eo_word _j_add_text_btn">
+                                        <a role="button" class="edit_add_text" title="添加文字">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                            添加文字</a>
+                                    <li class="eo_pic _j_uploadbtncnt">
+                                        <a class="edit_add_image" role="button" title="添加照片">
+                                            <span class="glyphicon glyphicon-picture"></span>
+                                            添加照片</a>
+                                    </li>
+                                    <li class="eo_title _j_add_paragraph_title_btn">
+                                        <a role="button" class="edit_add_title" title="添加段落标题">
+                                            <span class="glyphicon glyphicon-align-left"></span>
+                                            添加段落标题</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="edit_content add_text_con">
+                                    <textarea class="textarea_text" title="jBFXkthrQ6WEuVogk3k8fM"
+                                              placeholder="在这儿添加文章文字......"></textarea>
+                                            <button type="button" class="add_text_btn btn">完成</button>
+                            </div>
+                            <div class="edit_content add_img_con">
                         <span class="fileinput-button">
                             <div>
                                     <span class="glyphicon glyphicon-picture"></span>
@@ -89,33 +92,28 @@
                                  上传照片
                             </div>
                         </span>
-                    </div>
-                    <div class="edit_content add_title_con">
-                        <input type="text" class="form-control input-lg" id="inputEmail3" placeholder="输入段落标题...">
-                        <hr>
-                        <button type="button" class="add_title_btn btn btn-default">&nbsp;&nbsp;&nbsp;
-                            确定&nbsp;&nbsp;&nbsp;
-                        </button>
+                            </div>
+                            <div class="edit_content add_title_con">
+                                <input type="text" class="form-control input-lg" id="inputEmail3"
+                                       placeholder="输入段落标题...">
+                                <hr>
+                                <button type="button" class="add_title_btn btn btn-default">&nbsp;&nbsp;&nbsp;
+                                    确定&nbsp;&nbsp;&nbsp;
+                                </button>
 
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <p title=""></p>
-                </div>
-                {#                <div>#}
-                {#                    <a href="#" role="button">#}
-                {#                        <img src="/static/media/images/2187e058-e5cd-5dc3-9287-b1df3bb2ee1a.jpg" alt="图片">#}
-                {#                    </a>#}
-                {#                </div>#}
+            </div>
+        </div>
+        <div class="col-lg-3">
+            这里是文章标题
+            <div >
 
             </div>
-            <div class="col-lg-3">
-                这里是文章标题
-            </div>
-
         </div>
     </div>
-
     <script src="/static/js/vendor/jquery.Jcrop.js"></script>
 
     <script src="/static/js/vendor/jquery.ui.widget.js"></script>

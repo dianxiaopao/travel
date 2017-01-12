@@ -76,17 +76,26 @@ $(document).ready(function () {
     })
     $("body").on("click", ".add_text_btn", function () {
         var text_val = $(".textarea_text", ".add_text_con").val();
-        var data={
-            "text":text_val,
-            "title_uuid":$("#articles_uuid").val(),
-            'csrfmiddlewaretoken':$("input[name='csrfmiddlewaretoken']").val(),
-            "body_uuid":$(".textarea_text").attr("title")
+        var data = {
+            "text": text_val,
+            "title_uuid": $("#articles_uuid").val(),
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+            "body_uuid": $(".textarea_text").attr("title")
         }
         $.post("/mycenter/note/create/edit_text/", data, function (result) {
-            result = JSON.parse(result)
-            var body_text='<div class="body_text_val"><p title="'+result.body_uuid+'">'+result.text+'</p></div>'
-            $(".add_button_show").append(body_text);
+            result = JSON.parse(result);
+            console.log(result);
+            // var body_text = '<div class="body_text_val"><p title="' + result.body_uuid + '">' + result.text + '</p></div>'
+            // $(".add_button_show").append(body_text);
+            // $('.add_text_con', '.add_button_show').css("display", "none")
+            result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
+            // console.log(result)
+            $.post("/mycenter/note/create/edit_text_get/",result, function (res) {
+                $("#containe_body").append(res);
             $('.add_text_con', '.add_button_show').css("display", "none")
+            })
+            // console.log(result);
+
         })
     })
     var upload_img_content = $("#note_img_content")

@@ -227,44 +227,61 @@ def upload_img(request):
         return HttpResponse(json.dumps('对不起没有get请求的的后台'))
 
 
-def edit_text(request):
+def edit_text_post(request):
     result = {}
-    method = request.method.lower()
-    if method == 'post':
-        try:
-            uuid = request.POST.get("title_uuid")
-            text_val = request.POST.get("text")
-            body_uuid = request.POST.get("body_uuid")
+    try:
+        uuid = request.POST.get("title_uuid")
+        text_val = request.POST.get("text")
+        body_uuid = request.POST.get("body_uuid")
 
-            title_obj = GuideTitle.objects.get_or_create(uuid=uuid)[0]
-            title_obj.source = 'user create'
-            title_obj.save()
-            if body_uuid:
-                body_obj = Guidebody.objects.filter(uuid=body_uuid,title_id=title_obj.id)
-                if body_obj:
-                    body_obj[0].s_body = text_val
-                    body_obj[0].title_obj.id
-                    body_obj[0].save()
-                    result["body_uuid"] = body_obj.uuid
-                    result["text"] = body_obj.s_body
-                else:
-                    body_uuid = shortuuid.uuid()
-                    body_obj = Guidebody(uuid=body_uuid, s_body=text_val, title_id=title_obj.id)
-                    body_obj.save()
-                    result["body_uuid"] = body_obj.uuid
-                    result["text"] = body_obj.s_body
+        title_obj = GuideTitle.objects.get_or_create(uuid=uuid)[0]
+        title_obj.source = 'user create'
+        title_obj.save()
+        if body_uuid:
+            body_obj = Guidebody.objects.filter(uuid=body_uuid, title_id=title_obj.id)
+            if body_obj:
+                body_obj[0].s_body = text_val
+                body_obj[0].title_obj.id
+                body_obj[0].save()
+                result["body_uuid"] = body_obj.uuid
+                result["text"] = body_obj.s_body
             else:
                 body_uuid = shortuuid.uuid()
                 body_obj = Guidebody(uuid=body_uuid, s_body=text_val, title_id=title_obj.id)
                 body_obj.save()
                 result["body_uuid"] = body_obj.uuid
                 result["text"] = body_obj.s_body
-        except Exception, e:
-            _trackback = traceback.format_exc()
-            err_msg = e.message
-            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
-                err_msg = e.faultCode
-            result['error_msg'] = err_msg
-            result['trackback'] = _trackback
-        finally:
-            return HttpResponse(json.dumps(result))
+        else:
+            body_uuid = shortuuid.uuid()
+            body_obj = Guidebody(uuid=body_uuid, s_body=text_val, title_id=title_obj.id)
+            body_obj.save()
+            result["body_uuid"] = body_obj.uuid
+            result["text"] = body_obj.s_body
+    except Exception, e:
+        _trackback = traceback.format_exc()
+        err_msg = e.message
+        if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+            err_msg = e.faultCode
+        result['error_msg'] = err_msg
+        result['trackback'] = _trackback
+    finally:
+        return HttpResponse(json.dumps(result))
+@csrf_exempt
+def edit_text_get(request):
+    text_str=request.POST.get("text")
+    context = {
+        'action': 'create',
+        'uuid': shortuuid.uuid(),
+        'text_str': text_str,
+    }
+
+    # return HttpResponse(json.dumps("------"))
+    return render(request, 'edit_form.html',context)
+
+def edit_text(request, *args, **kwargs):
+    method = request.method.lower()
+    if method == 'post':
+        return edit_text_post(request)
+    # elif method == "get":
+    #     return edit_text_get(request, *args, **kwargs)
+
