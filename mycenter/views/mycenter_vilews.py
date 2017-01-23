@@ -17,9 +17,11 @@ def Center(request):
 
 @csrf_exempt
 def CreateNote(request):
-    article_uuid = shortuuid.uuid
+    uuid = shortuuid.uuid()
+    edit_uuid=shortuuid.uuid()
     context = {
-        'uuid': article_uuid,
+        'uuid': uuid,
+        "edit_uuid":edit_uuid,
         'action': 'create',
     }
     return render(request, 'create_note.html', context)
@@ -230,11 +232,11 @@ def upload_img(request):
 def edit_text_post(request):
     result = {}
     try:
-        uuid = request.POST.get("title_uuid")
+        title_uuid = request.POST.get("title_uuid")
         text_val = request.POST.get("text")
         body_uuid = request.POST.get("body_uuid")
 
-        title_obj = GuideTitle.objects.get_or_create(uuid=uuid)[0]
+        title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
         title_obj.source = 'user create'
         title_obj.save()
         if body_uuid:
@@ -269,10 +271,12 @@ def edit_text_post(request):
 @csrf_exempt
 def edit_text_get(request):
     text_str=request.POST.get("text")
+    edit_uuid = shortuuid.uuid()
     context = {
         'action': 'create',
         'uuid': shortuuid.uuid(),
         'text_str': text_str,
+        'edit_uuid':edit_uuid,
     }
 
     # return HttpResponse(json.dumps("------"))
