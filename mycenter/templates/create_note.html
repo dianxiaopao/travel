@@ -17,7 +17,7 @@
     <div class="container">
         <button type="button" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
         <button type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
-        <input type="text" id="title_name_uuid"  value="{{ uuid }}">
+        <input type="text" id="title_name_uuid" value="{{ uuid }}">
     </div>
     <div id="t_img_con_back" class="jumbotron">
         <div class="container">
@@ -54,7 +54,7 @@
     </div>
     <div class="container">
 
-        <div class="col-lg-9">
+        <div class="col-lg-9" style="min-height: 600px;padding-bottom: 20px">
             <div id="containe_body">
                 <div class="edit_container" title="{{ edit_uuid }}">
                     <div class="c_n_edit_container">
@@ -156,13 +156,13 @@
 
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_text", function () {
                 //点击添加文字显示出来多行文本框
-                $(".edit_content").css("display", "none")
-                $(".add_text_con").css('display', 'block')
+                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none")
+                $(".add_text_con","[title='{{ edit_uuid }}']").css('display', 'block')
             });
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_image", function () {
                 // 点击添加照片显示选择文件的页面
-                $(".edit_content").css("display", "none")
-                $(".add_img_con").css("display", "block")
+                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none")
+                $(".add_img_con","[title='{{ edit_uuid }}']").css("display", "block")
             });
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_title", function () {
                 // 添加段落标题
@@ -179,24 +179,18 @@
                     "title_uuid": $("#articles_uuid").val(),
                     'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
                     "body_uuid": "{{ edit_uuid }}",
-ccccccc                }
+                }
                 $.post("/mycenter/note/create/edit_text/", data, function (result) {
                     result = JSON.parse(result);
                     console.log(result);
-                    // var body_text = '<div class="body_text_val"><p title="' + result.body_uuid + '">' + result.text + '</p></div>'
-                    // $(".add_button_show").append(body_text);
-                    // $('.add_text_con', '.add_button_show').css("display", "none")
                     result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
-                    // console.log(result)
                     $.post("/mycenter/note/create/edit_text_get/", result, function (res) {
                         $("#containe_body").append(res);
                         $('.add_text_con', '.add_button_show').css("display", "none")
                     })
-                    // console.log(result);
-
                 })
             })
-            var upload_img_content = $("#note_img_content")
+            var upload_img_content = $("#note_img_content");
             upload_img_content.fileupload({
                 url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val() + '',
                 autoUpload: false,
@@ -210,7 +204,7 @@ ccccccc                }
                                 '<img style="width: 100%" src="/' + path + '" alt="图片">' +
                                 '</a>' +
                                 '</div>';
-                        $(".add_button_show").append(img_html);
+                        $(".add_button_show","[title='{{ edit_uuid }}']").append(img_html);
                         $('.add_img_con', '.add_button_show').css("display", "none")
                     })
                 }

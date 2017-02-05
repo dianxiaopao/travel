@@ -71,7 +71,6 @@
                     console.log(result)
                 }
             })
-
         });
         $("[title='{{ edit_uuid }}']").on("click", ".show_edit_box_btn", function () {
             //点击加号显示选项
@@ -80,22 +79,21 @@
             } else {
                 $(".add_button","[title='{{ edit_uuid }}']").addClass("add_button_show")
             }
-
         });
 
         $("[title='{{ edit_uuid }}']").on("click", ".edit_add_text", function () {
             //点击添加文字显示出来多行文本框
-            $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none")
+            $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none");
             $(".add_text_con","[title='{{ edit_uuid }}']").css('display', 'block')
         });
         $("[title='{{ edit_uuid }}']").on("click", ".edit_add_image", function () {
             // 点击添加照片显示选择文件的页面
-            $(".edit_content").css("display", "none")
-            $(".add_img_con").css("display", "block")
+            $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none");
+            $(".add_img_con","[title='{{ edit_uuid }}']").css("display", "block")
         });
         $("[title='{{ edit_uuid }}']").on("click", ".edit_add_title", function () {
             // 添加段落标题
-            $(".edit_content").css("display", "none")
+            $(".edit_content").css("display", "none");
             $(".add_title_con").css("display", "block")
         });
         $("[title='{{ edit_uuid }}']").on("click", ".add_title_btn", function () {
@@ -105,28 +103,20 @@
             var text_val = $(".textarea_text", "[title='{{ edit_uuid }}']").val();
             var data = {
                 "text": text_val,
-                "title_uuid": $("#articles_uuid","[title='{{ edit_uuid }}']").val(),
+                "title_uuid": $("#articles_uuid").val(),
                 'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
                 "body_uuid": '{{ edit_uuid }}'
             };
-            console.log(data)
             $.post("/mycenter/note/create/edit_text/", data, function (result) {
                 result = JSON.parse(result);
-                console.log(result);
-                // var body_text = '<div class="body_text_val"><p title="' + result.body_uuid + '">' + result.text + '</p></div>'
-                // $(".add_button_show").append(body_text);
-                // $('.add_text_con', '.add_button_show').css("display", "none")
-                result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
-                // console.log(result)
+                result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
                 $.post("/mycenter/note/create/edit_text_get/", result, function (res) {
                     $("#containe_body").append(res);
                     $('.add_text_con', '.add_button_show').css("display", "none")
                 })
-                // console.log(result);
-
             })
         })
-        var upload_img_content = $("#note_img_content")
+        var upload_img_content = $("#note_img_content");
         upload_img_content.fileupload({
             url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val() + '',
             autoUpload: false,
