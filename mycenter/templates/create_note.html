@@ -156,17 +156,17 @@
 
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_text", function () {
                 //点击添加文字显示出来多行文本框
-                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none")
+                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none");
                 $(".add_text_con","[title='{{ edit_uuid }}']").css('display', 'block')
             });
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_image", function () {
                 // 点击添加照片显示选择文件的页面
-                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none")
+                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none");
                 $(".add_img_con","[title='{{ edit_uuid }}']").css("display", "block")
             });
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_title", function () {
                 // 添加段落标题
-                $(".edit_content").css("display", "none")
+                $(".edit_content").css("display", "none");
                 $(".add_title_con").css("display", "block")
             });
             $("[title='{{ edit_uuid }}']").on("click", ".add_title_btn", function () {
@@ -182,7 +182,6 @@
                 }
                 $.post("/mycenter/note/create/edit_text/", data, function (result) {
                     result = JSON.parse(result);
-                    console.log(result);
                     result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
                     $.post("/mycenter/note/create/edit_text_get/", result, function (res) {
                         $("#containe_body").append(res);
@@ -199,13 +198,10 @@
                     data.submit().success(function (result, textStatus, jqXHR) {
                         result = JSON.parse(result);
                         var path = result.path.toString().split('\\').join('/');
-                        var img_html = '<div class="g_img_content">' +
-                                '<a href="#" role="button">' +
-                                '<img style="width: 100%" src="/' + path + '" alt="图片">' +
-                                '</a>' +
-                                '</div>';
-                        $(".add_button_show","[title='{{ edit_uuid }}']").append(img_html);
-                        $('.add_img_con', '.add_button_show').css("display", "none")
+                       console.log(path);
+                        //TODO:此处应该仿照188行添加文字的写法，从后台获取html代码段追加到编辑框内
+{#                        $(".add_button_show","[title='{{ edit_uuid }}']").append(img_html);#}
+{#                        $('.add_img_con', '.add_button_show').css("display", "none")#}
                     })
                 }
             })
