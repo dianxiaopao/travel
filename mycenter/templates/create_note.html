@@ -156,13 +156,13 @@
 
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_text", function () {
                 //点击添加文字显示出来多行文本框
-                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none");
-                $(".add_text_con","[title='{{ edit_uuid }}']").css('display', 'block')
+                $(".edit_content", "[title='{{ edit_uuid }}']").css("display", "none");
+                $(".add_text_con", "[title='{{ edit_uuid }}']").css('display', 'block')
             });
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_image", function () {
                 // 点击添加照片显示选择文件的页面
-                $(".edit_content","[title='{{ edit_uuid }}']").css("display", "none");
-                $(".add_img_con","[title='{{ edit_uuid }}']").css("display", "block")
+                $(".edit_content", "[title='{{ edit_uuid }}']").css("display", "none");
+                $(".add_img_con", "[title='{{ edit_uuid }}']").css("display", "block")
             });
             $("[title='{{ edit_uuid }}']").on("click", ".edit_add_title", function () {
                 // 添加段落标题
@@ -189,7 +189,7 @@
                     })
                 })
             })
-            var upload_img_content = $("#note_img_content");
+            var upload_img_content = $("#note_img_content","[title='{{ edit_uuid }}']");
             upload_img_content.fileupload({
                 url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val() + '',
                 autoUpload: false,
@@ -197,11 +197,15 @@
                 add: function (e, data) {
                     data.submit().success(function (result, textStatus, jqXHR) {
                         result = JSON.parse(result);
-                        var path = result.path.toString().split('\\').join('/');
-                       console.log(path);
-                        //TODO:此处应该仿照188行添加文字的写法，从后台获取html代码段追加到编辑框内
-{#                        $(".add_button_show","[title='{{ edit_uuid }}']").append(img_html);#}
-{#                        $('.add_img_con', '.add_button_show').css("display", "none")#}
+                        var path = "/" + result.path.toString().split('\\').join('/');
+                        data = {
+                            "path": path,
+                            "img_uuid": result.img_uuid
+                        }
+                        $.get('/mycenter/note/create/upload_img/', data, function (res) {
+                            $("#containe_body").append(res);
+                            $('.add_img_con', '.add_button_show').css("display", "none")
+                        })
                     })
                 }
             })

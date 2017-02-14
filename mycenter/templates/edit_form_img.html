@@ -1,9 +1,6 @@
-<div class="container text_body" style="padding: 20px 0 20px 10%;width: 80%">
-    <p>{{ text_str }}</p>
-</div>
 <div class="g_img_content">
     <a href="#" role="button">
-        <img style="width: 100%" src="/' + path + '" alt="图片">
+        <img id="{{ img_uuid }}" style="width: 100%" src="{{ path }}" alt="图片">
     </a>
 </div>
 
@@ -121,7 +118,7 @@
                 })
             })
         })
-        var upload_img_content = $("#note_img_content");
+        var upload_img_content = $("#note_img_content","[title='{{ edit_uuid }}']");
         upload_img_content.fileupload({
             url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val() + '',
             autoUpload: false,
@@ -129,14 +126,15 @@
             add: function (e, data) {
                 data.submit().success(function (result, textStatus, jqXHR) {
                     result = JSON.parse(result);
-                    var path = result.path.toString().split('\\').join('/');
-                    var img_html = '<div class="g_img_content">' +
-                            '<a href="#" role="button">' +
-                            '<img style="width: 100%" src="/' + path + '" alt="图片">' +
-                            '</a>' +
-                            '</div>';
-                    $(".add_button_show").append(img_html);
-                    $('.add_img_con', '.add_button_show').css("display", "none")
+                    var path = "/" + result.path.toString().split('\\').join('/');
+                    data = {
+                        "path": path,
+                        "img_uuid": result.img_uuid
+                    }
+                    $.get('/mycenter/note/create/upload_img/', data, function (res) {
+                        $("#containe_body").append(res);
+                        $('.add_img_con', '.add_button_show').css("display", "none")
+                    })
                 })
             }
         })

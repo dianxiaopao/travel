@@ -18,10 +18,10 @@ def Center(request):
 @csrf_exempt
 def CreateNote(request):
     uuid = shortuuid.uuid()
-    edit_uuid=shortuuid.uuid()
+    edit_uuid = shortuuid.uuid()
     context = {
         'uuid': uuid,
-        "edit_uuid":edit_uuid,
+        "edit_uuid": edit_uuid,
         'action': 'create',
     }
     return render(request, 'create_note.html', context)
@@ -212,7 +212,9 @@ def upload_img(request):
                                   image_name=img_obj.name)
             body_text.image_location = 'all'
             body_text.save()
+            result["path"] = res_and_obj['result']["path"]
             result["img_uuid"] = body_text.uuid
+            # result["uuid"] = shortuuid.uuid()
 
 
         except Exception, e:
@@ -223,10 +225,20 @@ def upload_img(request):
             result['error_msg'] = err_msg
             result['trackback'] = _trackback
         finally:
-            return HttpResponse(json.dumps(res_and_obj['result']))
+            return HttpResponse(json.dumps(result))
 
     if method == 'get':
-        return HttpResponse(json.dumps('对不起没有get请求的的后台'))
+        img_uuid = request.GET.get("img_uuid")
+        path = request.GET.get("path")
+        edit_uuid = shortuuid.uuid()
+        context = {
+            'action': 'create',
+            'edit_uuid': edit_uuid,
+            'img_uuid': img_uuid,
+            'path': path,
+        }
+
+        return render(request, 'edit_form_img.html', context)
 
 
 def edit_text_post(request):
@@ -268,24 +280,25 @@ def edit_text_post(request):
         result['trackback'] = _trackback
     finally:
         return HttpResponse(json.dumps(result))
+
+
 @csrf_exempt
 def edit_text_get(request):
-    text_str=request.POST.get("text")
+    text_str = request.POST.get("text")
     edit_uuid = shortuuid.uuid()
     context = {
         'action': 'create',
         'uuid': shortuuid.uuid(),
         'text_str': text_str,
-        'edit_uuid':edit_uuid,
+        'edit_uuid': edit_uuid,
     }
 
-    # return HttpResponse(json.dumps("------"))
-    return render(request, 'edit_form.html',context)
+    return render(request, 'edit_form_text.html', context)
+
 
 def edit_text(request, *args, **kwargs):
     method = request.method.lower()
     if method == 'post':
         return edit_text_post(request)
-    # elif method == "get":
-    #     return edit_text_get(request, *args, **kwargs)
-
+        # elif method == "get":
+        #     return edit_text_get(request, *args, **kwargs)
