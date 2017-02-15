@@ -214,7 +214,6 @@ def upload_img(request):
             body_text.save()
             result["path"] = res_and_obj['result']["path"]
             result["img_uuid"] = body_text.uuid
-            # result["uuid"] = shortuuid.uuid()
 
 
         except Exception, e:
@@ -302,3 +301,49 @@ def edit_text(request, *args, **kwargs):
         return edit_text_post(request)
         # elif method == "get":
         #     return edit_text_get(request, *args, **kwargs)
+
+
+def section_title(request):
+    '''
+    添加文章标题页
+    :param request:
+    :param args:
+    :param kwargs:
+    :return:
+    '''
+    method = request.method.lower()
+    if method == 'post':
+        return _section_title_post(request)
+
+
+def _section_title_post(request):
+    result = {}
+    try:
+        body_uuid = request.POST.get("body_uuid")
+        section_title = request.POST.get("section_title")
+        title_uuid = request.POST.get("title_uuid")
+        title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
+        title_obj.source = 'user create'
+        title_obj.save()
+
+        if body_uuid:
+            body_obj = Guidebody.objects.filter(uuid=body_uuid, title_id=title_obj.id)
+            if body_obj:
+                body_obj[0].s_body = section_title
+                body_obj[0].title_obj.id
+                body_obj[0].save()
+                result["body_uuid"] = body_obj.uuid
+            else:
+                body_obj = Guidebody(uuid=body_uuid, s_body=section_title, title_id=title_obj.id)
+                body_obj.save()
+                result["body_uuid"] = body_obj.uuid
+
+    except Exception, e:
+        _trackback = traceback.format_exc()
+        err_msg = e.message
+        if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+            err_msg = e.faultCode
+        result['error_msg'] = err_msg
+        result['trackback'] = _trackback
+    finally:
+        return HttpResponse(json.dumps(result))
