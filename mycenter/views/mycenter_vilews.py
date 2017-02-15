@@ -203,17 +203,28 @@ def upload_img(request):
             res_and_obj = upload_file(f)
             img_obj = res_and_obj['file_obj']
 
-            uuid = request.GET.get("uuid")
-            title_obj = GuideTitle.objects.get_or_create(uuid=uuid)[0]
+            uuids = request.GET.get("uuid").split("_")
+            title_uuid = uuids[0]
+            img_uuid = uuids[1]
+            title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
             title_obj.source = 'user create'
             title_obj.save()
-            body_uuid = shortuuid.uuid()
-            body_text = Guidebody(uuid=body_uuid, title_id=title_obj.id, image_path=img_obj.new_path,
-                                  image_name=img_obj.name)
-            body_text.image_location = 'all'
-            body_text.save()
-            result["path"] = res_and_obj['result']["path"]
-            result["img_uuid"] = body_text.uuid
+            result["old_uuid"] = img_uuid
+            if img_uuid:
+                Guidebody.objects.filter(uuid=img_uuid, title_id=title_obj.id)
+                if Guidebody:
+                    img_uuid = shortuuid.uuid()
+                    body_text = Guidebody(uuid=img_uuid, title_id=title_obj.id, image_path=img_obj.new_path,
+                                          image_name=img_obj.name)
+                    body_text.image_location = 'all'
+                    body_text.save()
+                else:
+                    body_text = Guidebody(uuid=img_uuid, title_id=title_obj.id, image_path=img_obj.new_path,
+                                          image_name=img_obj.name)
+                    body_text.image_location = 'all'
+                    body_text.save()
+                result["path"] = res_and_obj['result']["path"]
+                result["img_uuid"] = body_text.uuid
 
 
         except Exception, e:
@@ -229,12 +240,14 @@ def upload_img(request):
     if method == 'get':
         img_uuid = request.GET.get("img_uuid")
         path = request.GET.get("path")
+        old_uuid = request.GET.get("old_uuid")
         edit_uuid = shortuuid.uuid()
         context = {
             'action': 'create',
             'edit_uuid': edit_uuid,
             'img_uuid': img_uuid,
             'path': path,
+            "old_uuid": old_uuid
         }
 
         return render(request, 'edit_form_img.html', context)
@@ -250,26 +263,21 @@ def edit_text_post(request):
         title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
         title_obj.source = 'user create'
         title_obj.save()
+        result["old_uuid"] = body_uuid
         if body_uuid:
             body_obj = Guidebody.objects.filter(uuid=body_uuid, title_id=title_obj.id)
             if body_obj:
-                body_obj[0].s_body = text_val
-                body_obj[0].title_obj.id
-                body_obj[0].save()
-                result["body_uuid"] = body_obj.uuid
+                uuid = shortuuid.uuid()
+                body_obj = Guidebody(uuid=uuid, s_body=text_val, title_id=title_obj.id)
+                body_obj.save()
+
+                result["body_uuid"] = uuid
                 result["text"] = body_obj.s_body
             else:
-                body_uuid = shortuuid.uuid()
                 body_obj = Guidebody(uuid=body_uuid, s_body=text_val, title_id=title_obj.id)
                 body_obj.save()
                 result["body_uuid"] = body_obj.uuid
                 result["text"] = body_obj.s_body
-        else:
-            body_uuid = shortuuid.uuid()
-            body_obj = Guidebody(uuid=body_uuid, s_body=text_val, title_id=title_obj.id)
-            body_obj.save()
-            result["body_uuid"] = body_obj.uuid
-            result["text"] = body_obj.s_body
     except Exception, e:
         _trackback = traceback.format_exc()
         err_msg = e.message
@@ -284,12 +292,13 @@ def edit_text_post(request):
 @csrf_exempt
 def edit_text_get(request):
     text_str = request.POST.get("text")
-    edit_uuid = shortuuid.uuid()
+    body_uuid = request.POST.get("body_uuid")
+    old_uuid = request.POST.get("old_uuid")
     context = {
         'action': 'create',
-        'uuid': shortuuid.uuid(),
         'text_str': text_str,
-        'edit_uuid': edit_uuid,
+        'body_uuid': body_uuid,
+        'edit_uuid': shortuuid.uuid(),
     }
 
     return render(request, 'edit_form_text.html', context)
@@ -299,11 +308,9 @@ def edit_text(request, *args, **kwargs):
     method = request.method.lower()
     if method == 'post':
         return edit_text_post(request)
-        # elif method == "get":
-        #     return edit_text_get(request, *args, **kwargs)
 
 
-def section_title(request):
+def section_title(request, *args, **kwargs):
     '''
     添加文章标题页
     :param request:
@@ -314,6 +321,8 @@ def section_title(request):
     method = request.method.lower()
     if method == 'post':
         return _section_title_post(request)
+    elif method == 'get':
+        return _section_title_get(request)
 
 
 def _section_title_post(request):
@@ -325,19 +334,20 @@ def _section_title_post(request):
         title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
         title_obj.source = 'user create'
         title_obj.save()
-
+        result["old_uuid"] = body_uuid
         if body_uuid:
             body_obj = Guidebody.objects.filter(uuid=body_uuid, title_id=title_obj.id)
             if body_obj:
-                body_obj[0].s_body = section_title
-                body_obj[0].title_obj.id
-                body_obj[0].save()
-                result["body_uuid"] = body_obj.uuid
-            else:
-                body_obj = Guidebody(uuid=body_uuid, s_body=section_title, title_id=title_obj.id)
+                uuid = shortuuid.uuid()
+                body_obj = Guidebody(uuid=uuid, s_title=section_title, title_id=title_obj.id)
                 body_obj.save()
-                result["body_uuid"] = body_obj.uuid
-
+                result['section_uuid'] = uuid
+                result['section_title'] = body_obj.s_title
+            else:
+                body_obj = Guidebody(uuid=body_uuid, s_title=section_title, title_id=title_obj.id)
+                body_obj.save()
+                result['section_uuid'] = body_obj.uuid
+                result['section_title'] = body_obj.s_title
     except Exception, e:
         _trackback = traceback.format_exc()
         err_msg = e.message
@@ -347,3 +357,15 @@ def _section_title_post(request):
         result['trackback'] = _trackback
     finally:
         return HttpResponse(json.dumps(result))
+
+
+def _section_title_get(request):
+    section_uuid = request.GET.get("section_uuid")
+    section_title = request.GET.get("section_title")
+    context = {
+        'action': 'create',
+        'section_title': section_title,
+        'section_uuid': section_uuid,
+        'edit_uuid': shortuuid.uuid(),
+    }
+    return render(request, 'edit_form_s_title.html', context)

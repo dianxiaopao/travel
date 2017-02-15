@@ -15,7 +15,7 @@
 
     </style>
     <div class="container">
-        <button type="button" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
+        <button type="button" onclick="preview_essay()" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
         <button type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
         <input type="text" id="title_name_uuid" value="{{ uuid }}">
     </div>
@@ -170,24 +170,30 @@
                 $(".add_title_con", "[title='{{ edit_uuid }}']").css("display", "block")
             });
             $("[title='{{ edit_uuid }}']").on("click", ".add_title_btn", function () {
-                var section_title = $("#section_title", "[title='{{ edit_uuid }}']").val()
-                var data={
-                    "section_title":section_title,
-                     "title_uuid": $("#articles_uuid").val(),
+                var section_title = $("#section_title", "[title='{{ edit_uuid }}']").val();
+                var data = {
+                    "section_title": section_title,
+                    "title_uuid": $("#articles_uuid").val(),
                     'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
                     "body_uuid": "{{ edit_uuid }}",
 
                 };
-                $.post("/mycenter/note/create/section/title/",data,function (result) {
+                $.post("/mycenter/note/create/section/title/", data, function (result) {
                     result = JSON.parse(result);
-                    $.get("/mycenter/note/create/section/title/",result,function (res) {
-                        console.log()
-                    })
+                    if (result.error_msg) {
+                        alert(result.error_msg)
+                    } else {
+                        $.get("/mycenter/note/create/section/title/", result, function (res) {
+                            $("div[title=" + result['old_uuid'] + "]").after(res);
+                            $('.add_title_con', '.add_button_show').css("display", "none")
+                        })
+                    }
+
                 })
 
             });
             $("[title='{{ edit_uuid }}']").on("click", ".add_text_btn", function () {
-                var text_val = $(".textarea_text", ".add_text_con").val();
+                var text_val = $(".textarea_text", "[title='{{ edit_uuid }}']").val();
                 var data = {
                     "text": text_val,
                     "title_uuid": $("#articles_uuid").val(),
@@ -196,36 +202,48 @@
                 }
                 $.post("/mycenter/note/create/edit_text/", data, function (result) {
                     result = JSON.parse(result);
-                    result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
-                    $.post("/mycenter/note/create/edit_text_get/", result, function (res) {
-                        $("#containe_body").append(res);
-                        $('.add_text_con', '.add_button_show').css("display", "none")
-                    })
+                    if (result.error_msg) {
+                        alert(result.error_msg)
+                    } else {
+                        result['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val()
+                        $.post("/mycenter/note/create/edit_text_get/", result, function (res) {
+                            $("div[title=" + result['old_uuid'] + "]").after(res);
+                            $('.add_text_con', '.add_button_show').css("display", "none")
+                        })
+                    }
                 })
             })
             var upload_img_content = $("#note_img_content", "[title='{{ edit_uuid }}']");
             upload_img_content.fileupload({
-                url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val() + '',
+                url: '/mycenter/note/create/upload_img/?uuid=' + $("#articles_uuid").val() + '_{{ edit_uuid }}',
                 autoUpload: false,
                 maxFileSize: 5 * 1024 * 1024,
                 add: function (e, data) {
                     data.submit().success(function (result, textStatus, jqXHR) {
                         result = JSON.parse(result);
-                        var path = "/" + result.path.toString().split('\\').join('/');
-                        data = {
-                            "path": path,
-                            "img_uuid": result.img_uuid
+                        if (result.error_msg) {
+                            alert(result.error_msg)
+                        } else {
+                            var path = "/" + result.path.toString().split('\\').join('/');
+                            data = {
+                                "path": path,
+                                "img_uuid": result.img_uuid,
+                                "old_uuid":result.old_uuid,
+                            };
+                            $.get('/mycenter/note/create/upload_img/', data, function (res) {
+                                $("div[title=" + result['old_uuid'] + "]").after(res);
+                                $('.add_img_con', '.add_button_show').css("display", "none")
+                            })
                         }
-                        $.get('/mycenter/note/create/upload_img/', data, function (res) {
-                            $("#containe_body").append(res);
-                            $('.add_img_con', '.add_button_show').css("display", "none")
-                        })
                     })
                 }
             })
 
-
         });
+    function preview_essay() {
+        console.log($("[name='guide_body']").find("id"));
+        console.log($("[name='guide_body']"));
+    }
     </script>
 
 {% endblock content %}
