@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^note/create/edit_text/$', views.mycenter_vilews.edit_text),
     url(r'^note/create/edit_text_get/$', views.mycenter_vilews.edit_text_get),
     url(r'^note/create/section/title/$', views.mycenter_vilews.section_title),
+    url(r'^note/create/save_note/$', views.mycenter_vilews.save_note),
+
 ]
 
 urls = urlpatterns

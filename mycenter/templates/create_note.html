@@ -15,9 +15,11 @@
 
     </style>
     <div class="container">
-        <button type="button" onclick="preview_essay()" class="btn btn-default navbar-btn navbar-right" style="margin-right: 2rem">预览</button>
+        <button type="button" onclick="preview_essay()" class="btn btn-default navbar-btn navbar-right"
+                style="margin-right: 2rem">预览
+        </button>
         <button type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
-        <input type="text" id="title_name_uuid" value="{{ uuid }}">
+        <input type="text" hidden id="title_name_uuid" value="{{ uuid }}">
     </div>
     <div id="t_img_con_back" class="jumbotron">
         <div class="container">
@@ -34,7 +36,7 @@
                             <input id="note_title_img" name="files[]" type="file">
 
                         </span>
-                                <input type="text" name="uuid" id="articles_uuid" value={{ uuid }}>
+                                <input type="text" hidden name="uuid" id="articles_uuid" value={{ uuid }}>
                             </td>
                             <td style="padding-left: 2rem">
                                 <h2>选择攻略头图
@@ -228,7 +230,7 @@
                             data = {
                                 "path": path,
                                 "img_uuid": result.img_uuid,
-                                "old_uuid":result.old_uuid,
+                                "old_uuid": result.old_uuid,
                             };
                             $.get('/mycenter/note/create/upload_img/', data, function (res) {
                                 $("div[title=" + result['old_uuid'] + "]").after(res);
@@ -240,10 +242,25 @@
             })
 
         });
-    function preview_essay() {
-        console.log($("[name='guide_body']").find("id"));
-        console.log($("[name='guide_body']"));
-    }
+        function preview_essay() {
+            var body = $("[name='guide_body']");
+            var b_uuid = [];
+            for (var i = 0; i < body.length; i++) {
+                b_uuid.push($(body[i]).attr("id"))
+            }
+            var data = {
+                uuids: b_uuid.toString(),
+                title_uuid: $("#articles_uuid").val().toString()
+            }
+            $.post('/mycenter/note/create/save/', data, function (result) {
+                result = JSON.parse(result);
+                if (result.error_msg) {
+                    alert(result.error_msg)
+                } else {
+
+                }
+            })
+        }
     </script>
 
 {% endblock content %}

@@ -369,3 +369,6 @@ def _section_title_get(request):
         'edit_uuid': shortuuid.uuid(),
     }
     return render(request, 'edit_form_s_title.html', context)
+
+def save_note(request):
+    pass
