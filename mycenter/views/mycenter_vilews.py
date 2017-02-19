@@ -66,7 +66,7 @@ def title_img(request):
             if len(title_obj) == 0:
                 title_obj = GuideTitle(uuid=title_uuid, source='user create', title_img_id=new_obj.id)
                 if title != '':
-                    title_obj.title = str(title)
+                    title_obj.title = title
                 title_obj.save()
             else:
                 title_obj[0].title_img_id = new_obj.id
@@ -389,12 +389,23 @@ def save_note(request):
         number = {}
         for idx, item in enumerate(uuids):
             number[item] = idx
-        new_obj = Guidebody.objects.filter(title__uuid=title_uuid, uuid__in=uuids)
-        if not uuids and not new_obj:
-            result["error_msg"] = u"要保存的草稿为空！"
+        title_obj = GuideTitle.objects.filter(uuid=title_uuid)
+        if not title_obj:
+            raise Exception(u"要保存的草稿不存在")
+        new_obj = Guidebody.objects.filter(title_id=title_obj[0].id, uuid__in=uuids)
+        body_all = []
         for item in new_obj:
+            if item.s_body:
+                body_all.append(item.s_body)
             item.numbers = number[item.uuid]
             item.save()
+        str_body = ''.join(body_all)
+        if len(str_body) > 200:
+            abstract = str_body[200:]
+        else:
+            abstract = str_body
+        title_obj[0].abstract = abstract
+        title_obj[0].save()
         result["title_uuid"] = title_uuid
     except Exception, e:
         _trackback = traceback.format_exc()
@@ -423,7 +434,7 @@ def set_public(request, *args, **kwargs):
             raise Exception(u"您要发表的文章不存在")
         title_obj[0].u_public = True
         title_obj[0].save()
-    #     TODO:把文章内容加到es中可以在此处设置
+    # TODO:把文章内容加到es中可以在此处设置
     except Exception, e:
         _trackback = traceback.format_exc()
         err_msg = e.message

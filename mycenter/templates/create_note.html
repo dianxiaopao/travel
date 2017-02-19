@@ -137,7 +137,7 @@
     <script src="/static/js/create_note.js"></script>
     <script>
         $(document).ready(function () {
-            $("[title='body']").on("change", "#guide_title", function () {
+            $("body").on("change", "#guide_title", function () {
                 //上传文章标题
                 var data = {
                     "title": $(this).val().toString(),
@@ -234,6 +234,7 @@
                         if (result.error_msg) {
                             alert(result.error_msg)
                         } else {
+                            console.log(result)
                             var path = "/" + result.path.toString().split('\\').join('/');
                             data = {
                                 "path": path,
@@ -266,8 +267,8 @@
                     alert(result.error_msg)
                 } else {
                     console.log(result);
-                    $.get("/mycenter/note/create/view/" + result["title_uuid"] + "/")
-                    {#                    window.location.href="/mycenter/note/create/view/"+result["title_uuid"]+"/"#}
+{#                    $.get("/mycenter/note/create/view/" + result["title_uuid"] + "/")#}
+                                        window.location.href="/mycenter/note/create/view/"+result["title_uuid"]+"/"
                 }
             })
         }

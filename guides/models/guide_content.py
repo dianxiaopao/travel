@@ -14,7 +14,7 @@ class Guidebody(models.Model):
     image_location=models.CharField(u'位置',max_length=256,null=True)
 
     image_explain = models.TextField(u'图片描述正文', null=True)
-    numbers=models.CharField(u'文章序号',max_length=256,null=True)
+    numbers=models.IntegerField(u'文章序号',null=True)
     parent = models.IntegerField(u'上一条记录',null=True)
 
     create_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='创建人')

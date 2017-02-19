@@ -11,7 +11,6 @@ uploader.fileupload(
                 $.post('/mycenter/note/create/show_title_img/', result, function (res) {
                     res = JSON.parse(res);
                     res.path = res.path.toString().split('\\').join('/')
-                    console.log("标题图片", res.path)
                     $('#t_img_con_back').css({
                         "background": "url(/" + res.path + ")",
                         "background-size": '100%',
