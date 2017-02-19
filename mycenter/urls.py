@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^note/create/edit_text_get/$', views.mycenter_vilews.edit_text_get),
     url(r'^note/create/section/title/$', views.mycenter_vilews.section_title),
     url(r'^note/create/save_note/$', views.mycenter_vilews.save_note),
+    url(r'^note/create/save_note/public/(?P<title_uuid>\w+)/$', views.mycenter_vilews.set_public),
+    url(r'^note/create/view/(?P<title_uuid>\w+)/$', views.mycenter_vilews.get_save_view),
 
 ]
 

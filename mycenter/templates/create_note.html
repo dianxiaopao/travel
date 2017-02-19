@@ -18,9 +18,10 @@
         <button type="button" onclick="preview_essay()" class="btn btn-default navbar-btn navbar-right"
                 style="margin-right: 2rem">预览
         </button>
-        <button type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
+        <button onclick="save_note()" type="button" class="btn  navbar-btn navbar-right">保存草稿</button>
         <input type="text" hidden id="title_name_uuid" value="{{ uuid }}">
     </div>
+
     <div id="t_img_con_back" class="jumbotron">
         <div class="container">
             <form class="form-horizontal" id="upload_title_form" enctype="multipart/form-data" method="post"
@@ -56,8 +57,8 @@
     </div>
     <div class="container">
 
-        <div class="col-lg-9" style="min-height: 600px;padding-bottom: 20px">
-            <div id="containe_body">
+        <div class="col-lg-9" style="padding-bottom: 20px">
+            <div id="containe_body" style="min-height: 600px;">
                 <div class="edit_container" title="{{ edit_uuid }}">
                     <div class="c_n_edit_container">
 
@@ -108,6 +109,13 @@
                     </div>
                 </div>
             </div>
+            <div style="margin-bottom: 3rem;text-align: right">
+                <button onclick="save_note()" style="margin-right: 1rem;" type="button" class="btn navbar-btn">&nbsp;&nbsp;保存草稿&nbsp;&nbsp;</button>
+                <button onclick="preview_essay()" style="margin-right: 2rem" type="button" class="btn btn-default">
+                    &nbsp;&nbsp;预览&nbsp;&nbsp;</button>
+                <button onclick="public_guide()" style="margin-right: 5rem" type="button" class="btn btn-info">
+                    &nbsp;&nbsp;发表攻略&nbsp;&nbsp;</button>
+            </div>
         </div>
         <div class="col-lg-3">
             这里是文章标题
@@ -129,7 +137,7 @@
     <script src="/static/js/create_note.js"></script>
     <script>
         $(document).ready(function () {
-            $("[title='{{ edit_uuid }}']").on("change", "#guide_title", function () {
+            $("[title='body']").on("change", "#guide_title", function () {
                 //上传文章标题
                 var data = {
                     "title": $(this).val().toString(),
@@ -249,15 +257,57 @@
                 b_uuid.push($(body[i]).attr("id"))
             }
             var data = {
-                uuids: b_uuid.toString(),
-                title_uuid: $("#articles_uuid").val().toString()
+                uuids: JSON.stringify(b_uuid),
+                title_uuid: $("#articles_uuid").val()
             }
-            $.post('/mycenter/note/create/save/', data, function (result) {
+            $.post('/mycenter/note/create/save_note/', data, function (result) {
                 result = JSON.parse(result);
                 if (result.error_msg) {
                     alert(result.error_msg)
                 } else {
+                    console.log(result);
+                    $.get("/mycenter/note/create/view/" + result["title_uuid"] + "/")
+                    {#                    window.location.href="/mycenter/note/create/view/"+result["title_uuid"]+"/"#}
+                }
+            })
+        }
 
+        function save_note() {
+            var body = $("[name='guide_body']");
+            var b_uuid = [];
+            for (var i = 0; i < body.length; i++) {
+                b_uuid.push($(body[i]).attr("id"))
+            }
+            var data = {
+                uuids: JSON.stringify(b_uuid),
+                title_uuid: $("#articles_uuid").val()
+            }
+            $.post('/mycenter/note/create/save_note/', data, function (result) {
+                result = JSON.parse(result);
+                if (result.error_msg) {
+                    alert(result.error_msg)
+                } else {
+                    console.log(result);
+                }
+            })
+        }
+
+        function public_guide() {
+            var body = $("[name='guide_body']");
+            var b_uuid = [];
+            for (var i = 0; i < body.length; i++) {
+                b_uuid.push($(body[i]).attr("id"))
+            }
+            var data = {
+                uuids: JSON.stringify(b_uuid),
+                title_uuid: $("#articles_uuid").val()
+            }
+            $.post('/mycenter/note/create/save_note/', data, function (result) {
+                result = JSON.parse(result);
+                if (result.error_msg) {
+                    alert(result.error_msg)
+                } else {
+                    $.get("/mycenter/note/create/save_note/public/" + result["title_uuid"] + "/")
                 }
             })
         }

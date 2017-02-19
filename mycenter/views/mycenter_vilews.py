@@ -9,6 +9,7 @@ from django.conf import settings
 
 import json, uuid, shortuuid, os, base64, travel.settings, traceback
 from django.views.decorators.csrf import csrf_exempt
+from utils import switch_path_relative
 
 
 def Center(request):
@@ -214,7 +215,8 @@ def upload_img(request):
                 Guidebody.objects.filter(uuid=img_uuid, title_id=title_obj.id)
                 if Guidebody:
                     img_uuid = shortuuid.uuid()
-                    body_text = Guidebody(uuid=img_uuid, title_id=title_obj.id, image_path=img_obj.new_path,
+                    img_path = os.path.join(img_obj.new_path, img_obj.alias)
+                    body_text = Guidebody(uuid=img_uuid, title_id=title_obj.id, image_path=img_path,
                                           image_name=img_obj.name)
                     body_text.image_location = 'all'
                     body_text.save()
@@ -370,5 +372,102 @@ def _section_title_get(request):
     }
     return render(request, 'edit_form_s_title.html', context)
 
+
+@csrf_exempt
 def save_note(request):
-    pass
+    '''
+    保存草稿的函数
+    :param request:
+    :return:
+    '''
+    result = {}
+    try:
+        uuids = request.POST.get("uuids")
+        title_uuid = request.POST.get("title_uuid")
+        if uuids:
+            uuids = json.loads(uuids)
+        number = {}
+        for idx, item in enumerate(uuids):
+            number[item] = idx
+        new_obj = Guidebody.objects.filter(title__uuid=title_uuid, uuid__in=uuids)
+        if not uuids and not new_obj:
+            result["error_msg"] = u"要保存的草稿为空！"
+        for item in new_obj:
+            item.numbers = number[item.uuid]
+            item.save()
+        result["title_uuid"] = title_uuid
+    except Exception, e:
+        _trackback = traceback.format_exc()
+        err_msg = e.message
+        if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+            err_msg = e.faultCode
+        result['error_msg'] = err_msg
+        result['trackback'] = _trackback
+    finally:
+        return HttpResponse(json.dumps(result))
+
+
+def set_public(request, *args, **kwargs):
+    '''
+    发表文章
+    :param request:
+    :param args:
+    :param kwargs:
+    :return:
+    '''
+    result = {}
+    try:
+        title_uuid = kwargs.get("title_uuid")
+        title_obj = GuideTitle.objects.filter(uuid=title_uuid)
+        if not title_obj:
+            raise Exception(u"您要发表的文章不存在")
+        title_obj[0].u_public = True
+        title_obj[0].save()
+    #     TODO:把文章内容加到es中可以在此处设置
+    except Exception, e:
+        _trackback = traceback.format_exc()
+        err_msg = e.message
+        if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+            err_msg = e.faultCode
+        result['error_msg'] = err_msg
+        result['trackback'] = _trackback
+    finally:
+        return HttpResponse(json.dumps(result))
+
+
+def get_save_view(request, *args, **kwargs):
+    title_uuid = kwargs.get("title_uuid")
+    title = {}
+    title_obj = GuideTitle.objects.filter(uuid=title_uuid)
+    if title_obj:
+        title["name"] = title_obj[0].title
+        title["abstract"] = title_obj[0].abstract
+        title["title_uuid"] = title_uuid
+        img_obj = title_obj[0].title_img
+        if img_obj:
+            title_path = os.path.join(img_obj.new_path, img_obj.alias)
+            title_path = switch_path_relative(title_path, "static")
+            title["title_path"] = title_path
+        body_obj = Guidebody.objects.filter(title_id=title_obj[0].id).order_by("numbers")
+        bodys = []
+        for item in body_obj:
+            body_dict = {
+                "body_uuid": item.uuid,
+            }
+            if item.s_title:
+                body_dict["action"] = "s_title"
+                body_dict["text"] = item.s_title
+            elif item.image_path:
+                body_dict["action"] = "b_img"
+                body_dict["path"] = switch_path_relative(item.image_path, "static")
+                body_dict["image_msg"] = item.image_msg
+                body_dict["image_name"] = item.image_name
+            elif item.s_body:
+                body_dict["action"] = "s_body"
+                body_dict["text"] = item.s_body
+            bodys.append(body_dict)
+    context = {
+        'title': title,
+        "bodys": bodys,
+    }
+    return render(request, 'view_note.html', context)
