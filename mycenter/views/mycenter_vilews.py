@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
 from mycenter.models.img_material import ImgMaterial
-
+from elasticsearch import Elasticsearch
 from guides.models.guide_title import GuideTitle
 from guides.models.guide_content import Guidebody
 from django.http import HttpResponse, Http404
@@ -10,6 +10,7 @@ from django.conf import settings
 import json, uuid, shortuuid, os, base64, travel.settings, traceback
 from django.views.decorators.csrf import csrf_exempt
 from utils import switch_path_relative
+from utils import write_es,sql_get_es
 
 
 def Center(request):
@@ -434,7 +435,58 @@ def set_public(request, *args, **kwargs):
             raise Exception(u"您要发表的文章不存在")
         title_obj[0].u_public = True
         title_obj[0].save()
-    # TODO:把文章内容加到es中可以在此处设置
+        # TODO:把文章内容加到es中可以在此处设置
+        body_objs = Guidebody.objects.filter(title_id=title_obj[0].id).order_by("numbers")
+        t_img_obj = title_obj[0].title_img
+        if t_img_obj:
+            t_img_name = t_img_obj.name
+            t_img_path = os.path.join(t_img_obj.new_path, t_img_obj.alias)
+            t_img_describe = t_img_obj.describe
+        data = {}
+        data["title"] = title_obj[0].title
+        data["t_uuid"] = title_obj[0].uuid
+        data["t_id"] = title_obj[0].id
+        data["abstract"] = title_obj[0].abstract
+        data["priority"] = title_obj[0].priority
+        data["t_img_id"] = title_obj[0].title_img_id
+        data["t_img_name"] = t_img_name
+        data["t_img_path"] = t_img_path
+        data["t_img_describe"] = t_img_describe
+        data["title"] = {}
+        data["title"]["title_path"] = t_img_path
+        data["title"]["name"] = t_img_name
+        data["title"]["title_uuid"] = title_obj[0].uuid
+        data["title"]["abstract"] = title_obj[0].abstract
+        search_text = []
+        body_text = []
+        for item in body_objs:
+            body_dict = {
+                "body_uuid": item.uuid,
+            }
+            if item.s_title:
+                body_dict["action"] = "s_title"
+                body_dict["text"] = item.s_title
+                if item.s_title:
+                    search_text.append(item.s_title)
+            elif item.image_path:
+                body_dict["action"] = "b_img"
+                body_dict["path"] = switch_path_relative(item.image_path, "static")
+                body_dict["image_msg"] = item.image_msg
+                body_dict["image_name"] = item.image_name
+            elif item.s_body:
+                body_dict["action"] = "s_body"
+                body_dict["text"] = item.s_body
+                if item.s_body:
+                    search_text.append(item.s_body)
+            body_text.append(body_dict)
+        data["bodys"] = body_text
+        data["search_text"] = "\n".join(search_text)
+        # 写数据到es
+        sql_get_es("se")
+        res = write_es(data, 'travel', 'note')
+        if res["errors"] == False:
+            result["issucces"] = True
+
     except Exception, e:
         _trackback = traceback.format_exc()
         err_msg = e.message
