@@ -13,8 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import include,url
+from django.conf.urls import include, url
 from django.contrib import admin
+# from views import User
 import views
 import guides.urls as guides_urls
 import mycenter.urls as cemter_urls
@@ -22,10 +23,21 @@ import home.urls as home_urls
 import community.urls as commun_urls
 
 urlpatterns = [
-    url(r'^$',views.index),
+    url(r'^$', views.index),
     url(r'^admin/', admin.site.urls),
-    url(r'^guide/',include(guides_urls.urls)),
-    url(r'^mycenter/',include(cemter_urls.urls)),
-    url(r'^home/',include(home_urls.urls)),
-    url(r'^community/',include(commun_urls.urls)),
+
+    # url(r'^accounts/', include('users.urls')),
+
+    url(r'^login/$', views.get_login),
+    url(r'^user/login/$', views.alogin),
+    # url(r'^accounts/register/$', register),
+    # url(r'^accounts/logout/$', alogout),
+
+
+    url(r'^guide/', include(guides_urls.urls)),
+    url(r'^mycenter/', include(cemter_urls.urls)),
+    url(r'^home/', include(home_urls.urls)),
+    url(r'^community/', include(commun_urls.urls)),
+
+
 ]

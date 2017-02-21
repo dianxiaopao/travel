@@ -40,12 +40,14 @@ INSTALLED_APPS = [
     'community',  # 社区
     'guides',  # 攻略
     'home',  # 首页
-    'mycenter'  # 个人中心
+    'mycenter',  # 个人中心
 ]
+
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    # 'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
@@ -82,8 +84,8 @@ DATABASES = {
         'NAME': 'travel',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        # 'HOST': '127.0.0.1',
-        'HOST': '115.28.247.81',
+        'HOST': '127.0.0.1',
+        # 'HOST': '115.28.247.81',
         'PORT': '5432',
     },
 }
