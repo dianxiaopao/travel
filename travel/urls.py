@@ -25,19 +25,15 @@ import community.urls as commun_urls
 urlpatterns = [
     url(r'^$', views.index),
     url(r'^admin/', admin.site.urls),
-
-    # url(r'^accounts/', include('users.urls')),
-
     url(r'^login/$', views.get_login),
     url(r'^user/login/$', views.alogin),
-    # url(r'^accounts/register/$', register),
-    # url(r'^accounts/logout/$', alogout),
-
+    url(r'^loginout/$', views.loginout),
+    url(r'^to_register/$', views.to_register),
+    url(r'^register/$', views.register),
 
     url(r'^guide/', include(guides_urls.urls)),
     url(r'^mycenter/', include(cemter_urls.urls)),
     url(r'^home/', include(home_urls.urls)),
     url(r'^community/', include(commun_urls.urls)),
-
 
 ]

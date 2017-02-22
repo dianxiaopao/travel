@@ -2,9 +2,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from base.models.new_user import NewUser
+from django.contrib.auth.models import User
 import json
 
 try:
@@ -28,7 +30,7 @@ def get_login(request):
     return render(request, 'login.html')
 
 
-def alogin(request, *args, **kwargs):
+def alogin(request):
     '''
     登陆页面
     :param request:
@@ -55,6 +57,27 @@ def alogin(request, *args, **kwargs):
         return render(request, 'login.html',{"error_msg":u'密码错误'})
 
 
-def accounts_alogin(request):
-    return render(request, 'login.html')
+def loginout(request):
+    '''
+    退出登录页
+    :param request:
+    :return:
+    '''
+    logout(request)
+    return render(request, 'index.html')
+
+def to_register(request):
+    return render(request, 'register.html')
+
+def register(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = User.objects.create_user(username=username,password=password)
+    # user = User.objects.create_user(username,'',password)
+    # user.last_name = 'Lennon'
+    user.save()
+    login(request, user)
+    return render(request, 'index.html')
+
+
 
