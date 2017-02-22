@@ -54,3 +54,7 @@ def alogin(request, *args, **kwargs):
     else:
         return render(request, 'login.html',{"error_msg":u'密码错误'})
 
+
+def accounts_alogin(request):
+    return render(request, 'login.html')
+

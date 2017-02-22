@@ -29,6 +29,6 @@ class GuideTitle(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = u'文档详细信息'
-        verbose_name_plural = u'文档标题及详细信息'
+        verbose_name = u'文档标题'
+        verbose_name_plural = u'文档标题'
         db_table = 'guide_document_title'

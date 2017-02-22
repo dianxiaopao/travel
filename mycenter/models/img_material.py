@@ -21,6 +21,6 @@ class ImgMaterial(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = u'素材管理'
-        verbose_name_plural = u'对上传的素材进行管理，包括图片原始上传路径，处理之后的位置'
+        verbose_name = u'图片记录'
+        verbose_name_plural = u'图片信息表'
         db_table = 'img_material'

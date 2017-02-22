@@ -6,6 +6,7 @@ from guides.models.guide_title import GuideTitle
 from guides.models.guide_content import Guidebody
 from django.http import HttpResponse, Http404
 from django.conf import settings
+from django.contrib.auth.decorators import login_required   #登陆装饰器
 
 import json, uuid, shortuuid, os, base64, travel.settings, traceback
 from django.views.decorators.csrf import csrf_exempt
@@ -16,7 +17,8 @@ from utils import write_es,sql_get_es
 def Center(request):
     return render(request, 'center.html')
 
-
+# 登陆验证
+@login_required
 @csrf_exempt
 def CreateNote(request):
     uuid = shortuuid.uuid()

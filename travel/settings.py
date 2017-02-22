@@ -56,6 +56,7 @@ MIDDLEWARE_CLASSES = [
 ]
 
 ROOT_URLCONF = 'travel.urls'
+LOGIN_URL="/login/"
 
 TEMPLATES = [
     {

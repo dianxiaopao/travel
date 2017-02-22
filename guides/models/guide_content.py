@@ -26,6 +26,6 @@ class Guidebody(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = '文档详细信息'
-        verbose_name_plural = '文档标题及详细信息'
+        verbose_name = u'文档内容'
+        verbose_name_plural = u'文档详内容'
         db_table = 'guide_document_body'
