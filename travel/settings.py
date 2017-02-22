@@ -89,6 +89,8 @@ DATABASES = {
         'PORT': '5432',
     },
 }
+CUSTOM_USER_MODEL = 'base.NewUser'
+
 ES_HOST = {"host": "115.28.247.81", "port": 9200}
 
 # Password validation

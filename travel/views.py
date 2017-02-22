@@ -4,6 +4,7 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from base.models.new_user import NewUser
 import json
 
 try:
@@ -53,6 +54,3 @@ def alogin(request, *args, **kwargs):
     else:
         return render(request, 'login.html',{"error_msg":u'密码错误'})
 
-# def login_post(request):
-
-    # Return an 'invalid login' error message.
