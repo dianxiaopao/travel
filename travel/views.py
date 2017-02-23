@@ -15,8 +15,6 @@ except ImportError:  # django < 1.7
     from django.db import models
 
 
-
-
 def index(request):
     return render(request, 'index.html')
 
@@ -41,9 +39,10 @@ def alogin(request):
     username = request.POST['username']
     password = request.POST['password']
     try:
-        User.objects.get(username=username)
+        user=User.objects.get(username=username)
+        user
     except:
-        return render(request, 'login.html', {'error_msg': u"账户不存在"})
+        return render(request, 'login.html', {'user_msg': u"账户不存在"})
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
@@ -52,9 +51,9 @@ def alogin(request):
         # Redirect to a success page.
         else:
             # Return a 'disabled account' error message
-            return render(request, 'login.html',{"error_msg":u'账户被禁用'})
+            return render(request, 'login.html', {"active_msg": u'账户被禁用'})
     else:
-        return render(request, 'login.html',{"error_msg":u'密码错误'})
+        return render(request, 'login.html', {"psd_msg": u'密码错误'})
 
 
 def loginout(request):
@@ -66,18 +65,27 @@ def loginout(request):
     logout(request)
     return render(request, 'index.html')
 
+
 def to_register(request):
     return render(request, 'register.html')
 
+
 def register(request):
     username = request.POST['username']
-    password = request.POST['password']
-    user = User.objects.create_user(username=username,password=password)
-    # user = User.objects.create_user(username,'',password)
-    # user.last_name = 'Lennon'
-    user.save()
-    login(request, user)
-    return render(request, 'index.html')
+    password1 = request.POST['password1']
+    password2 = request.POST['password2']
+    if password1 != password2:
+        return render(request, 'register.html', {"password": u"两次密码不一致"})
 
-
-
+    try:
+        User.objects.get(username=username)
+        return render(request, 'register.html', {"username": u"用户名已存在"})
+    except:
+        userobj = User.objects.create_user(username=username, password=password1)
+        user = authenticate(username=username, password=password1)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+        else:
+            return render(request, 'index.html')
