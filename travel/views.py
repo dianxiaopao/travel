@@ -39,7 +39,10 @@ def alogin(request):
     username = request.POST['username']
     password = request.POST['password']
     try:
-        user=User.objects.get(username=username)
+        user = User.objects.get(username=username)
+        if hasattr(user, 'newuser'):
+            # 说明有扩展的用户信息
+            pass
         user
     except:
         return render(request, 'login.html', {'user_msg': u"账户不存在"})
@@ -76,7 +79,8 @@ def register(request):
     password2 = request.POST['password2']
     if password1 != password2:
         return render(request, 'register.html', {"password": u"两次密码不一致"})
-
+    elif username == '' or password1 == "" or password2 == "":
+        return render(request, 'register.html', {"password": u"登录名或者密码不能为空"})
     try:
         User.objects.get(username=username)
         return render(request, 'register.html', {"username": u"用户名已存在"})
