@@ -7,7 +7,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from base.models.new_user import NewUser
 from django.contrib.auth.models import User
-import json
+from hashlib import sha1
+import json, random, datetime, uuid, urllib, hmac, base64, requests
 
 try:
     from django.apps import apps as models
@@ -36,27 +37,28 @@ def alogin(request):
     :param kwargs:
     :return:
     '''
-    username = request.POST['username']
-    password = request.POST['password']
-    try:
-        user = User.objects.get(username=username)
-        if hasattr(user, 'newuser'):
-            # 说明有扩展的用户信息
-            pass
-        user
-    except:
-        return render(request, 'login.html', {'user_msg': u"账户不存在"})
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            return HttpResponseRedirect('/mycenter/note/create/')
-        # Redirect to a success page.
+    method = request.method.lower()
+    if method == 'get':
+        pass
+    if method == 'post':
+        username = request.POST['username']
+        password = request.POST['password']
+        try:
+            user1 = User.objects.get(username=username)
+            if hasattr(user1, 'newuser'):
+                # 说明有扩展的用户信息
+                pass
+        except:
+            return render(request, 'login.html', {'user_msg': u"账户不存在"})
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/mycenter/note/create/')
+            else:
+                return render(request, 'login.html', {"active_msg": u'账户被禁用'})
         else:
-            # Return a 'disabled account' error message
-            return render(request, 'login.html', {"active_msg": u'账户被禁用'})
-    else:
-        return render(request, 'login.html', {"psd_msg": u'密码错误'})
+            return render(request, 'login.html', {"psd_msg": u'密码错误'})
 
 
 def loginout(request):
@@ -74,22 +76,73 @@ def to_register(request):
 
 
 def register(request):
-    username = request.POST['username']
-    password1 = request.POST['password1']
-    password2 = request.POST['password2']
-    if password1 != password2:
-        return render(request, 'register.html', {"password": u"两次密码不一致"})
-    elif username == '' or password1 == "" or password2 == "":
-        return render(request, 'register.html', {"password": u"登录名或者密码不能为空"})
-    try:
-        User.objects.get(username=username)
-        return render(request, 'register.html', {"username": u"用户名已存在"})
-    except:
-        userobj = User.objects.create_user(username=username, password=password1)
-        user = authenticate(username=username, password=password1)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect('/')
-        else:
-            return render(request, 'index.html')
+    method = request.method.lower()
+    if method == 'get':
+        telephone = request.GET.get("telephone")
+        if not telephone:
+            return render(request, 'register.html', {"telephone": u"请输入手机号"})
+        auth_code = str(random.randint(100000, 999999))
+        time_stamp = datetime.datetime.utcnow().isoformat().split(".")[0] + "Z"
+        signa_ture_nonce = str(uuid.uuid1())
+        arg_dict = {
+            "Action": "SingleSendSms",
+            "SignName": "沐沐",
+            "TemplateCode": "SMS_19770017",
+            "RecNum": "13298183005",
+            "ParamString": {"verifycode": auth_code},
+            "Format": "JSON",
+            "Version": "2016-09-27",
+            "AccessKeyId": "MmU1eqySC9VE78nj",
+            "SignatureMethod": "HMAC-SHA1",
+            "Timestamp": time_stamp,
+            "SignatureVersion": "1.0",
+            "SignatureNonce": signa_ture_nonce,
+        }
+
+        def _decode_dict(data):
+            rv = {}
+            for key, value in data.iteritems():
+                if isinstance(key, unicode):
+                    key = key.encode('utf-8')
+                if isinstance(value, unicode):
+                    value = value.encode('utf-8')
+                elif isinstance(value, list):
+                    value = _decode_list(value)
+                elif isinstance(value, dict):
+                    value = _decode_dict(value)
+                rv[key] = value
+            return rv
+        arg_dict = json.dumps(arg_dict).encode("utf8")
+        arg_dict = json.loads(arg_dict,object_hook=_decode_dict)
+        p_url = urllib.urlencode(arg_dict)
+        string_to_sign = "GET" + "&" + urllib.quote("/", safe='') + "&" + p_url
+        sha1_sign = hmac.new("TsyaOU7PxpCipNPwryqF9E3OpBLwAD&", string_to_sign, sha1).digest()
+        signa_ture = base64.b64encode(sha1_sign)
+        signa_ture = "Signature=" + urllib.quote(signa_ture, safe='')
+        url_body = signa_ture + "&" + p_url
+        url = "https://sms.aliyuncs.com/?" + url_body
+        res = requests.session().get(url).content
+        es_res = json.loads(res)
+        url
+
+
+    elif method == 'post':
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        if password1 != password2:
+            return render(request, 'register.html', {"password": u"两次密码不一致"})
+        elif username == '' or password1 == "" or password2 == "":
+            return render(request, 'register.html', {"password": u"登录名或者密码不能为空"})
+        try:
+            User.objects.get(username=username)
+            return render(request, 'register.html', {"username": u"用户名已存在"})
+        except:
+            userobj = User.objects.create_user(username=username, password=password1)
+            user = authenticate(username=username, password=password1)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponseRedirect('/')
+            else:
+                return render(request, 'index.html')
