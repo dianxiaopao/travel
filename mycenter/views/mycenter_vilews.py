@@ -7,7 +7,6 @@ from guides.models.guide_content import Guidebody
 from django.http import HttpResponse, Http404
 from django.conf import settings
 from django.contrib.auth.decorators import login_required   #登陆装饰器
-
 import json, uuid, shortuuid, os, base64, travel.settings, traceback
 from django.views.decorators.csrf import csrf_exempt
 from utils import switch_path_relative
@@ -70,6 +69,8 @@ def title_img(request):
                 title_obj = GuideTitle(uuid=title_uuid, source='user create', title_img_id=new_obj.id)
                 if title != '':
                     title_obj.title = title
+                title_obj.create_user=request.user if request.user else ""
+                title_obj.write_user=request.user if request.user else ""
                 title_obj.save()
             else:
                 title_obj[0].title_img_id = new_obj.id
@@ -137,9 +138,13 @@ def create_title(request):
             if title != '':
                 if len(title_obj) == 0:
                     title_obj = GuideTitle(uuid=title_uuid, source='user create', title=title)
+                    title_obj.create_user = request.user if request.user else ""
+                    title_obj.write_user = request.user if request.user else ""
                     title_obj.save()
                 else:
                     title_obj[0].title = title
+                    title_obj.create_user = request.user if request.user else ""
+                    title_obj.write_user = request.user if request.user else ""
                     title_obj[0].save()
                 result['success'] = title
             else:
@@ -212,6 +217,8 @@ def upload_img(request):
             img_uuid = uuids[1]
             title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
             title_obj.source = 'user create'
+            title_obj.create_user = request.user if request.user else ""
+            title_obj.write_user = request.user if request.user else ""
             title_obj.save()
             result["old_uuid"] = img_uuid
             if img_uuid:
@@ -267,6 +274,8 @@ def edit_text_post(request):
 
         title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
         title_obj.source = 'user create'
+        title_obj.create_user = request.user if request.user else ""
+        title_obj.write_user = request.user if request.user else ""
         title_obj.save()
         result["old_uuid"] = body_uuid
         if body_uuid:
@@ -338,6 +347,8 @@ def _section_title_post(request):
         title_uuid = request.POST.get("title_uuid")
         title_obj = GuideTitle.objects.get_or_create(uuid=title_uuid)[0]
         title_obj.source = 'user create'
+        title_obj.create_user = request.user if request.user else ""
+        title_obj.write_user = request.user if request.user else ""
         title_obj.save()
         result["old_uuid"] = body_uuid
         if body_uuid:
@@ -408,6 +419,8 @@ def save_note(request):
         else:
             abstract = str_body
         title_obj[0].abstract = abstract
+        title_obj.create_user = request.user if request.user else ""
+        title_obj.write_user = request.user if request.user else ""
         title_obj[0].save()
         result["title_uuid"] = title_uuid
     except Exception, e:
@@ -436,6 +449,7 @@ def set_public(request, *args, **kwargs):
         if not title_obj:
             raise Exception(u"您要发表的文章不存在")
         title_obj[0].u_public = True
+        title_obj.write_user = request.user if request.user else ""
         title_obj[0].save()
         # TODO:把文章内容加到es中可以在此处设置
         body_objs = Guidebody.objects.filter(title_id=title_obj[0].id).order_by("numbers")
