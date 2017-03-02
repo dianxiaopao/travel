@@ -1,14 +1,102 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 社区 {% endblock title %}
+
 {% block content %}
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .panel-content {
+            padding: 2rem 0 0 0;
+        }
+
+        .panel-body {
+            padding: 0;
+        }
+
+        .comm-list {
+            margin: 0;
+        }
+
+        .comm-list-item {
+            list-style: none;
+            border-bottom: solid 1px #E9E9E9;
+            padding-left: 1rem;
+        }
+
+        .list-title {
+            font-family: "MF YueYuan (Noncommercial) Regular";
+            font-size: 2rem;
+            margin: 0.5rem 0 0.5rem 0;
+            font-weight: bold;
+        }
+
+        .list-descrip {
+            font-size: 1.6rem;
+            font-family: "Microsoft YaHei";
+            padding: 0 1rem 0 0;
+            display: flex;
+        }
+
+        .list-descrip p {
+            line-height: 2rem;
+            display: flex;
+            flex: 1;
+        }
+
+        .list-descrip div {
+            width: 3rem;
+            text-align: right;
+        }
+
+        .comm-list-item a, .list-text-text a, .list-text-time a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .comm-list-item a:link, .comm-list-item a:visited, .comm-list-item a:active {
+            color: black;
+            text-decoration: none;
+        }
+
+        .comm-list-item a:hover {
+            text-decoration: none;
+        }
+
+        .list-text {
+            display: flex;
+            border-bottom: solid 1px #E9E9E9;
+        }
+
+        .list-text-avatar {
+            color: #4cae4c;
+            padding: 1rem 0 1rem 0;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .list-text-avatar img {
+            padding: 0 0.5rem 0 0.5rem;
+            width: 5rem;
+        }
+
+        .list-text-text {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .list-text-time {
+            padding: 1rem;
+        }
+    </style>
     <div class="container" style="min-height: 800px">
         <div class="jumbotron">
-            {#            <h1>Hello, world!</h1>#}
-            {#            <p>...</p>#}
-            {#            <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>#}
+
         </div>
         <div>
-            <div style="width: 100%;border: 1px red solid" class="btn-group" role="group" aria-label="选项">
+            <div style="width: 100%;" class="btn-group" role="group" aria-label="选项">
                 <button type="button" class="btn btn-default">分类</button>
                 <button type="button" class="btn btn-default">Middle</button>
                 <button type="button" class="btn btn-default">Right</button>
@@ -17,23 +105,95 @@
                 </button>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 panel-content" style="padding-right: 0.8rem">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">分类</h3>
                 </div>
                 <div class="panel-body">
-                    Panel content
+                    <ul class="comm-list">
+                        <li class="comm-list-item">
+                            <a href="#">
+                                <div class="list-title">
+                                    综合交流区
+                                </div>
+                                <div class="list-descrip">
+                                    <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                        现在天神降临，死神....还有人记得这杆枪吗？
+                                        我的死神该何去何从？死神是否需要再进化？
+                                    </p>
+                                    <div>
+                                        <span class="badge">14</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="comm-list-item">
+                            <a href="#">
+                                <div class="list-title">
+                                    策划交流区
+                                </div>
+                                <div class="list-descrip">
+                                    <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                        现在天神降临，死神....还有人记得这杆枪吗？
+                                        我的死神该何去何从？死神是否需要再进化？
+                                    </p>
+                                    <div>
+                                        <span class="badge">14</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 panel-content" style="padding-left: 0.8rem">
             <div class=" panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">最新</h3>
                 </div>
-                <div class="panel-body">
-                    Panel content
+                <div class="panel-body ">
+                    <div class="list-text">
+                        <div class="list-text-avatar">
+                            <a href="#">
+                                <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
+                                     class="img-circle">
+                            </a>
+                        </div>
+                        <div class="list-text-text">
+                            <a href="/community/">
+                                自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                现在天神降临，死神..
+                            </a>
+                        </div>
+                        <div class="list-text-time">
+                            <a href="/community/">时间</a>
+                        </div>
+                    </div>
+
+
+                    <div class="list-text">
+                        <div class="list-text-avatar">
+                            <a href="#">
+                                <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
+                                     class="img-circle">
+                            </a>
+                        </div>
+                        <div class="list-text-text">
+                            <a href="/community/">
+                                自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                现在天神降临，死神..
+                            </a>
+                        </div>
+                        <div class="list-text-time">
+                            <a href="/community/">时间</a>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
