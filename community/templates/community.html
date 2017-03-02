@@ -1,80 +1,43 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 社区 {% endblock title %}
 {% block content %}
-<div class="container" style="min-height: 800px">
-    社区
-    <script type="text/javascript">
-
-
-                //图片上传预览    IE是用了滤镜。
-        function previewImage(file)
-        {
-          var MAXWIDTH  = 260;
-          var MAXHEIGHT = 180;
-          var div = document.getElementById('preview');
-          if (file.files && file.files[0])
-          {
-              div.innerHTML ='<img id=imghead>';
-              var img = document.getElementById('imghead');
-              img.onload = function(){
-                var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
-                img.width  =  rect.width;
-                img.height =  rect.height;
-//                 img.style.marginLeft = rect.left+'px';
-                img.style.marginTop = rect.top+'px';
-              }
-              var reader = new FileReader();
-              reader.onload = function(evt){img.src = evt.target.result;}
-              reader.readAsDataURL(file.files[0]);
-          }
-          else //兼容IE
-          {
-            var sFilter='filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
-            file.select();
-            var src = document.selection.createRange().text;
-            div.innerHTML = '<img id=imghead>';
-            var img = document.getElementById('imghead');
-            img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
-            var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
-            status =('rect:'+rect.top+','+rect.left+','+rect.width+','+rect.height);
-            div.innerHTML = "<div id=divhead style='width:"+rect.width+"px;height:"+rect.height+"px;margin-top:"+rect.top+"px;"+sFilter+src+"\"'></div>";
-          }
-        }
-        function clacImgZoomParam( maxWidth, maxHeight, width, height ){
-            var param = {top:0, left:0, width:width, height:height};
-            if( width>maxWidth || height>maxHeight )
-            {
-                rateWidth = width / maxWidth;
-                rateHeight = height / maxHeight;
-
-                if( rateWidth > rateHeight )
-                {
-                    param.width =  maxWidth;
-                    param.height = Math.round(height / rateWidth);
-                }else
-                {
-                    param.width = Math.round(width / rateHeight);
-                    param.height = maxHeight;
-                }
-            }
-
-            param.left = Math.round((maxWidth - param.width) / 2);
-            param.top = Math.round((maxHeight - param.height) / 2);
-            return param;
-        }
-</script>
-
-
-<div id="preview">
-    <img id="imghead"  border=0 >
-</div>
-
-
-    <input type="file" onchange="previewImage(this)" />
-
-
-
-</div>
+    <div class="container" style="min-height: 800px">
+        <div class="jumbotron">
+            {#            <h1>Hello, world!</h1>#}
+            {#            <p>...</p>#}
+            {#            <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>#}
+        </div>
+        <div>
+            <div style="width: 100%;border: 1px red solid" class="btn-group" role="group" aria-label="选项">
+                <button type="button" class="btn btn-default">分类</button>
+                <button type="button" class="btn btn-default">Middle</button>
+                <button type="button" class="btn btn-default">Right</button>
+                <button style="left: -1.2rem" type="button" class="btn navbar-right"><i
+                        class="glyphicon glyphicon-plus"></i>&nbsp;写一笔
+                </button>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">分类</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class=" panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">最新</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 {% endblock content %}
