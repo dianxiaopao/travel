@@ -9,6 +9,10 @@ except ImportError:  # django < 1.7
     from django.db import models
 
 
+class Community(object):
+    def get_community(self, request, *args, **kwargs):
+        return render(request, 'community.html')
 
-def Community(request):
-    return render(request, 'community.html')
+    def get_probem_list(self, request, *args, **kwargs):
+        category = kwargs.get("category")
+        action = kwargs.get("action")

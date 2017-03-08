@@ -90,6 +90,60 @@
         .list-text-time {
             padding: 1rem;
         }
+
+        .view_comm_edit_cent {
+        {#            height: 400px;#} line-height: 50px;
+            background-color: #E9E9E9;
+        {#            opacity: 0.7;#}
+        }
+
+        .edit-top-right-close {
+            margin-right: 2rem;
+            font-size: 2.5rem;
+            color: #919191;
+            cursor: pointer;
+            padding-top: 1rem;
+        }
+
+        .textarea_body {
+            width: 100%;
+            height: 5rem;
+        }
+
+        .textarea_left_content {
+            padding: 1rem 0.5rem 1rem 0;
+        }
+
+        .textarea_right_content {
+            padding: 1rem 0 1rem 0.5rem;
+        }
+
+        .textarea_left_content textarea {
+            height: 20rem;
+            border: none;
+            outline: none;
+        }
+
+        .textarea_right_content div {
+            background-color: white;
+            height: 20rem;
+        }
+
+        .edit-comm-submit {
+            padding: 0;
+        }
+
+        .edit-comm-submit [type=submit] {
+            background-color: #42B983;
+            color: white;
+            border: none;
+            outline: none;
+        }
+        .edit-comm-submit [type=button] {
+            background-color: #E9E9E9;
+            color: #42B983;
+            outline: none;
+        }
     </style>
     <div class="container" style="min-height: 800px">
         <div class="jumbotron">
@@ -195,6 +249,49 @@
             </div>
         </div>
     </div>
+    <div class="navbar-fixed-bottom view_comm_edit_cent">
+        <div class="container ">
+            <div style="">
+                <span>新建帖子</span>
+                <span class="edit-top-right-close navbar-right">&nbsp;
+                    <i class="glyphicon glyphicon-chevron-down"></i></span>
+            </div>
 
+            <form class="form-inline">
+                <div class="form-group">
+                    <input style="width: 25rem" type="text" class="form-control" id="sort_name" placeholder="请输入帖子的题目">
+                </div>
+                <div class="form-group">
+                    <select style="width: 25rem" class="form-control">
+                        <option>综合交流区</option>
+                        <option>策划交流区</option>
+                        <option>杂谈区</option>
+                    </select>
+                </div>
+                <div class="textarea_b_content">
+                    <div class="textarea_left_content col-lg-6">
+                        <textarea name="text_body" id="inputText" class="textarea_body"></textarea>
+                    </div>
+                    <div class="textarea_right_content col-lg-6">
+                        <div>
+                            111
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-comm-submit col-lg-12">
+                    <button type="submit" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;创建
+                    </button>
+                    <button type="button" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;取消
+                    </button>
+                </div>
+            </form>
+            <script>
+                $(document).ready(function () {
+                    console.log('---')
+                })
+            </script>
+        </div>
+
+    </div>
 
 {% endblock content %}

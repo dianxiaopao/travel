@@ -6,6 +6,7 @@ from guides.models.guide_content import Guidebody
 from utils import switch_path_relative
 import datetime, pytz, Image, math, json, os
 
+
 try:
     from django.apps import apps as models
 except ImportError:  # django < 1.7
