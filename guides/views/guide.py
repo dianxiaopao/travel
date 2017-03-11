@@ -47,7 +47,7 @@ def Guide(request, *args, **kwargs):
         id = str(item.id)
         url = '/guide/view/' + id + "/"
         assay_dict["url"] = url
-        assay_dict["img_path"] = path_dict[item.id]
+        assay_dict["img_path"] = path_dict[item.id] if path_dict.has_key(item.id) else ''
         essay_data.append(assay_dict)
     all_page = math.ceil(float(essay_count) / page_size)
     context = {

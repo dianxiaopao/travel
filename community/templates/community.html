@@ -92,9 +92,9 @@
         }
 
         .view_comm_edit_cent {
-        {#            height: 400px;#} line-height: 50px;
+            line-height: 50px;
+            display: none;
             background-color: #E9E9E9;
-        {#            opacity: 0.7;#}
         }
 
         .edit-top-right-close {
@@ -139,159 +139,196 @@
             border: none;
             outline: none;
         }
+
         .edit-comm-submit [type=button] {
             background-color: #E9E9E9;
             color: #42B983;
             outline: none;
         }
     </style>
-    <div class="container" style="min-height: 800px">
-        <div class="jumbotron">
-        </div>
-        <div>
-            <div style="width: 100%;" class="btn-group" role="group" aria-label="选项">
-                <button type="button" class="btn btn-default active">分类</button>
-                <button type="button" class="btn btn-default">Middle</button>
-                <button type="button" class="btn btn-default">Right</button>
-                <button style="left: -1.2rem" type="button" class="btn navbar-right"><i
-                        class="glyphicon glyphicon-plus"></i>&nbsp;写一笔
-                </button>
+    <div id="comm_vue">
+        <div class="container" style="min-height: 800px">
+            <div class="jumbotron">
             </div>
-        </div>
-        <div class="col-lg-6 panel-content" style="padding-right: 0.8rem">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">分类</h3>
-                </div>
-                <div class="panel-body">
-                    <ul class="comm-list">
-                        <li class="comm-list-item">
-                            <a href="#">
-                                <div class="list-title">
-                                    综合交流区
-                                </div>
-                                <div class="list-descrip">
-                                    <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                        现在天神降临，死神....还有人记得这杆枪吗？
-                                        我的死神该何去何从？死神是否需要再进化？
-                                    </p>
-                                    <div>
-                                        <span class="badge">14</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="comm-list-item">
-                            <a href="#">
-                                <div class="list-title">
-                                    策划交流区
-                                </div>
-                                <div class="list-descrip">
-                                    <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                        现在天神降临，死神....还有人记得这杆枪吗？
-                                        我的死神该何去何从？死神是否需要再进化？
-                                    </p>
-                                    <div>
-                                        <span class="badge">14</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 panel-content" style="padding-left: 0.8rem">
-            <div class=" panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">最新</h3>
-                </div>
-                <div class="panel-body ">
-                    <div class="list-text">
-                        <div class="list-text-avatar">
-                            <a href="#">
-                                <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
-                                     class="img-circle">
-                            </a>
-                        </div>
-                        <div class="list-text-text">
-                            <a href="/community/">
-                                自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                现在天神降临，死神..
-                            </a>
-                        </div>
-                        <div class="list-text-time">
-                            <a href="/community/">时间</a>
-                        </div>
-                    </div>
-
-
-                    <div class="list-text">
-                        <div class="list-text-avatar">
-                            <a href="#">
-                                <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
-                                     class="img-circle">
-                            </a>
-                        </div>
-                        <div class="list-text-text">
-                            <a href="/community/">
-                                自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                现在天神降临，死神..
-                            </a>
-                        </div>
-                        <div class="list-text-time">
-                            <a href="/community/">时间</a>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="navbar-fixed-bottom view_comm_edit_cent">
-        <div class="container ">
-            <div style="">
-                <span>新建帖子</span>
-                <span class="edit-top-right-close navbar-right">&nbsp;
-                    <i class="glyphicon glyphicon-chevron-down"></i></span>
-            </div>
-
-            <form class="form-inline">
-                <div class="form-group">
-                    <input style="width: 25rem" type="text" class="form-control" id="sort_name" placeholder="请输入帖子的题目">
-                </div>
-                <div class="form-group">
-                    <select style="width: 25rem" class="form-control">
-                        <option>综合交流区</option>
-                        <option>策划交流区</option>
-                        <option>杂谈区</option>
-                    </select>
-                </div>
-                <div class="textarea_b_content">
-                    <div class="textarea_left_content col-lg-6">
-                        <textarea name="text_body" id="inputText" class="textarea_body"></textarea>
-                    </div>
-                    <div class="textarea_right_content col-lg-6">
-                        <div>
-                            111
-                        </div>
-                    </div>
-                </div>
-                <div class="edit-comm-submit col-lg-12">
-                    <button type="submit" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;创建
-                    </button>
-                    <button type="button" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;取消
+            <div>
+                <div style="width: 100%;" class="btn-group" role="group" aria-label="选项">
+                    <button type="button" class="btn btn-default active">分类</button>
+                    <button type="button" class="btn btn-default">Middle</button>
+                    <button type="button" class="btn btn-default">Right</button>
+                    <button style="left: -1.2rem" v-on:click="show_edit_modal" type="button" class="btn navbar-right"><i
+                            class="glyphicon glyphicon-plus"></i>&nbsp;写一笔
                     </button>
                 </div>
-            </form>
-            <script>
-                $(document).ready(function () {
-                    console.log('---')
-                })
-            </script>
-        </div>
+            </div>
+            <div class="col-lg-6 panel-content" style="padding-right: 0.8rem">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">分类</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="comm-list">
+                            <li class="comm-list-item">
+                                <a href="#">
+                                    <div class="list-title">
+                                        综合交流区
+                                    </div>
+                                    <div class="list-descrip">
+                                        <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                            现在天神降临，死神....还有人记得这杆枪吗？
+                                            我的死神该何去何从？死神是否需要再进化？
+                                        </p>
+                                        <div>
+                                            <span class="badge">14</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="comm-list-item">
+                                <a href="#">
+                                    <div class="list-title">
+                                        策划交流区
+                                    </div>
+                                    <div class="list-descrip">
+                                        <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                            现在天神降临，死神....还有人记得这杆枪吗？
+                                            我的死神该何去何从？死神是否需要再进化？
+                                        </p>
+                                        <div>
+                                            <span class="badge">14</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 panel-content" style="padding-left: 0.8rem">
+                <div class=" panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">最新</h3>
+                    </div>
+                    <div class="panel-body ">
+                        <div class="list-text">
+                            <div class="list-text-avatar">
+                                <a href="#">
+                                    <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
+                                         class="img-circle">
+                                </a>
+                            </div>
+                            <div class="list-text-text">
+                                <a href="/community/">
+                                    自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                    现在天神降临，死神..
+                                </a>
+                            </div>
+                            <div class="list-text-time">
+                                <a href="/community/">时间</a>
+                            </div>
+                        </div>
 
+
+                        <div class="list-text">
+                            <div class="list-text-avatar">
+                                <a href="#">
+                                    <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
+                                         class="img-circle">
+                                </a>
+                            </div>
+                            <div class="list-text-text">
+                                <a href="/community/">
+                                    自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                    现在天神降临，死神..
+                                </a>
+                            </div>
+                            <div class="list-text-time">
+                                <a href="/community/">时间</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="edit_con_form" class="navbar-fixed-bottom view_comm_edit_cent">
+            <div class="container ">
+                <div style="">
+                    <span>新建帖子</span>
+                    <span class="edit-top-right-close navbar-right">
+                 <p v-on:click="hidden_edit_form">
+                     <i class="glyphicon glyphicon-chevron-down"></i>
+                 </p></span>
+                </div>
+
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input style="width: 25rem" type="text" v-model="comm_title" class="form-control" id="sort_name"
+                               placeholder="请输入帖子的题目">
+                    </div>
+                    <div class="form-group">
+                        <select style="width: 25rem" v-model="comm_sort" class="form-control">
+                            <option>综合交流区</option>
+                            <option>策划交流区</option>
+                            <option>杂谈区</option>
+                        </select>
+                    </div>
+                    <div class="textarea_b_content">
+                        <div class="textarea_left_content col-lg-6">
+                            <textarea v-model="comm_text" name="text_body" id="inputText"
+                                      class="textarea_body"></textarea>
+                        </div>
+                        <div class="textarea_right_content col-lg-6">
+                            <div>
+                                {$ comm_text $}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-comm-submit col-lg-12">
+                        <button type="button" v-on:click="comm_create" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;创建
+                        </button>
+                        <button type="button" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;取消
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
     </div>
 
 {% endblock content %}
+{% block ext_js %}
+    {#   <script src="/static/js/vendor-components/vue2.0/vue.js"></script>#}
+    <script>
+        var comm_vue = new Vue({
+            delimiters: ['{$', '$}'],
+            el: '#comm_vue',
+            data: {
+                comm_text: '',
+                comm_title: '',
+                comm_sort: "综合交流区"
+            },
+            ready: function () {
+
+            },
+            methods: {
+                show_edit_modal: function (event) {
+                    var active = $("#edit_con_form").is(":hidden")
+                    if (active == true) {
+                        $("#edit_con_form").css({"display": "block"})
+                    }
+                },
+                hidden_edit_form: function (event) {
+                    var active = $("#edit_con_form").is(":hidden")
+                    if (active == false) {
+                        $("#edit_con_form").css({"display": "none"})
+                    }
+                },
+                comm_create:function () {
+                    console.log(this.comm_title,this.comm_text,this.comm_sort)
+                }
+            }
+        })
+    </script>
+{% endblock ext_js %}
