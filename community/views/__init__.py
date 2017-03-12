@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-import community
+import community_view

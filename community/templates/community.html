@@ -167,38 +167,23 @@
                     </div>
                     <div class="panel-body">
                         <ul class="comm-list">
-                            <li class="comm-list-item">
-                                <a href="#">
-                                    <div class="list-title">
-                                        综合交流区
-                                    </div>
-                                    <div class="list-descrip">
-                                        <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                            现在天神降临，死神....还有人记得这杆枪吗？
-                                            我的死神该何去何从？死神是否需要再进化？
-                                        </p>
-                                        <div>
-                                            <span class="badge">14</span>
+                            {% for item in sort_list %}
+                                <li class="comm-list-item">
+                                    <a href="{{ item.url }}">
+                                        <div class="list-title">
+                                            {{ item.name }}
                                         </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="comm-list-item">
-                                <a href="#">
-                                    <div class="list-title">
-                                        策划交流区
-                                    </div>
-                                    <div class="list-descrip">
-                                        <p>自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                            现在天神降临，死神....还有人记得这杆枪吗？
-                                            我的死神该何去何从？死神是否需要再进化？
-                                        </p>
-                                        <div>
-                                            <span class="badge">14</span>
+                                        <div class="list-descrip">
+                                            <p>
+                                                {{ item.describe }}
+                                            </p>
+                                            <div>
+                                                <span class="badge">{{ item.new_comm }}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            </li>
+                                    </a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -209,6 +194,7 @@
                         <h3 class="panel-title">最新</h3>
                     </div>
                     <div class="panel-body ">
+
                         <div class="list-text">
                             <div class="list-text-avatar">
                                 <a href="#">
@@ -219,6 +205,9 @@
                             <div class="list-text-text">
                                 <a href="/community/">
                                     自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                    现在天神降临，死神..自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                    现在天神降临，死神..自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
+                                    现在天神降临，死神..自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
                                     现在天神降临，死神..
                                 </a>
                             </div>
@@ -262,15 +251,17 @@
                 </div>
 
                 <form class="form-inline">
+                    {% csrf_token %}
                     <div class="form-group">
                         <input style="width: 25rem" type="text" v-model="comm_title" class="form-control" id="sort_name"
                                placeholder="请输入帖子的题目">
                     </div>
                     <div class="form-group">
                         <select style="width: 25rem" v-model="comm_sort" class="form-control">
-                            <option>综合交流区</option>
-                            <option>策划交流区</option>
-                            <option>杂谈区</option>
+                            {% for item in edit_box %}
+                                <option id="{{ item.id }}" value="{{ item.id }}"
+                                        name="comm_sort">{{ item.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="textarea_b_content">
@@ -285,7 +276,8 @@
                         </div>
                     </div>
                     <div class="edit-comm-submit col-lg-12">
-                        <button type="button" v-on:click="comm_create" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;创建
+                        <button type="submit" v-on:click="comm_create" class="btn"><i
+                                class="glyphicon glyphicon-plus"></i> &nbsp;创建
                         </button>
                         <button type="button" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;取消
                         </button>
@@ -307,7 +299,7 @@
             data: {
                 comm_text: '',
                 comm_title: '',
-                comm_sort: "综合交流区"
+                comm_sort: "{{ default_sort }}"
             },
             ready: function () {
 
@@ -325,8 +317,34 @@
                         $("#edit_con_form").css({"display": "none"})
                     }
                 },
-                comm_create:function () {
-                    console.log(this.comm_title,this.comm_text,this.comm_sort)
+                comm_create: function (e) {
+                    e.preventDefault();
+                    var self = this
+                    if (this.comm_title.replace(/[ ]/g, "") == '') {
+                        alert("标题不能为空")
+                    } else if (this.comm_title.replace(/[ ]/g, "") == '') {
+                        alert("内容不能为空")
+                    } else {
+                        var data = {
+                            "comm_title": self.comm_title,
+                            "comm_text": self.comm_text,
+                            "comm_sort": self.comm_sort,
+                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+                        };
+
+                        $.post('/community/create/', data, function (result) {
+                            result = JSON.parse(result);
+                            if (result.error_msg) {
+                                alert(result.error_msg)
+                            } else {
+                                self.comm_text = ''
+                                self.comm_title = ''
+                                $("#edit_con_form").css({"display": "none"})
+                            }
+                        });
+
+                    }
+
                 }
             }
         })
