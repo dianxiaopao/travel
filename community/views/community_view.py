@@ -5,15 +5,18 @@ from django.shortcuts import render
 from django.db.models.query_utils import Q
 from community.models.topic_text import TopicText
 from community.models.forum_sort import ForumSort
+from base.models.sys_material import SysMaterial
+from django.db import models
 
 import json
 
 # Create your views here.
 
 try:
-    from django.apps import apps as models
+    from django.apps import apps
 except ImportError:  # django < 1.7
-    from django.db import models
+    from django.db import models as apps
+
 
 
 class Community(object):
@@ -65,22 +68,36 @@ class Community(object):
 
         filter_str = {'forum_sort_id': 1}
 
-        commit_list = self._get_commit_list(1, 10, filter_str, None)
+        comm_list = self._get_commit_list(request, 1, 10, filter_str, None)
         context = {
             'edit_box': edit_box,
             'default_sort': default_sort,
             'sort_list': sort_list,
+            'comm_list': comm_list,
         }
         return render(request, 'community.html', context)
 
-    def _get_commit_list(self, page, page_size, filter_str, order_str):
+    def _get_commit_list(self, request, page, page_size, filter_str, order_str):
         if not order_str:
             order_str = "write_date"
         page_start = page - 1
         page_end = page_size * page + page - 2
-        comm_obj = TopicText.objects.filter(Q(**filter_str)).order_by("priority").order_by(order_str)[
-                   page_start: page_end]
-        return comm_obj
+        comm_obj = TopicText.objects.filter(Q(**filter_str) & Q(**{"a_public": True})).order_by("priority").order_by(
+            order_str)[page_start: page_end]
+        comm_list = []
+        icon_obj = SysMaterial.objects.get(key='user_default_icon_path')
+        icon_path = icon_obj.value
+        for item in comm_obj:
+            comm_dict = {}
+            comm_dict["user_icon"] = icon_path
+            if item.write_user:
+                if isinstance(item.write_user, models.Model):
+                    pass  # 如果用户头像存在则改变头像
+            comm_dict["name"] = item.name
+            comm_dict["text"] = item.text
+            comm_dict['date'] = item.write_date
+            comm_list.append(comm_dict)
+        return comm_list
 
     def get_probem_list(self, request, *args, **kwargs):
         category = kwargs.get("category")

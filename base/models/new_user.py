@@ -9,6 +9,8 @@ class NewUser(User):
     这两种方法都可以对user表进行重写
     '''
     show_name = models.CharField(u'显示名称', max_length=255, null=True)
+    avatar = models.ForeignKey(u'mycenter.ImgMaterial', related_name='+', verbose_name=u'用户头像', null=True)
+    avatar_path = models.CharField(u'头像路径', max_length=255, null=True)
     telephone = models.CharField(u'电话', max_length=255, null=True)
     auth_code = models.CharField(u'验证码', max_length=255, null=True)
     send_date = models.DateTimeField(u'发送时间', null=True)

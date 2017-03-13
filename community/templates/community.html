@@ -194,47 +194,26 @@
                         <h3 class="panel-title">最新</h3>
                     </div>
                     <div class="panel-body ">
-
-                        <div class="list-text">
-                            <div class="list-text-avatar">
-                                <a href="#">
-                                    <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
-                                         class="img-circle">
-                                </a>
+                        <!--开始渲染右侧文章列表-->
+                        {% for f in comm_list %}
+                            <div class="list-text">
+                                <div class="list-text-avatar">
+                                    <a href="#">
+                                        <img src="{{ f.user_icon }}" alt="用户头像"
+                                             class="img-circle">
+                                    </a>
+                                </div>
+                                <div class="list-text-text">
+                                    <a href="/community/">
+                                        <!--这里写跳转到文章详情的URL-->
+                                        {{ f.name }}
+                                    </a>
+                                </div>
+                                <div class="list-text-time">
+                                    <a href="/community/">{{ f.date }}</a>
+                                </div>
                             </div>
-                            <div class="list-text-text">
-                                <a href="/community/">
-                                    自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                    现在天神降临，死神..自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                    现在天神降临，死神..自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                    现在天神降临，死神..自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                    现在天神降临，死神..
-                                </a>
-                            </div>
-                            <div class="list-text-time">
-                                <a href="/community/">时间</a>
-                            </div>
-                        </div>
-
-
-                        <div class="list-text">
-                            <div class="list-text-avatar">
-                                <a href="#">
-                                    <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="用户头像"
-                                         class="img-circle">
-                                </a>
-                            </div>
-                            <div class="list-text-text">
-                                <a href="/community/">
-                                    自从出了冰神，死神就有些堕落了。后来兽神又来了，死神几乎无用武之地。
-                                    现在天神降临，死神..
-                                </a>
-                            </div>
-                            <div class="list-text-time">
-                                <a href="/community/">时间</a>
-                            </div>
-                        </div>
-
+                        {% endfor %}
 
                     </div>
                 </div>
