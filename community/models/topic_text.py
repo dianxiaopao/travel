@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-import mycenter.models.img_material
 
 
 class TopicText(models.Model):
