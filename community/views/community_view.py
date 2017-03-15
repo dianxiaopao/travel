@@ -7,8 +7,10 @@ from community.models.topic_text import TopicText
 from community.models.forum_sort import ForumSort
 from base.models.sys_material import SysMaterial
 from django.db import models
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-import json
+import json, traceback
 
 # Create your views here.
 
@@ -16,7 +18,6 @@ try:
     from django.apps import apps
 except ImportError:  # django < 1.7
     from django.db import models as apps
-
 
 
 class Community(object):
@@ -103,34 +104,40 @@ class Community(object):
         category = kwargs.get("category")
         action = kwargs.get("action")
 
+    # @method_decorator(login_required)
     def create(self, request):
-        result = {}
-        try:
-            comm_sort = request.POST.get("comm_sort")
-            comm_text = request.POST.get("comm_text")
-            comm_title = request.POST.get("comm_title").strip()
-            if not comm_sort:
-                raise Exception("请选择分类")
-            if not comm_text:
-                raise Exception("请输入内容")
-            if not comm_title:
-                raise Exception("输入标题")
-            new_obj = TopicText(
-                name=comm_title,
-                text=comm_text,
-                forum_sort_id=comm_sort,
-                create_user=request.user,
-                write_user=request.user
-            )
-            TopicText.objects.bulk_create([new_obj])
-            result["successful"] = True
-            result["title"] = comm_title
-        except Exception, e:
-            _trackback = traceback.format_exc()
-            err_msg = e.message
-            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
-                err_msg = e.faultCode
-            result['error_msg'] = err_msg
-            result['trackback'] = _trackback
-        finally:
-            return HttpResponse(json.dumps(result))
+        method = request.method.lower()
+        if method == 'post':
+            result = {}
+            try:
+                if request.user.is_authenticated():
+                    comm_sort = request.POST.get("comm_sort")
+                    comm_text = request.POST.get("comm_text")
+                    comm_title = request.POST.get("comm_title").strip()
+                    if not comm_sort:
+                        raise Exception("请选择分类")
+                    if not comm_text:
+                        raise Exception("请输入内容")
+                    if not comm_title:
+                        raise Exception("输入标题")
+                    new_obj = TopicText(
+                        name=comm_title,
+                        text=comm_text,
+                        forum_sort_id=comm_sort,
+                        create_user=request.user,
+                        write_user=request.user
+                    )
+                    TopicText.objects.bulk_create([new_obj])
+                    result["successful"] = True
+                    result["title"] = comm_title
+                else:
+                    result['next']='/login/'
+            except Exception, e:
+                _trackback = traceback.format_exc()
+                err_msg = e.message
+                if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                    err_msg = e.faultCode
+                result['error_msg'] = err_msg
+                result['trackback'] = _trackback
+            finally:
+                return HttpResponse(json.dumps(result))

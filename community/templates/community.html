@@ -287,6 +287,9 @@
                 show_edit_modal: function (event) {
                     var active = $("#edit_con_form").is(":hidden")
                     if (active == true) {
+                        {#                        $.get('/community/create/', function (result) {#}
+                        {#                            console.log(result)#}
+                        {#                        })#}
                         $("#edit_con_form").css({"display": "block"})
                     }
                 },
@@ -312,13 +315,18 @@
                         };
 
                         $.post('/community/create/', data, function (result) {
+                            console.log(result);
+
                             result = JSON.parse(result);
-                            if (result.error_msg) {
+                            if (result.next) {
+                                window.location.href = result.next;
+                            } else if (result.error_msg) {
                                 alert(result.error_msg)
                             } else {
-                                self.comm_text = ''
-                                self.comm_title = ''
+                                self.comm_text = '';
+                                self.comm_title = '';
                                 $("#edit_con_form").css({"display": "none"})
+                                window.location.reload()
                             }
                         });
 
