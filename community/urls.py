@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^$', community_view.get_community),
     url(r'^view/(?P<category>\w+)/(?P<action>\w+)/$', community_view.get_probem_list),
     url(r'^create/$', community_view.create),
+    url(r'^comm/view/(?P<sort>\w+)/(?P<page>\w+)/$', community_view.sort_comm_list),
 
 ]
 

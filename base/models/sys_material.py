@@ -6,6 +6,7 @@ from django.contrib import admin
 class SysMaterial(models.Model):
     key = models.CharField('key', max_length=256, null=True)
     value = models.TextField('value', null=True)
+    note = models.TextField(u'备注', null=True)
 
     create_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='创建人')
     create_date = models.DateTimeField(u'创建时间', auto_now_add=True)

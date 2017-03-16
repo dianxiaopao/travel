@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, Http404
+from django.http import HttpResponseRedirect
 from django.db.models import Count
 from django.shortcuts import render
 from django.db.models.query_utils import Q
@@ -59,6 +60,7 @@ class Community(object):
                         "describe": item.describe,
                         "url": item.url,
                         "icon": item.icon,
+                        "id": item.id,
                         "new_comm": new_comm,
                     }
                     sort_list.append(sort_dict)
@@ -68,8 +70,10 @@ class Community(object):
         sort_list = get_sort_data()
 
         filter_str = {'forum_sort_id': 1}
+        page_obj = SysMaterial.objects.filter(key="comm_page_size")
+        page_size = int(page_obj[0].value) if page_obj else 10
 
-        comm_list = self._get_commit_list(request, 1, 10, filter_str, None)
+        comm_list = self._get_commit_list(1, page_size, filter_str, None)
         context = {
             'edit_box': edit_box,
             'default_sort': default_sort,
@@ -78,7 +82,7 @@ class Community(object):
         }
         return render(request, 'community.html', context)
 
-    def _get_commit_list(self, request, page, page_size, filter_str, order_str):
+    def _get_commit_list(self, page, page_size, filter_str, order_str):
         if not order_str:
             order_str = "write_date"
         page_start = page - 1
@@ -92,11 +96,16 @@ class Community(object):
             comm_dict = {}
             comm_dict["user_icon"] = icon_path
             if item.write_user:
+                user = item.write_user
                 if isinstance(item.write_user, models.Model):
                     pass  # 如果用户头像存在则改变头像
             comm_dict["name"] = item.name
             comm_dict["text"] = item.text
+            comm_dict["id"] = item.id
             comm_dict['date'] = item.write_date
+            comm_dict['collection'] = item.collection
+            comm_dict['pviews'] = item.pviews
+            comm_dict['user'] = user
             comm_list.append(comm_dict)
         return comm_list
 
@@ -131,7 +140,7 @@ class Community(object):
                     result["successful"] = True
                     result["title"] = comm_title
                 else:
-                    result['next']='/login/'
+                    result['next'] = '/login/'
             except Exception, e:
                 _trackback = traceback.format_exc()
                 err_msg = e.message
@@ -141,3 +150,25 @@ class Community(object):
                 result['trackback'] = _trackback
             finally:
                 return HttpResponse(json.dumps(result))
+
+    def sort_comm_list(self, request, *args, **kwargs):
+        result = {}
+        sort = kwargs.get("sort")
+        page = kwargs.get("page")
+        try:
+            sort = int(sort)
+            page = int(page)
+        except:
+            return HttpResponseRedirect('404.html')
+        size_obj = SysMaterial.objects.filter(key="sort_page_size")
+        page_size = int(size_obj[0].value) if size_obj else 10
+        filter_str = {"forum_sort_id": sort}
+        comm_list = self._get_commit_list(page, page_size, filter_str, None)
+
+        context = {
+            # 'edit_box': edit_box,
+            # 'default_sort': default_sort,
+            # 'sort_list': sort_list,
+            'comm_list': comm_list,
+        }
+        return render(request, 'topic_text_list.html', context)
