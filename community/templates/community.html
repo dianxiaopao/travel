@@ -93,7 +93,7 @@
         }
 
         .list-text-time {
-            padding:0 1rem 0 1rem;
+            padding: 0 1rem 0 1rem;
             line-height: 4rem;
         }
 
@@ -286,8 +286,11 @@
                 comm_title: '',
                 comm_sort: "{{ default_sort }}"
             },
-            ready: function () {
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 代码保证 this.$el 在 document 中
 
+                })
             },
             methods: {
                 show_edit_modal: function (event) {

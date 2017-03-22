@@ -8,10 +8,14 @@
 {% endblock ext_after_css %}
 
 {% block content %}
-    <div class="container" style="height: 300px">
+    <div id="topic_text_view" class="container" style="height: 300px">
         <div id="editor" style="height: 200px">
             <p>请输入内容...</p>
         </div>
+        <button type="button" v-on:click="get_html"> 获取编辑器区域完整html代码</button>
+        <button type="button" v-on:click="get_text">获取编辑器纯文本内容</button>
+        <button type="button" v-on:click="get_format">获取格式化后的纯文本</button>
+
     </div>
 
 
@@ -20,7 +24,41 @@
 {% block ext_js %}
     <script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
     <script type="text/javascript">
-        var editor = new wangEditor($("#editor"));
-        editor.create();
+
+        var text_view = new Vue({
+            delimiters: ['{$', '$}'],
+            el: "#topic_text_view",
+            data: {
+                text: ''
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 代码保证 this.$el 在 document 中
+                    var self = this;
+                    console.log(self)
+                    self.editor = new wangEditor($("#editor"));
+
+                    self.editor.create();
+                })
+            },
+            methods: {
+                get_html: function () {
+                    var self = this;
+                    var html = self.editor.$txt.html();
+                    console.log(html)
+                },
+                get_text: function () {
+                    var self = this;
+                    var text = self.editor.$txt.text();
+                    console.log(text)
+                },
+                get_format: function () {
+                    var self = this;
+                    var formatText = self.editor.$txt.formatText();
+                    console.log(formatText)
+                },
+            }
+        })
+        {#    console.log(text_view)#}
     </script>
 {% endblock ext_js %}
