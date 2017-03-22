@@ -1,7 +1,8 @@
 {% extends "base_with_menu.html" %}
-{% block title %} 社区 {% endblock title %}
-
-{% block content %}
+{% block title %} 社区-问题列表 {% endblock title %}
+{% block ext_before_css %}
+{% endblock ext_before_css %}
+{% block ext_after_css %}
     <style>
         * {
             padding: 0;
@@ -145,7 +146,58 @@
             color: #42B983;
             outline: none;
         }
+
+        .comm-list-item {
+            height: 4rem;
+            line-height: 4rem;
+            border-bottom: 1px solid #E9E9E9;
+        }
+
+        .comm-list-item ul {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        .comm-list-item ul li {
+            margin: 0;
+            padding: 0;
+            float: left;
+            list-style: none;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .comm-list-item ul li a {
+            width: 100%;
+
+        }
+
+        .comm-list-item ul li:nth-child(1) {
+            width: 60%;
+        }
+
+        .comm-list-item ul li:nth-child(2) {
+            width: 15%;
+            text-align: center;
+        }
+
+        .comm-list-item ul li:nth-child(3), .comm-list-item ul li:nth-child(4) {
+            width: 5%;
+            text-align: center;
+        }
+
+        .comm-list-item ul li:nth-child(5) {
+            width: 15%;
+            text-align: center;
+        }
     </style>
+{% endblock ext_after_css %}
+
+{% block content %}
+
     <div id="comm_vue">
         <div class="container" style="min-height: 800px">
             <div class="jumbotron">
@@ -161,13 +213,18 @@
                 </div>
             </div>
             <div>
+
                 {% for item in comm_list %}
-                    {{ item.name }}&nbsp;|&nbsp;
-                    {{ item.user }}&nbsp;|&nbsp;
-                    {{ item.collection }}&nbsp;|&nbsp;
-                    {{ item.pviews }}&nbsp;|&nbsp;
-                    {{ item.date }}&nbsp;|&nbsp;
-                    <br>
+                    <div class="comm-list-item">
+                        <ul>
+                            <li title="{{ item.name }}"><a href="/community/comm/text/view/{{ item.sort_id }}/{{ item.id }}/">{{ item.name }}</a></li>
+                            <li title="{{ item.user }}"><a href="#">{{ item.user }}</a></li>
+                            <li title="{{ item.collection }}">{{ item.collection }}</li>
+                            <li title="{{ item.pviews }}">{{ item.pviews }}</li>
+                            <li title="{{ item.date }}">{{ item.date }}</li>
+                        </ul>
+                    </div>
+
                 {% endfor %}
                 </ul>
             </div>

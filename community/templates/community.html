@@ -68,27 +68,33 @@
         .list-text {
             display: flex;
             border-bottom: solid 1px #E9E9E9;
+            height: 4rem;
         }
 
         .list-text-avatar {
             color: #4cae4c;
-            padding: 1rem 0 1rem 0;
-            margin: 0 auto;
+            padding: 0.5rem 0 0.5rem 0;
+            margin: 0;
             position: relative;
         }
 
         .list-text-avatar img {
             padding: 0 0.5rem 0 0.5rem;
-            width: 5rem;
+            width: 4rem;
         }
 
         .list-text-text {
             flex: 1;
-            padding: 1rem;
+            width: 70%;
+            line-height: 4rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .list-text-time {
-            padding: 1rem;
+            padding:0 1rem 0 1rem;
+            line-height: 4rem;
         }
 
         .view_comm_edit_cent {
@@ -204,7 +210,7 @@
                                     </a>
                                 </div>
                                 <div class="list-text-text">
-                                    <a href="/community/">
+                                    <a href="/community/comm/text/view/{{ f.sort_id }}/{{ f.id }}/">
                                         <!--这里写跳转到文章详情的URL-->
                                         {{ f.name }}
                                     </a>
