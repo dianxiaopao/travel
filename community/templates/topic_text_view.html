@@ -1,18 +1,26 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 社区 {% endblock title %}
 {% block ext_before_css %}
+
 {% endblock ext_before_css %}
 {% block ext_after_css %}
-    <style>
-
-    </style>
+    <link rel="stylesheet" href="/static/css/wangEditor.min.css">
 {% endblock ext_after_css %}
 
 {% block content %}
+    <div class="container" style="height: 300px">
+        <div id="editor" style="height: 200px">
+            <p>请输入内容...</p>
+        </div>
+    </div>
 
-    {{ text }}
+
 
 {% endblock content %}
 {% block ext_js %}
-
+    <script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
+    <script type="text/javascript">
+        var editor = new wangEditor($("#editor"));
+        editor.create();
+    </script>
 {% endblock ext_js %}
