@@ -105,6 +105,7 @@ class Community(object):
             comm_dict['date'] = item.write_date
             comm_dict['collection'] = item.collection
             comm_dict['pviews'] = item.pviews
+            comm_dict['sort_id'] = item.forum_sort_id
             comm_dict['user'] = user
             comm_list.append(comm_dict)
         return comm_list
@@ -166,9 +167,15 @@ class Community(object):
         comm_list = self._get_commit_list(page, page_size, filter_str, None)
 
         context = {
-            # 'edit_box': edit_box,
-            # 'default_sort': default_sort,
-            # 'sort_list': sort_list,
             'comm_list': comm_list,
         }
         return render(request, 'topic_text_list.html', context)
+
+    def view_topic_text(self, request, *args, **kwargs):
+        sort_id = kwargs.get("sort")
+        topic_id = kwargs.get("topic")
+
+        context = {
+            'text': "高怡欣是个傻子",
+        }
+        return render(request, "topic_text_view.html", context)
