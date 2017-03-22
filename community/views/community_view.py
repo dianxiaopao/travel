@@ -69,11 +69,10 @@ class Community(object):
 
         sort_list = get_sort_data()
 
-        filter_str = {'forum_sort_id': 1}
         page_obj = SysMaterial.objects.filter(key="comm_page_size")
         page_size = int(page_obj[0].value) if page_obj else 10
 
-        comm_list = self._get_commit_list(1, page_size, filter_str, None)
+        comm_list = self._get_commit_list(1, page_size, None, None)
         context = {
             'edit_box': edit_box,
             'default_sort': default_sort,
@@ -87,8 +86,10 @@ class Community(object):
             order_str = "write_date"
         page_start = page - 1
         page_end = page_size * page + page - 2
-        comm_obj = TopicText.objects.filter(Q(**filter_str) & Q(**{"a_public": True})).order_by("priority").order_by(
-            order_str)[page_start: page_end]
+        if not filter_str:
+            comm_obj = TopicText.objects.filter(Q(**{"a_public": True})).order_by("priority").order_by(order_str)[page_start: page_end]
+        else:
+            comm_obj = TopicText.objects.filter(Q(**filter_str) & Q(**{"a_public": True})).order_by("priority").order_by(order_str)[page_start: page_end]
         comm_list = []
         icon_obj = SysMaterial.objects.get(key='user_default_icon_path')
         icon_path = icon_obj.value
