@@ -8,15 +8,29 @@
 {% endblock ext_after_css %}
 
 {% block content %}
-    <div id="topic_text_view" class="container" style="height: 300px">
-        <div id="editor" style="height: 200px">
-            <p>请输入内容...</p>
+    <div id="topic_text_view">
+        {% csrf_token %}
+        <div class="container" style="min-height: 300px">
+            <div class="jumbotron">
+            </div>
+            <br>
+            {{ text.collection }} <br>
+
+            {{ text.user_icon }}
+
+            <div id="editor" style="height: 200px">
+                <h2>{{ text.title }}</h2>
+                <img src="{{ text.user_icon }}" alt="">
+                {{ text.text }}
+            </div>
+            <button type="button" v-on:click="get_html"> 获取编辑器区域完整html代码</button>
+            <button type="button" v-on:click="get_text">获取编辑器纯文本内容</button>
+            <button type="button" v-on:click="get_format">获取格式化后的纯文本</button>
+
         </div>
-        <button type="button" v-on:click="get_html"> 获取编辑器区域完整html代码</button>
-        <button type="button" v-on:click="get_text">获取编辑器纯文本内容</button>
-        <button type="button" v-on:click="get_format">获取格式化后的纯文本</button>
 
     </div>
+
 
 
 
@@ -36,6 +50,11 @@
                     // 代码保证 this.$el 在 document 中
                     var self = this;
                     self.editor = new wangEditor($("#editor"));
+                    self.editor.config.uploadParams = {
+                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val(),
+                        user: "{{ request.user.id }}"
+                    };
+                    self.editor.config.uploadImgUrl = '/mycenter/note/create/upload_img/';
                     self.editor.create();
                 })
             },
