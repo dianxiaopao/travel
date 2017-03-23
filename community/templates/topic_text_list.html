@@ -198,7 +198,7 @@
 
 {% block content %}
 
-    <div id="comm_vue">
+    <div id="comm_vue_list">
         <div class="container" style="min-height: 800px">
             <div class="jumbotron">
             </div>
@@ -217,7 +217,9 @@
                 {% for item in comm_list %}
                     <div class="comm-list-item">
                         <ul>
-                            <li title="{{ item.name }}"><a href="/community/comm/text/view/{{ item.sort_id }}/{{ item.id }}/">{{ item.name }}</a></li>
+                            <li title="{{ item.name }}"><a
+                                    href="/community/comm/text/view/{{ item.sort_id }}/{{ item.id }}/">{{ item.name }}</a>
+                            </li>
                             <li title="{{ item.user }}"><a href="#">{{ item.user }}</a></li>
                             <li title="{{ item.collection }}">{{ item.collection }}</li>
                             <li title="{{ item.pviews }}">{{ item.pviews }}</li>
@@ -237,13 +239,13 @@
     <script>
         var comm_vue = new Vue({
             delimiters: ['{$', '$}'],
-            el: '',
+            el: '#comm_vue_list',
             data: {
                 comm_text: '',
                 comm_title: '',
                 comm_sort: "{{ default_sort }}"
             },
-            ready: function () {
+            mounted: function () {
 
             },
             methods: {}

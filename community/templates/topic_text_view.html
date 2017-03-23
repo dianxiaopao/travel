@@ -35,9 +35,7 @@
                 this.$nextTick(function () {
                     // 代码保证 this.$el 在 document 中
                     var self = this;
-                    console.log(self)
                     self.editor = new wangEditor($("#editor"));
-
                     self.editor.create();
                 })
             },
@@ -58,7 +56,7 @@
                     console.log(formatText)
                 },
             }
-        })
+        });
         {#    console.log(text_view)#}
     </script>
 {% endblock ext_js %}

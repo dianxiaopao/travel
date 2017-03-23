@@ -276,7 +276,6 @@
 
 {% endblock content %}
 {% block ext_js %}
-    {#   <script src="/static/js/vendor-components/vue2.0/vue.js"></script>#}
     <script>
         var comm_vue = new Vue({
             delimiters: ['{$', '$}'],
@@ -289,16 +288,18 @@
             mounted: function () {
                 this.$nextTick(function () {
                     // 代码保证 this.$el 在 document 中
+                    setInterval(function () {
+{#                      window.location="/community/";#}
+{#                        console.log('----')#}
+                    },100)
 
                 })
+
             },
             methods: {
                 show_edit_modal: function (event) {
                     var active = $("#edit_con_form").is(":hidden")
                     if (active == true) {
-                        {#                        $.get('/community/create/', function (result) {#}
-                        {#                            console.log(result)#}
-                        {#                        })#}
                         $("#edit_con_form").css({"display": "block"})
                     }
                 },
