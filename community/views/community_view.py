@@ -87,9 +87,11 @@ class Community(object):
         page_start = page - 1
         page_end = page_size * page + page - 2
         if not filter_str:
-            comm_obj = TopicText.objects.filter(Q(**{"a_public": True})).order_by("priority").order_by(order_str)[page_start: page_end]
+            comm_obj = TopicText.objects.filter(Q(**{"a_public": True})).order_by("priority").order_by(order_str)[
+                       page_start: page_end]
         else:
-            comm_obj = TopicText.objects.filter(Q(**filter_str) & Q(**{"a_public": True})).order_by("priority").order_by(order_str)[page_start: page_end]
+            comm_obj = TopicText.objects.filter(Q(**filter_str) & Q(**{"a_public": True})).order_by(
+                "priority").order_by(order_str)[page_start: page_end]
         comm_list = []
         icon_obj = SysMaterial.objects.get(key='user_default_icon_path')
         icon_path = icon_obj.value
@@ -175,8 +177,23 @@ class Community(object):
     def view_topic_text(self, request, *args, **kwargs):
         sort_id = kwargs.get("sort")
         topic_id = kwargs.get("topic")
+        text = {}
+        sort_obj = ForumSort.objects.filter(id=sort_id)
+        text_obj = TopicText.objects.filter(id=topic_id)
+        icon_obj = SysMaterial.objects.get(key='user_default_icon_path')
+        icon_path = icon_obj.value
+        if not text_obj:
+            return HttpResponseRedirect('404.html')
+        user = text_obj[0].write_user
+        if hasattr(user, "newuser"):
+            pass  # 如果用户头像存在则改变头像
+        text["title"] = text_obj[0].name
+        text["text"] = text_obj[0].text
+        # text["pviews"] = text_obj[0].pviews             #评论数
+        text["collection"] = text_obj[0].collection  # 收藏
+        text["user_icon"] = icon_path
 
         context = {
-            'text': "高怡欣是个傻子",
+            'text': text,
         }
         return render(request, "topic_text_view.html", context)

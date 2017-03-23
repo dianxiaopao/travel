@@ -6,15 +6,16 @@ from guides.models.guide_title import GuideTitle
 from guides.models.guide_content import Guidebody
 from django.http import HttpResponse, Http404
 from django.conf import settings
-from django.contrib.auth.decorators import login_required   #登陆装饰器
+from django.contrib.auth.decorators import login_required  # 登陆装饰器
 import json, uuid, shortuuid, os, base64, travel.settings, traceback
 from django.views.decorators.csrf import csrf_exempt
 from utils import switch_path_relative
-from utils import write_es,sql_get_es
+from utils import write_es, sql_get_es
 
 
 def Center(request):
     return render(request, 'center.html')
+
 
 # 登陆验证
 @login_required
@@ -69,8 +70,8 @@ def title_img(request):
                 title_obj = GuideTitle(uuid=title_uuid, source='user create', title_img_id=new_obj.id)
                 if title != '':
                     title_obj.title = title
-                title_obj.create_user=request.user if request.user else ""
-                title_obj.write_user=request.user if request.user else ""
+                title_obj.create_user = request.user if request.user else ""
+                title_obj.write_user = request.user if request.user else ""
                 title_obj.save()
             else:
                 title_obj[0].title_img_id = new_obj.id
@@ -235,9 +236,9 @@ def upload_img(request):
                                           image_name=img_obj.name)
                     body_text.image_location = 'all'
                     body_text.save()
-                result["path"] = res_and_obj['result']["path"]
-                result["img_uuid"] = body_text.uuid
-
+                # result["path"] = res_and_obj['result']["path"]
+                # result["img_uuid"] = body_text.uuid
+                result = res_and_obj['result']["path"]
 
         except Exception, e:
             _trackback = traceback.format_exc()
