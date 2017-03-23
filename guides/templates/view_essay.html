@@ -63,3 +63,11 @@
     </div>
 
 {% endblock content %}
+{% block ext_js %}
+    <script type="text/javascript">
+        window.onload=function () {
+            window.location="http://127.0.0.1:8080/guide/view/1/"
+        }
+
+    </script>
+{% endblock ext_js %}
