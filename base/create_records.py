@@ -15,7 +15,9 @@ class Material(object):
              'note': u'默认的用户头像'
              },
             {"key": "comm_page_size", "value": "10", "note": u"社区首页展示的帖子的条数"},
-            {"key": "sort_page_size", "value": "10", "note": u"分类展示帖子的页数"}
+            {"key": "sort_page_size", "value": "10", "note": u"分类展示帖子的页数"},
+            {"key": "image_path", "value": "static", "note": u"文件默认上传的路径"},
+            {"key": "localhost", "value": "127.0.0.1:8080"}
         ]
 
     def write_data(self):

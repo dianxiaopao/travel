@@ -21,6 +21,7 @@ import guides.urls as guides_urls
 import mycenter.urls as cemter_urls
 import home.urls as home_urls
 import community.urls as commun_urls
+import base.urls as base_urls
 
 urlpatterns = [
     url(r'^$', views.index),
@@ -35,5 +36,6 @@ urlpatterns = [
     url(r'^mycenter/', include(cemter_urls.urls)),
     url(r'^home/', include(home_urls.urls)),
     url(r'^community/', include(commun_urls.urls)),
+    url(r'^base/', include(base_urls.urls)),
 
 ]
