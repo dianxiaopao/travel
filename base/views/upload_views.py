@@ -27,9 +27,15 @@ class Upload(object):
                 raise Exception("登录用户才可以上传文件！")
             user = request.user
             file_name = str(uuid.uuid1()) + "_" + user.username + '.' + str(file_obj.name.split('.')[-1])
-            path = os.path.join(settings.BASE_DIR, path_obj[0].value, "media", "editor", file_name)
+            folder = os.path.join(settings.BASE_DIR, path_obj[0].value, "media", "editor")
+            if not os.path.exists(folder):
+                os.makedirs(folder)
+            path = os.path.join(folder, file_name)
             # 保存文件
-            b64_path = os.path.join(settings.BASE_DIR, path_obj[0].value, "media", "editor", "b64", file_name)
+            b64_folder = os.path.join(settings.BASE_DIR, path_obj[0].value, "media", "editor", "b64")
+            if not os.path.exists(folder):
+                os.makedirs(b64_folder)
+            b64_path = os.path.join(b64_folder, file_name)
             fobj = open(b64_path, 'wb')
             for ck in file_obj.chunks():
                 f = base64.b64encode(ck)
