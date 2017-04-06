@@ -1,7 +1,70 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 社区 {% endblock title %}
 {% block ext_before_css %}
+    <style>
+        .QuestionHeader {
+            padding: 1.5rem 0 1.5rem 0;
+            border-bottom: 1px dashed #F7F8FA;
+        }
 
+        .QuestionHeader-main {
+        }
+
+        .QuestionHeader-topics {
+        }
+
+        .QuestionHeader-title {
+            /*只显示一行多余用省略号代替*/
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            /*只显示一行多余用省略号代替end*/
+            margin-top: 1.5rem;
+        }
+
+        .QuestionHeader-side {
+            height: 60px
+        }
+
+        .QuestionRichText {
+            line-height: 2.5rem;
+        {#            height: 5rem;#} /*
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            */
+        }
+
+        .guan_zhu_zhe {
+            border: none;
+            background-color: #ffffff;
+            outline: none
+        }
+
+        .NumberBoard-value {
+            font-weight: bold;
+            margin-top: 0.5rem
+        }
+
+        .QuestionHeader-footer {
+            margin-bottom: 2rem;
+        }
+
+        .QuestionHeader-footer button {
+            border: none;
+            background-color: #ffffff;
+            outline: none;
+            margin-right: 2rem;
+            color: #9FADC7;
+        }
+
+        .Question-main {
+            background-color: #F7F8FA;
+            min-height: 200px;
+        }
+    </style>
 {% endblock ext_before_css %}
 {% block ext_after_css %}
     <link rel="stylesheet" href="/static/css/wangEditor.min.css">
@@ -9,15 +72,63 @@
 
 {% block content %}
     <div id="topic_text_view">
-        {% csrf_token %}
-        <div class="container" style="min-height: 300px">
-            <div class="jumbotron">
+    {% csrf_token %}
+    <div class="QuestionHeader">
+        <div class="container">
+            <div class=" row ">
+                <div class="QuestionHeader-main col-lg-9">
+                    <div class="QuestionHeader-topics ">
+                        <br>
+                    </div>
+                    <h2 class="QuestionHeader-title">旅行时你吃到过哪些颜值高，味道赞的甜品？</h2>
+                    <div class="QuestionRichText ">
+                        <p style="font-size: 1.5rem">
+                            1. Angelina坐标：巴黎来自法国巴黎的百年甜品店，曾是Coco Chanel的心头之爱。每年秋冬季的应季甜品Mont
+                            Blanc（勃朗峰）是使用新鲜的栗子、香草奶油、蛋白饼制成，一口下去满口都是栗子馥郁的芳香，回味无穷~其实作为西方甜品界的成员，
+                            它并没有传闻中那样甜，很值得尝试~听说现在在上海也开店了呢，不知道和巴黎的味道是不是一样，魔都的小伙伴们快去尝试吧~
+                        </p>
+
+                    </div>
+                </div>
+                <div class="QuestionHeader-side col-lg-3" style="">
+                    <div class="navbar-right" style="display: block;margin-right: 2rem;text-align: center">
+                        <div style="">
+                            被浏览
+                        </div>
+                        <div class="NumberBoard-value">
+                            235
+                        </div>
+                    </div>
+
+                    <button type="button" class="navbar-right guan_zhu_zhe" style="margin-right: 2rem">
+                        <div>
+                            关注者
+                        </div>
+                        <div class="NumberBoard-value">
+                            68
+                        </div>
+                    </button>
+                </div>
             </div>
-            <br>
-            {{ text.collection }} <br>
+            <div class="row">
+                <div class="col-lg-12 QuestionHeader-footer">
+                    <button type="button">
+                        <i class="glyphicon glyphicon-heart"></i>
+                        关注
+                    </button>
+                    <button type="button">
+                        <i class="glyphicon glyphicon-comment"></i>
+                        评论
+                    </button>
+                    <button type="button">
+                        <i class="glyphicon glyphicon-flag"></i>
+                        举报
+                    </button>
 
-            {{ text.user_icon }}
+                </div>
+            </div>
 
+            <!--
             <div id="editor" style="height: 200px">
                 <h2>{{ text.title }}</h2>
                 <img src="{{ text.user_icon }}" alt="">
@@ -26,9 +137,28 @@
             <button type="button" v-on:click="get_html"> 获取编辑器区域完整html代码</button>
             <button type="button" v-on:click="get_text">获取编辑器纯文本内容</button>
             <button type="button" v-on:click="get_format">获取格式化后的纯文本</button>
+            -->
 
         </div>
 
+
+    </div>
+
+    <div class="Question-main">
+        <div class="container">
+            <div class="row" style="padding-top: 2rem">
+                <div class="col-lg-9">
+                    <div style="background-color: #ffffff;min-height: 100px">
+
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div style="background-color: #ffffff;min-height: 100px">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -46,37 +176,52 @@
                 text: ''
             },
             mounted: function () {
-                this.$nextTick(function () {
-                    // 代码保证 this.$el 在 document 中
-                    var self = this;
-                    self.editor = new wangEditor($("#editor"));
-                    self.editor.config.uploadParams = {
-                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val(),
-                        user: "{{ request.user.id }}"
-                    };
-                    self.editor.config.uploadImgUrl = '/base/upload_img/';
-                    self.editor.config.hideLinkImg = true;
-                    self.editor.create();
-                })
             },
-            methods: {
-                get_html: function () {
-                    var self = this;
-                    var html = self.editor.$txt.html();
-                    console.log(html)
-                },
-                get_text: function () {
-                    var self = this;
-                    var text = self.editor.$txt.text();
-                    console.log(text)
-                },
-                get_format: function () {
-                    var self = this;
-                    var formatText = self.editor.$txt.formatText();
-                    console.log(formatText)
-                },
-            }
-        });
-        {#    console.log(text_view)#}
+            methods: {}
+        })
+
+
+        /*
+         var text_view = new Vue({
+         delimiters: ['{$', '$}'],
+         el: "#topic_text_view",
+         data: {
+         text: ''
+         },
+         mounted: function () {
+         this.$nextTick(function () {
+         // 代码保证 this.$el 在 document 中
+         var self = this;
+         self.editor = new wangEditor($("#editor"));
+         self.editor.config.uploadParams = {
+         csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val(),
+         user: ""
+         };
+         self.editor.config.uploadImgUrl = '/base/upload_img/';
+         self.editor.config.hideLinkImg = true;
+         self.editor.create();
+         })
+         },
+         methods: {
+         get_html: function () {
+         var self = this;
+         var html = self.editor.$txt.html();
+         console.log(html)
+         },
+         get_text: function () {
+         var self = this;
+         var text = self.editor.$txt.text();
+         console.log(text)
+         },
+         get_format: function () {
+         var self = this;
+         var formatText = self.editor.$txt.formatText();
+         console.log(formatText)
+         },
+         }
+         });
+
+         */
+
     </script>
 {% endblock ext_js %}
