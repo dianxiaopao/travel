@@ -7,6 +7,7 @@ from django.db.models.query_utils import Q
 from community.models.topic_text import TopicText
 from community.models.forum_sort import ForumSort
 from base.models.sys_material import SysMaterial
+from community.models.comment import Comment
 from django.db import models
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -180,20 +181,52 @@ class Community(object):
         text = {}
         sort_obj = ForumSort.objects.filter(id=sort_id)
         text_obj = TopicText.objects.filter(id=topic_id)
-        icon_obj = SysMaterial.objects.get(key='user_default_icon_path')
+        icon_obj = SysMaterial.objects.get(key='user_images_default')
         icon_path = icon_obj.value
         if not text_obj:
             return HttpResponseRedirect('404.html')
-        user = text_obj[0].write_user
+        text_obj = text_obj[0]
+        user = text_obj.write_user
         if hasattr(user, "newuser"):
             pass  # 如果用户头像存在则改变头像
-        text["title"] = text_obj[0].name
-        text["text"] = text_obj[0].text
+        text["title"] = text_obj.name
+        text["text"] = text_obj.text
         # text["pviews"] = text_obj[0].pviews             #评论数
-        text["collection"] = text_obj[0].collection  # 收藏
+        text["collection"] = text_obj.collection  # 收藏
         text["user_icon"] = icon_path
+        text["user_name"] = request.user.username
 
+        comm_obj = Comment.objects.filter(parent_id=text_obj.id, parent_type="TopicText", is_active=True,
+                                          parent_comment=None)
+        sum_comment = len(comm_obj)
+        comm_list = []
+        l1_comment_ids = []
+        for item in comm_obj:
+            l1_comment_ids.append(item.id)
+            comm_dict = {"content": item.content}
+            comm_dict["id"] = item.id
+            if hasattr(item.write_user, "newuser"):
+                pass  # 如果用户头像存在则改变头像
+            comm_dict["user_name"] = item.write_user.username
+            comm_dict["user_icon"] = icon_path
+            comm_list.append(comm_dict)
+        count_l2_obj = Comment.objects.filter(parent_comment__in=l1_comment_ids).values("parent_comment").annotate(
+            Count('parent_comment'))
+        # 获取子评论数
+        count_comment = {}
+        for item in count_l2_obj:
+            count_comment[item["parent_comment"]] = item["parent_comment__count"]
+        #  把子评论数写入到模板参数中
+        for item in comm_list:
+            if count_comment.has_key(item["id"]):
+                item["sub_number"] = count_comment[item["id"]]
+            else:
+                item["sub_number"] = 0
         context = {
-            'text': text,
+            "text": text,
+            "parent_type": "TopicText",
+            "parent_id": text_obj.id,
+            "comm_list": comm_list,
+            "sum_comment": sum_comment,
         }
         return render(request, "topic_text_view.html", context)

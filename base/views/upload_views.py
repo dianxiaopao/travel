@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from base.models.sys_material import SysMaterial
 from mycenter.models.img_material import ImgMaterial
+from django.contrib.contenttypes.models import ContentType
+from community.models.comment import Comment
 from django.http import HttpResponse, Http404, StreamingHttpResponse
 from django.conf import settings
-import traceback, json, os, base64, uuid, responses
+import traceback, json, os, base64, uuid
 from utils import switch_path_relative
 
 try:
@@ -67,3 +69,41 @@ class Upload(object):
             result = "error|" + err_msg
         finally:
             return HttpResponse(result)
+
+    def create_comment(self, request):
+        result = {}
+        try:
+            parent_type = request.POST.get("parent_type")
+            parent_id = request.POST.get("parent_id")
+            content = request.POST.get("content")
+            try:
+                parent_id = int(parent_id)
+            except:
+                raise Exception("数据类型不正确")
+            # parent_type_obj = SysMaterial.objects.filter(key=parent_type)
+            # if not parent_type_obj:
+            #     raise Exception("parent_type不正确！")
+            # c_type = json.loads(parent_type_obj[0].value)
+            # app_label = c_type["app_label"]
+            # app_model = c_type["model"]
+            #
+            # model = ContentType.objects.get(app_label=app_label, model=app_model)
+            # new_obj = model.model_class().objects.filter(id=parent_id)
+            comment_obj = Comment(
+                content=content,
+                parent_id=parent_id,
+                parent_type=parent_type,
+                target_user=request.user,
+                is_active=True,
+                create_user=request.user,
+                write_user=request.user,
+            )
+            comment_obj.save()
+            result["successful"] = True
+        except Exception, e:
+            err_msg = e.message
+            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                err_msg = e.faultCode
+            result = "error|" + err_msg
+        finally:
+            return HttpResponse(json.dumps(result))

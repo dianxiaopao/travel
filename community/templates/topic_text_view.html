@@ -29,12 +29,7 @@
 
         .QuestionRichText {
             line-height: 2.5rem;
-        {#            height: 5rem;#} /*
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-            */
+            font-size: 1.5rem
         }
 
         .guan_zhu_zhe {
@@ -64,6 +59,98 @@
             background-color: #F7F8FA;
             min-height: 200px;
         }
+
+        .Question-main_rich_text {
+            background-color: #ffffff;
+            min-height: 100px;
+            margin: 2rem 0 10rem 0;
+            padding: 1.5rem;
+        }
+
+        .Question-main_rich_text_top {
+            padding: 1rem;
+        }
+
+        .rich_text_user_images {
+            width: 38px;
+            height: 38px;
+        }
+
+        .Question-main_rich_text_image {
+            float: left;
+        }
+
+        .Question-main_rich_text_username {
+            float: left;
+            padding-left: 2rem;
+            line-height: 38px;
+        }
+
+        .Question-main_rich_text_deit {
+            padding-top: 1rem;
+            clear: both;
+            min-height: 300px;
+        }
+
+        #rich_text_deit {
+            min-height: 200px;
+        }
+
+        .submit_answer {
+            outline: none;
+        }
+
+        .comment_card {
+            background-color: #ffffff;
+            min-height: 100px
+        }
+
+        .comment_card_list {
+            padding: 1rem 2rem 1rem 2rem;
+            clear: both;
+            display: block;
+        }
+
+        .comment_card_list_top {
+            padding: 2rem 2rem 0.5rem 2rem;
+            clear: both;
+            display: block;
+            border-bottom: 1px #F0F2F7 solid;
+        }
+
+        .comment_list_item_top {
+            height: 38px;
+            line-height: 38px;
+            margin: 0 0 2rem 0;
+        }
+
+        .comment_list_item_top div {
+            margin-right: 1rem;
+        }
+
+        .comment_list_item_main {
+            min-height: 50px;
+        }
+
+        .comment_list_item_date {
+            height: 2rem;
+            color: #9FADC7;
+        }
+
+        .comment_list_item_buttom {
+            padding-top: 1rem;
+            color: #9FADC7;
+            font-size: 1.5rem;
+        }
+
+        .comment_list_item_buttom button {
+            display: inline-block;
+            height: 1.5rem;
+            margin-right: 2rem;
+            background-color: #ffffff;
+            border: none;
+            outline: none;
+        }
     </style>
 {% endblock ext_before_css %}
 {% block ext_after_css %}
@@ -80,13 +167,9 @@
                     <div class="QuestionHeader-topics ">
                         <br>
                     </div>
-                    <h2 class="QuestionHeader-title">旅行时你吃到过哪些颜值高，味道赞的甜品？</h2>
+                    <h2 class="QuestionHeader-title">{{ text.title }}</h2>
                     <div class="QuestionRichText ">
-                        <p style="font-size: 1.5rem">
-                            1. Angelina坐标：巴黎来自法国巴黎的百年甜品店，曾是Coco Chanel的心头之爱。每年秋冬季的应季甜品Mont
-                            Blanc（勃朗峰）是使用新鲜的栗子、香草奶油、蛋白饼制成，一口下去满口都是栗子馥郁的芳香，回味无穷~其实作为西方甜品界的成员，
-                            它并没有传闻中那样甜，很值得尝试~听说现在在上海也开店了呢，不知道和巴黎的味道是不是一样，魔都的小伙伴们快去尝试吧~
-                        </p>
+                        {{ text.text }}
 
                     </div>
                 </div>
@@ -105,50 +188,108 @@
                             关注者
                         </div>
                         <div class="NumberBoard-value">
-                            68
+                            {{ text.collection }}
                         </div>
                     </button>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-12 QuestionHeader-footer">
-                    <button type="button">
+                    <button v-on:click="follow_question({{ parent_id }})" type="button">
                         <i class="glyphicon glyphicon-heart"></i>
                         关注
                     </button>
-                    <button type="button">
-                        <i class="glyphicon glyphicon-comment"></i>
-                        评论
-                    </button>
-                    <button type="button">
+                    <a href="#rich_text_deit_a">
+                        <button v-on:click="comment_question({{ parent_id }})" type="button">
+                            <i class="glyphicon glyphicon-comment"></i>
+                            评论
+                        </button>
+                    </a>
+                    <button v-on:click="report_question({{ parent_id }})" type="button">
                         <i class="glyphicon glyphicon-flag"></i>
                         举报
                     </button>
 
                 </div>
             </div>
-
-            <!--
-            <div id="editor" style="height: 200px">
-                <h2>{{ text.title }}</h2>
-                <img src="{{ text.user_icon }}" alt="">
-                {{ text.text }}
-            </div>
-            <button type="button" v-on:click="get_html"> 获取编辑器区域完整html代码</button>
-            <button type="button" v-on:click="get_text">获取编辑器纯文本内容</button>
-            <button type="button" v-on:click="get_format">获取格式化后的纯文本</button>
-            -->
-
         </div>
-
-
     </div>
 
     <div class="Question-main">
         <div class="container">
             <div class="row" style="padding-top: 2rem">
                 <div class="col-lg-9">
-                    <div style="background-color: #ffffff;min-height: 100px">
+                    <div class="comment_card">
+                        <div class="comment_card_list_top">
+                            {{ sum_comment }}个回答
+                        </div>
+                        <div class="comment_card_list">
+                            {% for cm in comm_list %}
+                                <div class="comment_list_item">
+                                    <div class="comment_list_item_top" style="clear: both">
+                                        <div class="comment_list_item_image" style="float: left">
+                                            <img class="rich_text_user_images"
+                                                 src="{{ cm.user_icon }}" alt="">
+                                        </div>
+                                        <div style="float: left">
+                                            {{ cm.user_name }}
+                                        </div>
+                                    </div>
+                                    <div class="comment_list_item_main">
+
+                                        {{ cm.content|safe }}
+
+                                    </div>
+                                    <div class="comment_list_item_date">
+                                        <p>编辑于 2016年6月12号</p>
+                                    </div>
+                                    <div class="comment_list_item_buttom">
+                                        <button v-on:click="comment_level2({{ cm.id }})" type="button">
+                                            <span class="glyphicon glyphicon-comment"></span>
+                                            {{ cm.sub_number }} 条评论
+                                        </button>
+                                        <button v-on:click="praise_comment({{ cm.id }})" type="button">
+                                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                                            赞
+                                        </button>
+                                        <button v-on:click="collect_comment({{ cm.id }})" type="button">
+                                            <span class="glyphicon glyphicon-star-empty"></span>
+                                            收藏
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <hr>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                    <div class="Question-main_rich_text">
+                        <div class="Question-main_rich_text_top">
+                            <div class="Question-main_rich_text_image">
+                                <img class="rich_text_user_images"
+                                     src="{{ text.user_icon }}" alt="">
+                            </div>
+                            <div class="Question-main_rich_text_username">
+                                {{ text.user_name }}
+                            </div>
+                            {{ editorContent|safe }}
+                        </div>
+                        <div class="Question-main_rich_text_deit">
+                            <a name="rich_text_deit_a"></a>
+                            <div id="rich_text_deit">
+
+
+                            </div>
+                            <div style="padding: 1.5rem;margin-bottom: 2rem">
+                                <button type="button" class="btn navbar-right submit_answer" style="outline: none;"
+                                        v-on:click="submit_answer">
+                                    提交回答
+                                </button>
+                            </div>
+
+                        </div>
 
                     </div>
                 </div>
@@ -161,9 +302,6 @@
         </div>
     </div>
 
-
-
-
 {% endblock content %}
 {% block ext_js %}
     <script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
@@ -173,11 +311,64 @@
             delimiters: ['{$', '$}'],
             el: "#topic_text_view",
             data: {
-                text: ''
+                text: '',
+                editorContent: "",
+                parent_type: "{{ parent_type }}",
+                parent_id:{{ parent_id }},
             },
             mounted: function () {
+                var self = this;
+                self.editor = new wangEditor($("#rich_text_deit"));
+                self.editor.config.uploadParams = {
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val(),
+                    user: '',
+                };
+                self.editor.onchange = function () {
+                    self.editorContent = self.editor.$txt.html();
+                };
+                self.editor.config.uploadImgUrl = '/base/upload_img/';
+                self.editor.config.hideLinkImg = true;
+                self.editor.create();
             },
-            methods: {}
+            methods: {
+                follow_question: function (id) {
+                    console.log("关注 ", id)
+                },
+                comment_question: function (id) {
+                    console.log("问题的id ", id)
+
+                },
+                report_question:function (id) {
+                  console.log("举报 ",id)
+                },
+                submit_answer: function (e) {
+                    var self = this;
+                    var data = {
+                        "parent_type": self.parent_type,
+                        "parent_id": self.parent_id,
+                        "content": self.editorContent,
+                        "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val(),
+                    };
+                    $.post("/base/create/comment/", data, function (result) {
+                        result = JSON.parse(result);
+                        if (result.error_msg) {
+                            alert(result.error_msg)
+                        } else {
+                            self.editorContent = ''
+                        }
+                    })
+
+                },
+                comment_level2: function (id) {
+                    console.log("评论  ", id)
+                },
+                praise_comment: function (id) {
+                    console.log("点赞  ", id)
+                },
+                collect_comment: function (id) {
+                    console.log("收藏  ", id)
+                }
+            }
         })
 
 

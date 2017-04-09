@@ -2,6 +2,7 @@
 import os
 from django.conf import settings
 from elasticsearch import Elasticsearch
+from django.db import connection
 
 
 def switch_path_relative(absolute_path, keyword):
@@ -19,6 +20,7 @@ def write_es(data, index='travel', doc_type='note'):
     es = Elasticsearch([es_host], timeout=20)
     result = es.bulk(index=index, doc_type=doc_type, body=es_data, refresh=True)
     return result
+
 
 def sql_get_es(sql):
     '''
@@ -44,3 +46,15 @@ def sql_get_es(sql):
         data.append(data_dict)
     result["data"] = data
     return result
+
+
+def sql_get_pgsql(sql):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        cursor.close()
+    except:
+        cursor.close()
+        raise Exception(u"查询数据库失败！没有得到想要查询到的信息！")
+    return data

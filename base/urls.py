@@ -9,6 +9,7 @@ upload_view = upload_views.Upload()
 # guide =views.guide
 urlpatterns = [
     url(r'^upload_img/$', upload_view.edit_upload_image),
+    url(r'^create/comment/$', upload_view.create_comment),
 ]
 
 urls = urlpatterns
