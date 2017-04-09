@@ -29,10 +29,11 @@ def Guide(request, *args, **kwargs):
         path_dict = {}
         for id in ids:
             for item in body_obj:
-                img_size = Image.open(item.image_path).size
-                if img_size[0] > 400 and img_size[1] > 300 and item.title_id == id:
-                    path_dict[id] = switch_path_relative(item.image_path, "static")
-                    break;
+                if os.path.isfile(item.image_path):
+                    img_size = Image.open(item.image_path).size
+                    if img_size[0] > 400 and img_size[1] > 300 and item.title_id == id:
+                        path_dict[id] = switch_path_relative(item.image_path, "static")
+                        break;
         return path_dict
 
     path_dict = get_img_path(t_ids)

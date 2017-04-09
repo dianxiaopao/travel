@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
-# import views
-#import views.guide as guide_view
+
 import views.home
-# guide =views.guide
+
+home_view = views.home.Home()
+
 urlpatterns = [
-    url(r'^$', views.home.Home),
-    # url(r'^note/create/$', views.mycenter.CreateNote),
+    url(r'^(?P<username>\w+)/$', home_view.home),
 ]
 
 urls = urlpatterns
