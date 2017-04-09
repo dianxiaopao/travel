@@ -1,6 +1,10 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 社区 {% endblock title %}
 {% block ext_before_css %}
+
+{% endblock ext_before_css %}
+{% block ext_after_css %}
+    <link rel="stylesheet" href="/static/css/wangEditor.min.css">
     <style>
         .QuestionHeader {
             padding: 1.5rem 0 1.5rem 0;
@@ -152,9 +156,6 @@
             outline: none;
         }
     </style>
-{% endblock ext_before_css %}
-{% block ext_after_css %}
-    <link rel="stylesheet" href="/static/css/wangEditor.min.css">
 {% endblock ext_after_css %}
 
 {% block content %}

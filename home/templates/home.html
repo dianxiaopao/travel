@@ -1,48 +1,360 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 目的地 {% endblock title %}
+{% block ext_before_css %}
+
+{% endblock ext_before_css %}
+{% block ext_after_css %}
+    <style>
+        body {
+            background-color: #F7F8FA;
+        }
+
+        .user_cover {
+            height: 20rem;
+            margin: 1rem 0 0 0;
+            background-color: rgba(150, 145, 147, 0.07);
+            overflow: hidden;
+        }
+
+        .user_cover p {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            font-size: 1.5rem;
+            margin-right: 2rem;
+            margin-top: 2rem;
+            color: #4F4F51;
+            border: 1px #E0E0E0 solid;
+            border-radius: 5px;
+            height: 2.8rem;
+            line-height: 2.4rem;
+            padding: 0.2rem 1rem 0.2rem 1rem;
+        }
+
+        .user_cover p input {
+            position: absolute;
+            right: 0;
+            height: 6em;
+            top: 0;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+            cursor: pointer;
+        }
+
+        .user_Profile {
+            border: solid 1px #E0E0E0;
+            min-height: 14rem;
+            padding: 1.5rem;
+            display: flex;
+            background-color: #ffffff;
+        }
+
+        .user_Profile-image {
+            height: 11rem;
+            width: 14rem;
+            background-color: #9FADC7;
+            position: relative;
+        }
+
+        .user_Profile-image-content {
+            width: 14rem;
+            height: 14rem;
+            overflow: hidden;
+            background-color: red;
+            position: absolute;
+            top: -3rem;
+            border: #ffffff 2px solid;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;;
+        }
+
+        .user_Profile-image-content img {
+            width: 14rem;
+            height: 14rem;
+        }
+
+        .user_Profile-content {
+            height: 11rem;
+            width: 30rem;
+            flex: 1;
+            padding-left: 2rem;
+            display: block;
+        }
+
+        .user_Profile-content-head {
+            height: 3rem;
+        }
+
+        .user_Profile-content-body {
+            height: 6rem;
+            padding-top: 1rem;
+        }
+
+        .user_Profile-content-body div {
+            height: 2.5rem;
+            line-height: 2.5rem;
+        }
+
+        .user_Profile-content i {
+            font-size: 1.5rem;
+            color: #9FADC7;
+        }
+
+        .user_Profile-content-footer {
+            height: 2rem;
+            color: #9FADC7;
+        }
+
+        .more_data {
+            border: none;
+            outline: none;
+            background-color: #ffffff;
+            padding: 0;
+            margin: 0;
+        }
+
+        .edit_data_btn {
+            border: 1px solid #0F88EB;
+            border-radius: 5px;
+            width: 10rem;
+            height: 3rem;
+            margin-top: -1rem;
+            margin-right: 1rem;
+            color: #0F88EB;
+            background-color: #ffffff;
+            padding: 0;
+            outline: none;
+        }
+
+        .profile_main_column {
+            border: solid 1px #E7EAF1;
+            margin-top: 1rem;
+            background-color: #ffffff;
+        }
+
+        .profile_main_head {
+            clear: both;
+            padding-top: 1rem;
+        }
+
+        .profile_main_ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            clear: both;
+        }
+
+        .profile_main_ul li {
+            float: left;
+            margin: 0 2rem 0 2rem;
+            padding: 0 0 0.8rem 0;
+
+        }
+
+        .profile_main_ul li a {
+            font-size: 1.6rem;
+            color: #2E2E2E;
+            text-decoration: none;
+        }
+
+        .profile_main_ul li a span {
+            font-size: 1.2rem;
+            color: #8590A6;
+        }
+
+        .profile_main_activities {
+            padding: 1rem 2rem 5rem 2rem;
+        }
+
+        .list_text_main {
+
+        }
+
+        .list_text_head {
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-bottom: 1px solid #E7EAF1;
+        }
+
+        .profile_main_activities .list_item {
+            min-height: 5rem;
+            padding: 1rem 0 1rem 0;
+        }
+
+        .profile_main_activities .list_item_head {
+            padding: 0;
+            width: 100%;
+            margin: 0;
+            color: #8590A6;
+        }
+
+        .profile_main_activities .list_item_head div:nth-child(1) {
+            display: inline-block;
+            width: 80%;
+            margin: 0;
+        }
+
+        .profile_main_activities .list_item_head div:nth-child(2) {
+            display: inline-block;
+            text-align: right;
+            margin: 0;
+            width: 19%;
+
+        }
+
+        .content_item {
+            padding: 1rem 0 1rem 0;
+            border-bottom: 1px solid #E7EAF1;
+        }
+
+        .content_item a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .profile_main_right_top {
+            border: solid 1px #E7EAF1;
+            background-color: #ffffff;
+            text-align: center;
+            height: 6rem;
+            padding: 1rem 0 1rem 0;
+        }
+
+        .profile_main_right_top:after {
+            /*清除浮动*/
+            content: ".";
+            height: 0;
+            visibility: hidden;
+            display: block;
+            clear: both;
+        }
+
+        .profile_main_right_top a {
+            float: left;
+            width: 50%;
+            text-decoration: none;
+        }
+
+        .profile_main_right_top a div {
+            height: 2rem;
+        }
+
+        .profile_main_right_top a div:nth-child(1) {
+            color: #9FADC7;
+        }
+
+        .profile_main_right_top a div:nth-child(2) {
+            color: black;
+        }
+
+
+    </style>
+{% endblock ext_after_css %}
 {% block content %}
-<div class="container" style="min-height: 800px">
-    <!--<h1>-->
-    目的地
-    <!--</h1>-->
-    <!--<div>-->
-        <!--<textarea name="test_put" id="test_put" cols="30" rows="10"></textarea>-->
-    <!--</div>-->
-    <!--<div>-->
-        <!--<input type="text" value="http://gaomumu.com:9200/megacorp/employee/_search/" id="test_url" style="width: 60%">-->
-    <!--</div>-->
+    <div class="container" style="min-height: 800px">
+        <div class="user_cover">
+            <p class="navbar-right">
+                &nbsp;
+                <span class="glyphicon glyphicon-camera"></span>&nbsp;&nbsp;
+                <input type="file" accept="image/gif, image/jpeg, image/png, image/jpg">
+                编辑封面图片
+            </p>
+        </div>
+        <div class="user_Profile">
+            <div class="user_Profile-image">
+                <div class="user_Profile-image-content">
+                    <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="">
+                </div>
+            </div>
+            <div class="user_Profile-content">
+                <div class="user_Profile-content-head">
+                    <h3 style="padding: 0;margin: 0">小方同学
+                        <small>web攻城狮</small>
+                    </h3>
+                </div>
+                <div class="user_Profile-content-body">
+                    <div>
+                        <span>
+                            <i class=" glyphicon glyphicon-map-marker"></i>
+                            &nbsp;&nbsp;<span>河南</span>
+                        </span>
 
-    <!--<button type="button" onclick="test_put()">插入</button>-->
-    <!--<script>-->
+                    </div>
+                    <div>
+                        <i class="glyphicon glyphicon-edit"></i>
+                        &nbsp;&nbsp;<span>我是一个永不服输的人</span>
 
-        <!--var test_arr = [1, [2, 3, [4, 5, [6, 9]], 8]];-->
-        <!--var result = [];-->
-        <!--function test(test) {-->
-            <!--for (var i = 0; i < test.length; i++) {-->
-                <!--if (!(test[i] instanceof Object)) {-->
-                    <!--result.push(test[i])-->
-                <!--} else {-->
-                    <!--this.test(test[i])-->
-                <!--}-->
-            <!--}-->
-        <!--}-->
-        <!--test(test_arr);-->
+                    </div>
+                </div>
+                <div class="user_Profile-content-footer">
+                    <button class="more_data" type="button">
+                        <i class="glyphicon glyphicon-chevron-down"></i>
+                        &nbsp;&nbsp;<span>更多资料</span>
+                    </button>
+                    <button type="button" class="edit_data_btn navbar-right">
+                        编辑个人资料
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9 " style="padding-right:0">
+                <div class="profile_main_column">
+                    <div class="profile_main_head">
+                        <ul class="profile_main_ul">
+                            <li style="border-bottom: 3px solid #0F88EB;font-weight: bold"><a href="#">动态</a></li>
+                            <li><a href="#">收藏&nbsp;<span>20</span></a></li>
+                            <li><a href="#">问题&nbsp;<span>5</span></a></li>
+                            <li><a href="#">回答&nbsp;<span>6</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="profile_main_activities" style="clear: both;border-top: 1px solid #F0F2F7">
+                        <div class="list_text_head">
+                            <p>我的动态</p>
+                        </div>
+                        <div class="list_text_main">
+                            <div class="list_item">
+                                <div class="list_item_head" style="">
+                                    <div style="">关注了问题</div>
+                                    <div style="">1天前</div>
+                                </div>
+                                <div class="content_item">
+                                    <a href="/home/">
+                                        如果你很爱一个人，但是你却感觉他只是一般般喜欢你，你还会继续吗？
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="list_item">
 
-        <!--function test_put() {-->
-<!--//            var data = $('#test_put') ? $('#test_put') : {}-->
-<!--//            var put_data = JSON.parse(data)-->
-            <!--$.ajax({-->
-                <!--url: $('#test_url').val(),-->
-                <!--type: 'GET',-->
-<!--//                data: put_data,-->
-                <!--success: function (result) {-->
-                    <!--console.log(result)-->
-                <!--}-->
-            <!--})-->
-        <!--}-->
-<!--    </script>-->
-
-
-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 ">
+                <div class="profile_main_column">
+                    <div class="profile_main_right_top">
+                        <a href="/home/">
+                            <div>
+                                收藏
+                            </div>
+                            <div>
+                                70
+                            </div>
+                        </a>
+                        <a href="/home/">
+                            <div>
+                                被收藏
+                            </div>
+                            <div>
+                                60
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock content %}
