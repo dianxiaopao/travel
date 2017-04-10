@@ -1,10 +1,11 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 写攻略 {% endblock title %}
-{% block content %}
+{% block ext_before_css %}
+{% endblock ext_before_css %}
+{% block ext_after_css %}
     <link rel="stylesheet" href="/static/css/jquery.Jcrop.css">
     <link rel="stylesheet" href="/static/css/edit_guide.css">
     <style>
-
         #again_title_img {
             background-color: rgba(100, 100, 100, 0.5);
             font-size: 2rem;
@@ -12,8 +13,11 @@
             cursor: pointer;
             visibility: hidden;
         }
-
     </style>
+{% endblock ext_after_css %}
+{% block content %}
+
+
     <div class="container">
         <button type="button" onclick="preview_essay()" class="btn btn-default navbar-btn navbar-right"
                 style="margin-right: 2rem">预览
