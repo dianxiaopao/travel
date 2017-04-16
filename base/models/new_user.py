@@ -13,6 +13,7 @@ class NewUser(User):
     avatar_path = models.CharField(u'头像路径', max_length=255, null=True)
     telephone = models.CharField(u'电话', max_length=255, null=True)
     auth_code = models.CharField(u'验证码', max_length=255, null=True)
+    signatrue = models.CharField(u'签名', max_length=255, null=True)
     send_date = models.DateTimeField(u'发送时间', null=True)
     objects = UserManager()
 

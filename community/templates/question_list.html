@@ -1,0 +1,26 @@
+{% for q in questions %}
+    <div class="tiezi_main_item">
+        <!--每一条评论内容部分-->
+        <h4><a href="#"><p>{{ q.title }}</p></a></h4>
+        <p class="tiezi_username"><a
+                href="#">{{ q.show_name }},<span>{{ q.signatrue }}</span></a></p>
+        <div class="tz_gaiyao ">
+            <a href="/community/comm/text_view/{{ q.id }}/">
+                {{ q.text_txt }}...
+            </a>
+            <span>
+                <button class="tiezi_xsqb" type="button">&nbsp;显示全部&nbsp;</button>
+            </span>
+        </div>
+        <div class="tiezi_jgz_pl">
+            <button>
+                <span class="glyphicon glyphicon-plus"></span>
+                加关注
+            </button>
+            <button>
+                <span class="glyphicon glyphicon-comment"></span>
+                18 条评论
+            </button>
+        </div>
+    </div>
+{% endfor %}

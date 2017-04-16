@@ -4,7 +4,8 @@ from django.db import models
 
 class TopicText(models.Model):
     name = models.CharField(u'主题', max_length=256)
-    text = models.TextField(u'内容', null=True)
+    text_txt = models.TextField(u'内容', null=True)
+    text_htm = models.TextField(u'内容代码段', null=True)
 
     forum_sort = models.ForeignKey('community.ForumSort', null=True, related_name='+', verbose_name='分类名称')
     u_public = models.BooleanField(u'是否公开', default=True)

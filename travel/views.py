@@ -4,7 +4,6 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
-from django.contrib.auth.models import User
 from base.models.new_user import NewUser
 from django.contrib.auth.models import User
 from hashlib import sha1
@@ -54,7 +53,7 @@ def alogin(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/mycenter/note/create/')
+                return HttpResponseRedirect('/community/')
             else:
                 return render(request, 'login.html', {"active_msg": u'账户被禁用'})
         else:

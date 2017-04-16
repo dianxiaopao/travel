@@ -8,11 +8,16 @@ from community.models.topic_text import TopicText
 from community.models.forum_sort import ForumSort
 from base.models.sys_material import SysMaterial
 from community.models.comment import Comment
+
 from django.db import models
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from base.views.base_views import UserView
+import base.views.base_views as base_view
 
-import json, traceback
+get_user_data = base_view.UserView().get_user_data
+
+import json, traceback, pytz
 
 # Create your views here.
 
@@ -23,64 +28,88 @@ except ImportError:  # django < 1.7
 
 
 class Community(object):
-    def get_community(self, request, *args, **kwargs):
-        sort_obj = ForumSort.objects.all()
-
-        def get_edit_data():
-            '''
-            获取编辑器需要的数据
-            :return: default_sort,默认的分类名称，如 综合交流区, edit_box，下拉选择的分类名称
-            '''
-            edit_box = []
-            default_sort = u"没有分类可以选择"
-            if sort_obj:
-                default_sort = sort_obj[0].id
-            for item in sort_obj:
-                edit_dict = {}
-                edit_dict["name"] = item.name
-                edit_dict["id"] = item.id
-                edit_box.append(edit_dict)
-            return default_sort, edit_box
-
-        default_sort, edit_box = get_edit_data()  # 获取编辑器需要的数据
-
-        def get_sort_data():
-
-            s_n_obj = TopicText.objects.values("forum_sort").annotate(Count('id')).order_by()
-            sort_count = {}
-            for item in s_n_obj:
-                sort_count[str(item["forum_sort"])] = item["id__count"]
-
-            sort_list = []
-            for item in sort_obj:
-                if item.a_public:
-                    sort_dict = {}
-                    new_comm = sort_count[str(item.id)] if sort_count.has_key(str(item.id)) else 0
-                    sort_dict = {
-                        "name": item.name,
-                        "describe": item.describe,
-                        "url": item.url,
-                        "icon": item.icon,
-                        "id": item.id,
-                        "new_comm": new_comm,
-                    }
-                    sort_list.append(sort_dict)
-
-            return sort_list
-
-        sort_list = get_sort_data()
-
+    def get_questions_list(self, request):
+        sort_id = request.GET.get("sort")
+        page = request.GET.get("page")
         page_obj = SysMaterial.objects.filter(key="comm_page_size")
         page_size = int(page_obj[0].value) if page_obj else 10
+        order_field = "write_date"
+        filter_str = {'u_public': True, "a_public": True}
+        try:
+            page = int(page)
+        except:
+            pass
+        if sort_id != "all":
+            try:
+                sort_id = int(sort_id)
+                if sort_id in self.sort_ids:
+                    filter_str["forum_sort_id"] = sort_id
+            except:
+                pass
+        text_obj = TopicText.objects.filter(Q(**filter_str)).order_by("priority").order_by(order_field)[
+                   page * page_size:(page + 1) * page_size]
+        user_ids = []
+        text_ids = []
+        for item in text_obj:
+            text_ids.append(item.id)
+            user_ids.append(item.write_user_id)
+        user_data = get_user_data(user_ids)
+        # 评论数量还没有
+        questions = []
+        for item in text_obj:
+            text_txt = item.text_txt[:75] if item.text_txt else ""
+            new_date = item.write_date.astimezone(pytz.timezone('Asia/Shanghai'))
+            write_date = str(new_date)[:19]
+            write_user = user_data[item.write_user_id]
+            show_name = write_user["show_name"] if write_user["show_name"] else write_user["username"]
+            q_dict = {
+                "id": item.id,
+                "title": item.name,
+                "text_htm": item.text_htm,
+                "text_txt": text_txt,
+                "pviews": item.pviews,
+                "collection": item.collection,
+                "write_date": write_date,
+                "show_name": show_name,
+                "signatrue": write_user["signatrue"],
+            }
+            questions.append(q_dict)
+        return questions
 
-        comm_list = self._get_commit_list(1, page_size, None, None)
+    def get_community(self, request):
+        sort = request.GET.get("sort")
+        self.page = 0
+        sort_obj = ForumSort.objects.all()
+        self.sort_obj = sort_obj
+        edit_box = []
+        default_sort = u"没有分类可以选择"
+        if sort_obj:
+            default_sort = sort_obj[0].id
+        sort_ids = []
+        for item in sort_obj:
+            sort_ids.append(item.id)
+            edit_dict = {
+                "name": item.name,
+                "id": item.id
+            }
+            edit_box.append(edit_dict)
+        self.sort_ids = sort_ids
+
+        user_data = get_user_data(request.user)
+        # questions = self.get_questions_list(request)
         context = {
             'edit_box': edit_box,
             'default_sort': default_sort,
-            'sort_list': sort_list,
-            'comm_list': comm_list,
+            # 'questions': questions
         }
         return render(request, 'community.html', context)
+
+    def get_question_list(self, request):
+        questions = self.get_questions_list(request)
+        context = {
+            'questions': questions
+        }
+        return render(request, 'question_list.html', context)
 
     def _get_commit_list(self, page, page_size, filter_str, order_str):
         if not order_str:
@@ -125,9 +154,10 @@ class Community(object):
             result = {}
             try:
                 if request.user.is_authenticated():
-                    comm_sort = request.POST.get("comm_sort")
-                    comm_text = request.POST.get("comm_text")
-                    comm_title = request.POST.get("comm_title").strip()
+                    comm_sort = request.POST.get("question_sort")
+                    comm_text = request.POST.get("question_main_text")
+                    comm_html = request.POST.get("question_main_html")
+                    comm_title = request.POST.get("question_title").strip()
                     if not comm_sort:
                         raise Exception("请选择分类")
                     if not comm_text:
@@ -136,14 +166,15 @@ class Community(object):
                         raise Exception("输入标题")
                     new_obj = TopicText(
                         name=comm_title,
-                        text=comm_text,
+                        text_txt=comm_text,
+                        text_htm=comm_html,
                         forum_sort_id=comm_sort,
                         create_user=request.user,
                         write_user=request.user
                     )
                     TopicText.objects.bulk_create([new_obj])
                     result["successful"] = True
-                    result["title"] = comm_title
+                    result["title"] = comm_title.encode("utf-8")
                 else:
                     result['next'] = '/login/'
             except Exception, e:
@@ -176,10 +207,8 @@ class Community(object):
         return render(request, 'topic_text_list.html', context)
 
     def view_topic_text(self, request, *args, **kwargs):
-        sort_id = kwargs.get("sort")
         topic_id = kwargs.get("topic")
         text = {}
-        sort_obj = ForumSort.objects.filter(id=sort_id)
         text_obj = TopicText.objects.filter(id=topic_id)
         icon_obj = SysMaterial.objects.get(key='user_images_default')
         icon_path = icon_obj.value
@@ -190,7 +219,7 @@ class Community(object):
         if hasattr(user, "newuser"):
             pass  # 如果用户头像存在则改变头像
         text["title"] = text_obj.name
-        text["text"] = text_obj.text
+        text["text"] = text_obj.text_htm
         # text["pviews"] = text_obj[0].pviews             #评论数
         text["collection"] = text_obj.collection  # 收藏
         text["user_icon"] = icon_path
@@ -216,7 +245,7 @@ class Community(object):
         count_comment = {}
         for item in count_l2_obj:
             count_comment[item["parent_comment"]] = item["parent_comment__count"]
-        #  把子评论数写入到模板参数中
+        # 把子评论数写入到模板参数中
         for item in comm_list:
             if count_comment.has_key(item["id"]):
                 item["sub_number"] = count_comment[item["id"]]
