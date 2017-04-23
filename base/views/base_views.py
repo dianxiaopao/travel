@@ -51,3 +51,4 @@ class UserView(object):
                 u_data = get_data(item, user_icon_obj)
                 data[item.id] = u_data
         return data
+
