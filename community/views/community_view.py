@@ -62,7 +62,7 @@ class Community(object):
             new_date = item.write_date.astimezone(pytz.timezone('Asia/Shanghai'))
             write_date = str(new_date)[:19]
             write_user = user_data[item.write_user_id]
-            show_name = write_user["show_name"] if write_user["show_name"] else write_user["username"]
+            show_name = write_user["show_name"] if write_user.has_key("show_name") else write_user["username"]
             q_dict = {
                 "id": item.id,
                 "title": item.name,
@@ -220,32 +220,39 @@ class Community(object):
         text_obj = TopicText.objects.filter(id=topic_id)
         icon_obj = SysMaterial.objects.get(key='user_images_default')
         icon_path = icon_obj.value
-        if not text_obj:
+        if not request:
             return HttpResponseRedirect('404.html')
+        # 文章信息
         text_obj = text_obj[0]
-        user = text_obj.write_user
-        if hasattr(user, "newuser"):
-            pass  # 如果用户头像存在则改变头像
         text["title"] = text_obj.name
         text["text"] = text_obj.text_htm
-        # text["pviews"] = text_obj[0].pviews             #评论数
         text["collection"] = text_obj.collection  # 收藏
-        text["user_icon"] = icon_path
-        text["user_name"] = request.user.username
 
         comm_obj = Comment.objects.filter(parent_id=text_obj.id, parent_type="TopicText", is_active=True,
-                                          parent_comment=None)
+                                          parent_comment=None).order_by("write_date")
+        u_ids = [request.user.id]
+        for item in comm_obj:
+            u_ids.append(item.write_user_id)
+        # 根据id获得关于user的数据：{2: {'username': u'test1', 'user_path': u'/static/media/icon/sysicon/yangwangtiankong.jpg', 'show_name': u'\u4f1a\u98de\u7684\u732a', 'telephone': None, 'signatrue': u'\u8fd9\u5bb6\u4f19\u5f88\u61d2\uff0c\u4ec0\u4e48\u90fd\u6ca1\u8bf4', 'send_date': None, 'auth_code': None}}
+        user_data = get_user_data(u_ids)
+
         sum_comment = len(comm_obj)
         comm_list = []
         l1_comment_ids = []
         for item in comm_obj:
+            # 通过循环组装一级评论
+            u_id = item.write_user_id
             l1_comment_ids.append(item.id)
             comm_dict = {"content": item.content}
             comm_dict["id"] = item.id
-            if hasattr(item.write_user, "newuser"):
-                pass  # 如果用户头像存在则改变头像
-            comm_dict["user_name"] = item.write_user.username
-            comm_dict["user_icon"] = icon_path
+            if user_data[u_id].has_key("show_name"):
+                user_name = user_data[u_id]["show_name"]
+            else:
+                user_name = user_data[u_id]["username"]
+            comm_dict["user_name"] = user_name
+            comm_dict["user_icon"] = user_data[u_id]["user_path"]
+            new_date = item.write_date.astimezone(pytz.timezone('Asia/Shanghai'))
+            comm_dict["write_date"] = str(new_date)[:19]
             comm_list.append(comm_dict)
         count_l2_obj = Comment.objects.filter(parent_comment__in=l1_comment_ids).values("parent_comment").annotate(
             Count('parent_comment'))
@@ -259,6 +266,12 @@ class Community(object):
                 item["sub_number"] = count_comment[item["id"]]
             else:
                 item["sub_number"] = 0
+
+        # 当前用户的一些信息
+        u_id = request.user.id
+        text["user_icon"] = user_data[u_id]["user_path"]
+        text["user_name"] = user_data[u_id]["show_name"] if user_data[u_id].has_key("show_name") else user_data[u_id]["username"]
+
         context = {
             "text": text,
             "parent_type": "TopicText",
