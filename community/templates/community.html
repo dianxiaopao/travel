@@ -3,351 +3,440 @@
 {% block ext_before_css %}
 {% endblock ext_before_css %}
 {% block ext_after_css %}
+    <link rel="stylesheet" href="/static/css/wangEditor.min.css">
     <style>
-        * {
+        #comm_vue {
+            background-color: #ffffff;
+        }
+
+        .ti_wen_top {
+            height: 6rem;
+            padding: 1rem;
+            background-color: #ffffff;
+        }
+
+        .tiwen_usericon, .tz_user_img {
+            width: 4rem;
+            height: 4rem;
             padding: 0;
             margin: 0;
+            overflow: hidden;
+            float: left;
         }
 
-        .panel-content {
-            padding: 2rem 0 0 0;
-        }
-
-        .panel-body {
-            padding: 0;
-        }
-
-        .comm-list {
-            margin: 0;
-        }
-
-        .comm-list-item {
-            list-style: none;
-            border-bottom: solid 1px #E9E9E9;
-            padding-left: 1rem;
-        }
-
-        .list-title {
-            font-family: "MF YueYuan (Noncommercial) Regular";
-            font-size: 2rem;
-            margin: 0.5rem 0 0.5rem 0;
-            font-weight: bold;
-        }
-
-        .list-descrip {
-            font-size: 1.6rem;
-            font-family: "Microsoft YaHei";
-            padding: 0 1rem 0 0;
-            display: flex;
-        }
-
-        .list-descrip p {
-            line-height: 2rem;
-            display: flex;
-            flex: 1;
-        }
-
-        .list-descrip div {
-            width: 3rem;
-            text-align: right;
-        }
-
-        .comm-list-item a, .list-text-text a, .list-text-time a {
-            color: black;
-            text-decoration: none;
-        }
-
-        .comm-list-item a:link, .comm-list-item a:visited, .comm-list-item a:active {
-            color: black;
-            text-decoration: none;
-        }
-
-        .comm-list-item a:hover {
-            text-decoration: none;
-        }
-
-        .list-text {
-            display: flex;
-            border-bottom: solid 1px #E9E9E9;
+        .tiwen_usericon img, .tz_user_img img {
+            width: 4rem;
             height: 4rem;
         }
 
-        .list-text-avatar {
-            color: #4cae4c;
-            padding: 0.5rem 0 0.5rem 0;
-            margin: 0;
-            position: relative;
-        }
-
-        .list-text-avatar img {
-            padding: 0 0.5rem 0 0.5rem;
-            width: 4rem;
-        }
-
-        .list-text-text {
-            flex: 1;
-            width: 70%;
+        .tiwen_btn {
+            margin: 0 0 0 3rem;
+            float: left;
+            height: 4rem;
             line-height: 4rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .list-text-time {
-            padding: 0 1rem 0 1rem;
-            line-height: 4rem;
-        }
-
-        .view_comm_edit_cent {
-            line-height: 50px;
-            display: none;
-            background-color: #E9E9E9;
-        }
-
-        .edit-top-right-close {
-            margin-right: 2rem;
-            font-size: 2.5rem;
-            color: #919191;
-            cursor: pointer;
-            padding-top: 1rem;
-        }
-
-        .textarea_body {
-            width: 100%;
-            height: 5rem;
-        }
-
-        .textarea_left_content {
-            padding: 1rem 0.5rem 1rem 0;
-        }
-
-        .textarea_right_content {
-            padding: 1rem 0 1rem 0.5rem;
-        }
-
-        .textarea_left_content textarea {
-            height: 20rem;
-            border: none;
-            outline: none;
-        }
-
-        .textarea_right_content div {
-            background-color: white;
-            height: 20rem;
-        }
-
-        .edit-comm-submit {
             padding: 0;
         }
 
-        .edit-comm-submit [type=submit] {
-            background-color: #42B983;
-            color: white;
-            border: none;
-            outline: none;
+        .tiwen_btn button, .tiwen_btn button:active, .tiwen_btn button:hover, .tiwen_btn button:focus {
+            width: 8rem;
+            background-color: #ffffff;
+            font-size: 1.5rem;
+            outline: none !important;
+            color: #0F88EB;
+            border: 1px #0F88EB solid;
         }
 
-        .edit-comm-submit [type=button] {
-            background-color: #E9E9E9;
-            color: #42B983;
+        .sheqqu_wenti {
+            background-color: #ffffff;
+            padding: 1rem 0 1rem 0;
+        }
+
+        .fenlei_list {
+            min-height: 4rem;
+            padding-top: 1rem;
+        }
+
+        .fenlei_list p {
+            border: solid 1px #DAECF5;
+            color: #225599;
+            float: left;
+            height: 2.4rem;
+            line-height: 2.4rem;
+            padding: 0 1rem 0 1rem;
+            margin-right: 1rem;
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+
+        .fenlei_active {
+            background-color: #225599;
+            color: #ffffff !important;
+        }
+
+        .tiezi_list {
+        }
+
+        .tiezi_list_top {
+            padding: 1rem 0 1rem 0;
+        }
+
+        .tiezi_list_top p {
+            padding: 0;
+            margin: 0;
+        }
+
+        .tiezi_paixu {
+            float: right;
+        }
+
+        .tiezi_paixu p {
+            float: left;
+            cursor: pointer;
+        }
+
+        .tiezi_paixu_active {
+            color: #999999;
+        }
+
+        .tiezi_fenlei {
+            float: left;
+            font-weight: bold;
+            color: #666666;
+        }
+
+        .tiezi_main_item {
+            border-top: 1px solid #EEEEEE;
+            background-color: #ffffff;
+            padding: 1rem 0 0 0;
+
+        }
+
+        .tiezi_main_item h4, .tiezi_main_item h4 a {
+            margin: 0;
+            padding: 0;
+            margin-bottom: 0.5rem;
+            font-family: "Microsoft YaHei";
+            font-size: 1.5rem;
+            color: #285599;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .tz_gaiyao, .tz_gaiyao a {
+            /*min-height: 4rem;*/
+            text-decoration: none;
+            font-size: 1.4rem;
+            line-height: 2rem;
+            color: black;
+        }
+
+        .tiezi_username, .tiezi_username a {
+            font-weight: bold;
+            text-decoration: none;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .tiezi_username span {
+            color: #999999;
+            font-weight: 100;
+        }
+
+        .tiezi_xsqb {
+            border: none;
             outline: none;
+            background-color: #ffffff;
+            color: #225599;
+
+        }
+
+        .tiezi_xsqb:hover {
+            background-color: #C7E9F8;
+        }
+
+        .tiezi_jgz_pl {
+            padding: 0.5rem 0 1rem 0;
+
+        }
+
+        .tiezi_jgz_pl button {
+            border: none;
+            outline: none;
+            background-color: #ffffff;
+            color: #999999;
+            margin-right: 1rem;
+        }
+
+        .buttom_page {
+            height: 5rem;
+            margin-bottom: 1rem;
         }
     </style>
 {% endblock ext_after_css %}
 {% block content %}
-
-    <div id="comm_vue">
-        <div class="container" style="min-height: 800px">
-            <div class="jumbotron">
-            </div>
-            <div>
-                <div style="width: 100%;" class="btn-group" role="group" aria-label="选项">
-                    <button type="button" class="btn btn-default active">分类</button>
-                    <button type="button" class="btn btn-default">Middle</button>
-                    <button type="button" class="btn btn-default">Right</button>
-                    <button style="left: -1.2rem" v-on:click="show_edit_modal" type="button" class="btn navbar-right"><i
-                            class="glyphicon glyphicon-plus"></i>&nbsp;写一笔
-                    </button>
-                </div>
-            </div>
-            <div class="col-lg-6 panel-content" style="padding-right: 0.8rem">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">分类</h3>
-                    </div>
-                    <div class="panel-body">
-                        <ul class="comm-list">
-                            {% for item in sort_list %}
-                                <li class="comm-list-item">
-                                    <a href="/community/comm/view/{{ item.id }}/1/">
-                                        <div class="list-title">
-                                            {{ item.name }}
-                                        </div>
-                                        <div class="list-descrip">
-                                            <p>
-                                                {{ item.describe }}
-                                            </p>
-                                            <div>
-                                                <span class="badge">{{ item.new_comm }}</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
+    <div id="community_index">
+        <div class="container" style="min-height: 800px;padding-top: 2rem">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="sheqqu_wenti">
+                        <div class="fenlei_list">
+                            <p id="sort_all" v-on:click="switch_sort('all')" class="fenlei_active">所有</p>
+                            {% for st in edit_box %}
+                                <p id="sort_{{ st.id }}"
+                                   v-on:click="switch_sort({{ st.id }})">{{ st.name }}</p>
                             {% endfor %}
-                        </ul>
+                            <div style="clear: both"></div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-6 panel-content" style="padding-left: 0.8rem">
-                <div class=" panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">最新</h3>
-                    </div>
-                    <div class="panel-body ">
-                        <!--开始渲染右侧文章列表-->
-                        {% for f in comm_list %}
-                            <div class="list-text">
-                                <div class="list-text-avatar">
-                                    <a href="#">
-                                        <img src="{{ f.user_icon }}" alt="用户头像"
-                                             class="img-circle">
-                                    </a>
-                                </div>
-                                <div class="list-text-text">
-                                    <a href="/community/comm/text/view/{{ f.sort_id }}/{{ f.id }}/">
-                                        <!--这里写跳转到文章详情的URL-->
-                                        {{ f.name }}
-                                    </a>
-                                </div>
-                                <div class="list-text-time">
-                                    <a href="/community/">{{ f.date }}</a>
-                                </div>
-                            </div>
-                        {% endfor %}
 
+                    <div class="tiezi_list">
+                        <div class="tiezi_list_top">
+                            <p class="tiezi_fenlei">
+                                <i class="glyphicon glyphicon-th-large"></i>&nbsp;
+                                <span>所有</span>
+                            </p>
+                            <div class="tiezi_paixu" id="sort_field_parent">
+                                <p sort="t" v-on:click="sort_click('t')" class="tiezi_paixu_active">时间排序</p>
+                                <p>&nbsp;|&nbsp;</p>
+                                <p sort="h" v-on:click="sort_click('h')">热度排序</p>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                        <div id="question_list">
+
+                        </div>
+                        <div class="buttom_page">
+                            <ul class="pager">
+                                <li v-on:click="question_paging('p')" v-if="page != 0"><a>上一页</a></li>
+                                <li> 第{$ page+1 $}页/共{$ page_number $}页</li>
+                                <li v-on:click="question_paging('n')" v-if="page != page_number-1"><a>下一页</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ti_wen_top">
+                        <div class="tiwen_usericon">
+                            <img src="/static/media/icon/sysicon/user_images_ default_160x160.jpg" alt="">
+                        </div>
+                        <div class="tiwen_btn">
+                            <button v-on:click="add_question" type="button" class="btn">
+                                <i class="glyphicon glyphicon-comment"></i>&nbsp;&nbsp;提问
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
-        <div id="edit_con_form" class="navbar-fixed-bottom view_comm_edit_cent">
-            <div class="container ">
-                <div style="">
-                    <span>新建帖子</span>
-                    <span class="edit-top-right-close navbar-right">
-                 <p v-on:click="hidden_edit_form">
-                     <i class="glyphicon glyphicon-chevron-down"></i>
-                 </p></span>
-                </div>
 
-                <form class="form-inline">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input style="width: 25rem" type="text" v-model="comm_title" class="form-control" id="sort_name"
-                               placeholder="请输入帖子的题目">
+
+        <div class="modal fade" id="question_model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">提问</h4>
                     </div>
-                    <div class="form-group">
-                        <select style="width: 25rem" v-model="comm_sort" class="form-control">
-                            {% for item in edit_box %}
-                                <option id="{{ item.id }}" value="{{ item.id }}"
-                                        name="comm_sort">{{ item.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="textarea_b_content">
-                        <div class="textarea_left_content col-lg-6">
-                            <textarea v-model="comm_text" name="text_body" id="inputText"
-                                      class="textarea_body"></textarea>
-                        </div>
-                        <div class="textarea_right_content col-lg-6">
-                            <div>
-                                {$ comm_text $}
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <label for="question_title">题目</label>
+                                <input type="email" class="form-control" v-model="question_title"
+                                       id="question_title" placeholder="请输入提问题目">
+                            </div>
+                            <div class="col-lg-5">
+                                <label for="question_sort">分类</label>
+                                <select id="question_sort" v-model="question_sort" class="form-control">
+                                    <option value="1">综合交流区</option>
+                                    <option value="2">旅行心得区</option>
+                                    <option value="3">杂谈区</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-12">
+                                <label for="tiezi_edit_rich_text">详细说明</label>
+                                <div style="min-height: 200px" id="tiezi_edit_rich_text">
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="edit-comm-submit col-lg-12">
-                        <button type="submit" v-on:click="comm_create" class="btn"><i
-                                class="glyphicon glyphicon-plus"></i> &nbsp;创建
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="modaa_cancel" class="btn btn-default" data-dismiss="modal">
+                            取消
                         </button>
-                        <button type="button" class="btn"><i class="glyphicon glyphicon-plus"></i> &nbsp;取消
+                        <button type="button" v-on:click="publish_question" class="btn btn-primary">
+                            发布
                         </button>
                     </div>
-                </form>
-
+                </div>
             </div>
-
         </div>
     </div>
-
 {% endblock content %}
 {% block ext_js %}
+    <script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
     <script>
-        var comm_vue = new Vue({
+        //function init_vue() {
+        var community_vue = new Vue({
             delimiters: ['{$', '$}'],
-            el: '#comm_vue',
+            el: "#community_index",
             data: {
-                comm_text: '',
-                comm_title: '',
-                comm_sort: "{{ default_sort }}"
+                "active_sort": "all",
+                "user_id": "{{ request.user.id }}",
+                "is_active": "{{ request.user.is_active }}",
+                "question_main_html": null,
+                "question_title": null,
+                "question_main_text": null,
+                "question_main_format": null,
+                "question_sort": "1",
+                "page": 0,
+                "sort": "t",
+                "page_number": 1,
             },
             mounted: function () {
-                this.$nextTick(function () {
-                    // 代码保证 this.$el 在 document 中
-                    setInterval(function () {
-                        //   window.location="/community/";
-                        console.log('快疯了吧！哈哈！')
-                    }, 100)
-
-                })
-
+                var self = this;
+                self.editor = new wangEditor($("#tiezi_edit_rich_text"));
+                self.editor.config.uploadParams = {
+                    csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val(),
+                    user: self.user_id,
+                };
+                self.editor.onchange = function () {
+                    self.question_main_html = self.editor.$txt.html();
+                    self.question_main_format = self.editor.$txt.formatText()
+                    self.question_main_text = self.editor.$txt.text()
+                };
+                self.editor.config.uploadImgUrl = '/base/upload_img/';
+                self.editor.config.hideLinkImg = true;
+                self.editor.create();
+                self.switch_sort("all");
+                // self.windows_scroll_refresh()
             },
             methods: {
-                show_edit_modal: function (event) {
-                    var active = $("#edit_con_form").is(":hidden")
-                    if (active == true) {
-                        $("#edit_con_form").css({"display": "block"})
-                    }
-                },
-                hidden_edit_form: function (event) {
-                    var active = $("#edit_con_form").is(":hidden")
-                    if (active == false) {
-                        $("#edit_con_form").css({"display": "none"})
-                    }
-                },
-                comm_create: function (e) {
-                    e.preventDefault();
-                    var self = this
-                    if (this.comm_title.replace(/[ ]/g, "") == '') {
-                        alert("标题不能为空")
-                    } else if (this.comm_title.replace(/[ ]/g, "") == '') {
-                        alert("内容不能为空")
-                    } else {
-                        var data = {
-                            "comm_title": self.comm_title,
-                            "comm_text": self.comm_text,
-                            "comm_sort": self.comm_sort,
-                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
-                        };
+                sort_click: function (sort) {
+                    var sort_p = $("#sort_field_parent");
+                    $(".tiezi_paixu_active", sort_p).removeClass("tiezi_paixu_active");
+                    $("[sort=" + sort + "]", sort_p).addClass("tiezi_paixu_active");
 
-                        $.post('/community/create/', data, function (result) {
-                            console.log(result);
+                },
+                switch_sort: function (id) {
+                    var self = this;
+                    self.page=0;
+                    var s_name = $("#sort_" + id).html();
+                    $("span", ".tiezi_fenlei").html(s_name);
+                    $("p", ".fenlei_list").removeClass();
+                    $("#sort_" + id).addClass("fenlei_active");
+                    self.active_sort = id;
+                    self.set_question()
 
-                            result = JSON.parse(result);
-                            if (result.next) {
-                                window.location.href = result.next;
-                            } else if (result.error_msg) {
-                                alert(result.error_msg)
-                            } else {
-                                self.comm_text = '';
-                                self.comm_title = '';
-                                $("#edit_con_form").css({"display": "none"})
-                                window.location.reload()
+                },
+                set_question: function () {
+                    var self = this;
+                    var data = {"sort": self.active_sort, "page": self.page};
+                    $.get('/community/get_qlist/', data, function (result) {
+                        $("#question_list").html(result);
+                        var page_number = $("#question_page_" + self.page).attr("page_data");
+                        self.page_number = parseInt(page_number);
+                        self.init_question_list(self.page)
+                    })
+                },
+
+                init_question_list: function (page) {
+                    new Vue({
+                        delimiters: ['{$', '$}'],
+                        el: "#question_page_" + page,
+                        data: {},
+                        methods: {
+                            view_all: function (q_id) {
+                                $(".gaiyao", "#question_" + q_id).css({"display": "none"});
+                                $(".xiangxi", "#question_" + q_id).css({"display": "block"});
+                                $(".close_up", "#question_" + q_id).css({"display": "block"});
+                            },
+                            close_up: function (q_id) {
+                                $(".gaiyao", "#question_" + q_id).css({"display": "block"});
+                                $(".xiangxi", "#question_" + q_id).css({"display": "none"});
+                                $(".close_up", "#question_" + q_id).css({"display": "none"});
                             }
-                        });
+                        }
+                    })
+                },
 
+                question_paging: function (o) {
+                    var self = this;
+                    if (o == "n") {
+                        self.page = self.page + 1
+                    } else if (o == 'p') {
+                        self.page = self.page - 1
                     }
+                   self.set_question()
+
+                },
+
+                windows_scroll_refresh: function () {
+                    var self = this;
+                    /*
+                     $(window).scroll(function () {
+                     var s_t = $(window).scrollTop();        //这个方法是当前滚动条滚动的距离
+                     var w_h = $(window).height();           //获取当前窗体的高度
+                     var d_h = $(document).height();         //l获取当前文档的高度
+                     var bot = 50;                           //bot是底部距离的高度
+                     if ((bot + s_t) >= (d_h - w_h)) {
+                     //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
+                     var data = {"sort": self.active_sort, "page": self.page + 1};
+                     $.get('/community/get_qlist/', data, function (result) {
+                     self.page = self.page + 1;
+                     if (result != '') {
+                     $("#question_list").append(result);
+                     } else {
+                     console.log(result)
+                     //$("#question_list").append("没有更多内容了");
+                     }
+                     })
+                     }
+                     });
+                     */
+                },
+                add_question: function () {
+                    var self = this;
+                    if (self.is_active == "True") {
+                        $("#question_model").modal('show')
+                    } else {
+                        window.location.href = "/login/"
+                    }
+
+                },
+                publish_question: function () {
+                    var self = this;
+                    var data = {
+                        "question_title": self.question_title,
+                        "question_main_text": self.question_main_text,
+                        "question_main_html": self.question_main_html,
+                        "question_sort": self.question_sort,
+                        'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+                    };
+                    $.post("/community/create/", data, function (result) {
+                        result = JSON.parse(result);
+                        if (result.error_msg) {
+                            alert(result.error_msg)
+                        } else {
+                            $("#question_model").modal('hide');
+                            self.on_modal_hidden()
+                        }
+                    })
+                },
+                on_modal_hidden: function () {
+                    this.question_title = '';
+                    this.question_main_text = '';
+                    this.question_main_html = '';
+                },
+                modaa_cancel: function () {
 
                 }
             }
-        })
+        });
+        // }
+        // init_vue()
+
     </script>
 {% endblock ext_js %}

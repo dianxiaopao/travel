@@ -170,7 +170,7 @@
                     </div>
                     <h2 class="QuestionHeader-title">{{ text.title }}</h2>
                     <div class="QuestionRichText ">
-                        {{ text.text }}
+                        {{ text.text|safe }}
 
                     </div>
                 </div>
@@ -339,8 +339,8 @@
                     console.log("问题的id ", id)
 
                 },
-                report_question:function (id) {
-                  console.log("举报 ",id)
+                report_question: function (id) {
+                    console.log("举报 ", id)
                 },
                 submit_answer: function (e) {
                     var self = this;
