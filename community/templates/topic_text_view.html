@@ -237,12 +237,10 @@
                                         </div>
                                     </div>
                                     <div class="comment_list_item_main">
-
                                         {{ cm.content|safe }}
-
                                     </div>
                                     <div class="comment_list_item_date">
-                                        <p>编辑于 2016年6月12号</p>
+                                        <p>编辑于 {{ cm.write_date }}</p>
                                     </div>
                                     <div class="comment_list_item_buttom">
                                         <button v-on:click="comment_level2({{ cm.id }})" type="button">
@@ -355,6 +353,7 @@
                         if (result.error_msg) {
                             alert(result.error_msg)
                         } else {
+                            window.location.reload()
                             self.editorContent = ''
                         }
                     })

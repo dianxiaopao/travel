@@ -278,7 +278,6 @@
 {% block ext_js %}
     <script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
     <script>
-        //function init_vue() {
         var community_vue = new Vue({
             delimiters: ['{$', '$}'],
             el: "#community_index",
@@ -295,6 +294,9 @@
                 "sort": "t",
                 "page_number": 1,
             },
+            created:function () {
+                this.switch_sort("all");
+            },
             mounted: function () {
                 var self = this;
                 self.editor = new wangEditor($("#tiezi_edit_rich_text"));
@@ -310,7 +312,7 @@
                 self.editor.config.uploadImgUrl = '/base/upload_img/';
                 self.editor.config.hideLinkImg = true;
                 self.editor.create();
-                self.switch_sort("all");
+
                 // self.windows_scroll_refresh()
             },
             methods: {
@@ -435,8 +437,6 @@
                 }
             }
         });
-        // }
-        // init_vue()
 
     </script>
 {% endblock ext_js %}

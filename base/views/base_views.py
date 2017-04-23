@@ -19,11 +19,10 @@ except ImportError:  # django < 1.7
 class UserView(object):
     def get_user_data(self, users):
         data = {}
+        user_icon_obj = SysMaterial.objects.filter(key="user_default_icon_path")
 
-        def get_data(user):
-            user_data = {}
-            user_data["username"] = user.username
-            user_icon_obj = SysMaterial.objects.filter(key="user_default_icon_path")
+        def get_data(user, user_icon_obj):
+            user_data = {"username": user.username}
             user_icon_path = ""
             if user_icon_obj:
                 user_icon_obj = user_icon_obj[0]
@@ -31,12 +30,12 @@ class UserView(object):
             user_data["signatrue"] = u"这家伙很懒，什么都没说"
             if hasattr(user, "newuser"):
                 new_user = user.newuser
-                if new_user.avatar_path:
-                    user_data["user_path"] = new_user.avatar_path if new_user.avatar_path else user_icon_path
-                    user_data["show_name"] = new_user.show_name
-                    user_data["telephone"] = new_user.telephone
-                    user_data["auth_code"] = new_user.auth_code
-                    user_data["send_date"] = new_user.send_date
+                user_data["user_path"] = new_user.avatar_path if new_user.avatar_path else user_icon_path
+                user_data["show_name"] = new_user.show_name
+                user_data["telephone"] = new_user.telephone
+                user_data["auth_code"] = new_user.auth_code
+                user_data["send_date"] = new_user.send_date
+                if new_user.signatrue:
                     user_data["signatrue"] = new_user.signatrue
             else:
                 user_data["show_name"] = user.first_name + user.last_name
@@ -44,11 +43,11 @@ class UserView(object):
             return user_data
 
         if isinstance(users, models.Model):
-            data = get_data(users)
+            data = get_data(users, user_icon_obj)
         else:
             user_obj = User.objects.filter(id__in=users)
             data = {}
             for item in user_obj:
-                u_data = get_data(item)
+                u_data = get_data(item, user_icon_obj)
                 data[item.id] = u_data
         return data
