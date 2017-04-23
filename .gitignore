@@ -6,4 +6,3 @@ media/OldImgFile/*
 static/media/images/*
 .idea/*
 */.idea/*
-*/migrations/0*.*
