@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^create/$', community_view.create),
     url(r'^comm/view/(?P<sort>\w+)/(?P<page>\w+)/$', community_view.sort_comm_list),
     url(r'^comm/text_view/(?P<topic>\w+)/$', community_view.view_topic_text),
+    url(r'^create_focus/$', community_view.create_focus),
+
 ]
 
 urls = urlpatterns

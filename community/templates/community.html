@@ -294,7 +294,7 @@
                 "sort": "t",
                 "page_number": 1,
             },
-            created:function () {
+            created: function () {
                 this.switch_sort("all");
             },
             mounted: function () {
@@ -312,8 +312,6 @@
                 self.editor.config.uploadImgUrl = '/base/upload_img/';
                 self.editor.config.hideLinkImg = true;
                 self.editor.create();
-
-                // self.windows_scroll_refresh()
             },
             methods: {
                 sort_click: function (sort) {
@@ -324,7 +322,7 @@
                 },
                 switch_sort: function (id) {
                     var self = this;
-                    self.page=0;
+                    self.page = 0;
                     var s_name = $("#sort_" + id).html();
                     $("span", ".tiezi_fenlei").html(s_name);
                     $("p", ".fenlei_list").removeClass();
@@ -359,6 +357,23 @@
                                 $(".gaiyao", "#question_" + q_id).css({"display": "block"});
                                 $(".xiangxi", "#question_" + q_id).css({"display": "none"});
                                 $(".close_up", "#question_" + q_id).css({"display": "none"});
+                            },
+                            create_focus: function (id) {
+                                var data = {"munity_id": id};
+                                $.get("/community/create_focus/", data, function (result) {
+                                    result = JSON.parse(result);
+                                    if (result.error_msg) {
+                                        alert(result.error_msg)
+                                    } else {
+                                        var btn = $("#create_focus_button_" + id);
+                                        if (result.action == "create") {
+                                            btn.html("取消关注")
+                                        } else {
+                                            btn.html('<span class="glyphicon glyphicon-plus"></span> 加关注')
+                                        }
+
+                                    }
+                                })
                             }
                         }
                     })
@@ -371,33 +386,8 @@
                     } else if (o == 'p') {
                         self.page = self.page - 1
                     }
-                   self.set_question()
+                    self.set_question()
 
-                },
-
-                windows_scroll_refresh: function () {
-                    var self = this;
-                    /*
-                     $(window).scroll(function () {
-                     var s_t = $(window).scrollTop();        //这个方法是当前滚动条滚动的距离
-                     var w_h = $(window).height();           //获取当前窗体的高度
-                     var d_h = $(document).height();         //l获取当前文档的高度
-                     var bot = 50;                           //bot是底部距离的高度
-                     if ((bot + s_t) >= (d_h - w_h)) {
-                     //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
-                     var data = {"sort": self.active_sort, "page": self.page + 1};
-                     $.get('/community/get_qlist/', data, function (result) {
-                     self.page = self.page + 1;
-                     if (result != '') {
-                     $("#question_list").append(result);
-                     } else {
-                     console.log(result)
-                     //$("#question_list").append("没有更多内容了");
-                     }
-                     })
-                     }
-                     });
-                     */
                 },
                 add_question: function () {
                     var self = this;

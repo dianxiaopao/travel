@@ -196,9 +196,12 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 QuestionHeader-footer">
-                    <button v-on:click="follow_question({{ parent_id }})" type="button">
-                        <i class="glyphicon glyphicon-heart"></i>
-                        关注
+                    <button id="topic_guanzhu_{{ parent_id }}" v-on:click="follow_question({{ parent_id }})" type="button">
+                        {% if text.action == 'no' %}
+                            <i class="glyphicon glyphicon-heart"></i>&nbsp;&nbsp;关注
+                        {% else %}
+                            取消关注
+                        {% endif %}
                     </button>
                     <a href="#rich_text_deit_a">
                         <button v-on:click="comment_question({{ parent_id }})" type="button">
@@ -331,7 +334,21 @@
             },
             methods: {
                 follow_question: function (id) {
-                    console.log("关注 ", id)
+                    var data = {"munity_id": id};
+                    $.get("/community/create_focus/", data, function (result) {
+                        result = JSON.parse(result);
+                        if (result.error_msg) {
+                            alert(result.error_msg)
+                        } else {
+                            var btn = $("#topic_guanzhu_" + id);
+                            if (result.action == "create") {
+                                btn.html("取消关注")
+                            } else {
+                                btn.html('<span class="glyphicon glyphicon-heart"></span>&nbsp;&nbsp;关注')
+                            }
+
+                        }
+                    })
                 },
                 comment_question: function (id) {
                     console.log("问题的id ", id)

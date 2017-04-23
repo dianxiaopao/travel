@@ -22,13 +22,16 @@
                 </div>
             </div>
             <div class="tiezi_jgz_pl">
-                <button>
-                    <span class="glyphicon glyphicon-plus"></span>
-                    加关注
+                <button id="create_focus_button_{{ q.id }}" v-on:click="create_focus({{ q.id }})">
+                    {% if q.guan_zu == "no" %}
+                        <span class="glyphicon glyphicon-plus"></span>加关注
+                    {% else %}
+                        取消关注
+                    {% endif %}
                 </button>
                 <button>
                     <span class="glyphicon glyphicon-comment"></span>
-                    18 条评论
+                    {{ q.com_numb }} 条评论
                 </button>
                 <button v-on:click="close_up({{ q.id }})" class="close_up" style="float: right;display: none">
                     <span style="transform:rotate(180deg);" class="glyphicon glyphicon-save"></span>

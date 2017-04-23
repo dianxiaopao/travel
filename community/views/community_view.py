@@ -8,6 +8,7 @@ from community.models.topic_text import TopicText
 from community.models.forum_sort import ForumSort
 from base.models.sys_material import SysMaterial
 from community.models.comment import Comment
+from community.models.guan_zhu import Guan_Zhu
 
 from django.db import models
 from django.contrib.auth.decorators import login_required
@@ -28,10 +29,10 @@ except ImportError:  # django < 1.7
 
 
 class Community(object):
-    def get_questions(self, sort_id, page, sort_field):
+    def get_questions(self, sort_id, page, sort_field, user_id):
         page_obj = SysMaterial.objects.filter(key="comm_page_size")
         page_size = int(page_obj[0].value) if page_obj else 10
-        order_field = "write_date"
+        order_field = "-write_date"
         filter_str = {'u_public': True, "a_public": True}
         try:
             page = int(page)
@@ -55,6 +56,18 @@ class Community(object):
             text_ids.append(item.id)
             user_ids.append(item.write_user_id)
         user_data = get_user_data(user_ids)
+
+        guanzhu_obj = Guan_Zhu.objects.filter(gz_user_id=user_id, topic_id__in=text_ids)
+        guanzhu_ids = []
+        for item in guanzhu_obj:
+            guanzhu_ids.append(item.topic_id)
+
+        # 获取评论个数
+        com_number = {}
+        com_obj = Comment.objects.filter(parent_id__in=text_ids).values("parent_id").annotate(Count('parent_id'))
+        for item in com_obj:
+            com_number[item["parent_id"]] = item["parent_id__count"]
+
         # 评论数量还没有
         questions = []
         for item in text_obj:
@@ -63,6 +76,7 @@ class Community(object):
             write_date = str(new_date)[:19]
             write_user = user_data[item.write_user_id]
             show_name = write_user["show_name"] if write_user.has_key("show_name") else write_user["username"]
+            com_numb = com_number[item.id] if com_number.has_key(item.id) else 0
             q_dict = {
                 "id": item.id,
                 "title": item.name,
@@ -72,6 +86,8 @@ class Community(object):
                 "collection": item.collection,
                 "write_date": write_date,
                 "show_name": show_name,
+                "com_numb": com_numb,
+                "guan_zu": "yes" if item.id in guanzhu_ids else "no",
                 "signatrue": write_user["signatrue"],
             }
             questions.append(q_dict)
@@ -111,7 +127,8 @@ class Community(object):
         sort_id = request.GET.get("sort")
         page = request.GET.get("page")
         sort_f = request.GET.get("sort")
-        questions, page_number = self.get_questions(sort_id, page, sort_f)
+        u_id = request.user.id
+        questions, page_number = self.get_questions(sort_id, page, sort_f, u_id)
         context = {
             'questions': questions,
             "page": page,
@@ -218,8 +235,6 @@ class Community(object):
         topic_id = kwargs.get("topic")
         text = {}
         text_obj = TopicText.objects.filter(id=topic_id)
-        icon_obj = SysMaterial.objects.get(key='user_images_default')
-        icon_path = icon_obj.value
         if not request:
             return HttpResponseRedirect('404.html')
         # 文章信息
@@ -227,6 +242,10 @@ class Community(object):
         text["title"] = text_obj.name
         text["text"] = text_obj.text_htm
         text["collection"] = text_obj.collection  # 收藏
+        if Guan_Zhu.objects.filter(topic_id=text_obj.id, gz_user_id=request.user.id).exists():
+            text["action"] = "yes"
+        else:
+            text["action"] = "no"
 
         comm_obj = Comment.objects.filter(parent_id=text_obj.id, parent_type="TopicText", is_active=True,
                                           parent_comment=None).order_by("write_date")
@@ -254,6 +273,7 @@ class Community(object):
             new_date = item.write_date.astimezone(pytz.timezone('Asia/Shanghai'))
             comm_dict["write_date"] = str(new_date)[:19]
             comm_list.append(comm_dict)
+
         count_l2_obj = Comment.objects.filter(parent_comment__in=l1_comment_ids).values("parent_comment").annotate(
             Count('parent_comment'))
         # 获取子评论数
@@ -270,7 +290,8 @@ class Community(object):
         # 当前用户的一些信息
         u_id = request.user.id
         text["user_icon"] = user_data[u_id]["user_path"]
-        text["user_name"] = user_data[u_id]["show_name"] if user_data[u_id].has_key("show_name") else user_data[u_id]["username"]
+        text["user_name"] = user_data[u_id]["show_name"] if user_data[u_id].has_key("show_name") else user_data[u_id][
+            "username"]
 
         context = {
             "text": text,
@@ -280,3 +301,27 @@ class Community(object):
             "sum_comment": sum_comment,
         }
         return render(request, "topic_text_view.html", context)
+
+    def create_focus(self, request):
+        result = {}
+        try:
+            m_id = request.GET.get("munity_id")
+            u_id = request.user.id
+            obj = Guan_Zhu.objects.filter(topic_id=m_id, gz_user_id=u_id).exists()
+            result["munity_id"] = m_id
+            if obj:
+                Guan_Zhu.objects.filter(topic_id=m_id, gz_user_id=u_id).delete()
+                result["action"] = "close"
+            else:
+                Guan_Zhu.objects.create(topic_id=m_id, gz_user_id=u_id, create_user_id=u_id, write_user_id=u_id)
+                result["action"] = "create"
+
+        except Exception, e:
+            _trackback = traceback.format_exc()
+            err_msg = e.message
+            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                err_msg = e.faultCode
+            result['error_msg'] = err_msg
+            result['trackback'] = _trackback
+        finally:
+            return HttpResponse(json.dumps(result))
