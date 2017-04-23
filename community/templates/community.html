@@ -5,156 +5,6 @@
 {% block ext_after_css %}
     <link rel="stylesheet" href="/static/css/wangEditor.min.css">
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-        }
-
-        .panel-content {
-            padding: 2rem 0 0 0;
-        }
-
-        .panel-body {
-            padding: 0;
-        }
-
-        .comm-list {
-            margin: 0;
-        }
-
-        .comm-list-item {
-            list-style: none;
-            border-bottom: solid 1px #E9E9E9;
-            padding-left: 1rem;
-        }
-
-        .list-title {
-            font-family: "MF YueYuan (Noncommercial) Regular";
-            font-size: 2rem;
-            margin: 0.5rem 0 0.5rem 0;
-            font-weight: bold;
-        }
-
-        .list-descrip {
-            font-size: 1.6rem;
-            font-family: "Microsoft YaHei";
-            padding: 0 1rem 0 0;
-            display: flex;
-        }
-
-        .list-descrip p {
-            line-height: 2rem;
-            display: flex;
-            flex: 1;
-        }
-
-        .list-descrip div {
-            width: 3rem;
-            text-align: right;
-        }
-
-        .comm-list-item a, .list-text-text a, .list-text-time a {
-            color: black;
-            text-decoration: none;
-        }
-
-        .comm-list-item a:link, .comm-list-item a:visited, .comm-list-item a:active {
-            color: black;
-            text-decoration: none;
-        }
-
-        .comm-list-item a:hover {
-            text-decoration: none;
-        }
-
-        .list-text {
-            display: flex;
-            border-bottom: solid 1px #E9E9E9;
-            height: 4rem;
-        }
-
-        .list-text-avatar {
-            color: #4cae4c;
-            padding: 0.5rem 0 0.5rem 0;
-            margin: 0;
-            position: relative;
-        }
-
-        .list-text-avatar img {
-            padding: 0 0.5rem 0 0.5rem;
-            width: 4rem;
-        }
-
-        .list-text-text {
-            flex: 1;
-            width: 70%;
-            line-height: 4rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .list-text-time {
-            padding: 0 1rem 0 1rem;
-            line-height: 4rem;
-        }
-
-        .view_comm_edit_cent {
-            line-height: 50px;
-            display: none;
-            background-color: #E9E9E9;
-        }
-
-        .edit-top-right-close {
-            margin-right: 2rem;
-            font-size: 2.5rem;
-            color: #919191;
-            cursor: pointer;
-            padding-top: 1rem;
-        }
-
-        .textarea_body {
-            width: 100%;
-            height: 5rem;
-        }
-
-        .textarea_left_content {
-            padding: 1rem 0.5rem 1rem 0;
-        }
-
-        .textarea_right_content {
-            padding: 1rem 0 1rem 0.5rem;
-        }
-
-        .textarea_left_content textarea {
-            height: 20rem;
-            border: none;
-            outline: none;
-        }
-
-        .textarea_right_content div {
-            background-color: white;
-            height: 20rem;
-        }
-
-        .edit-comm-submit {
-            padding: 0;
-        }
-
-        .edit-comm-submit [type=submit] {
-            background-color: #42B983;
-            color: white;
-            border: none;
-            outline: none;
-        }
-
-        .edit-comm-submit [type=button] {
-            background-color: #E9E9E9;
-            color: #42B983;
-            outline: none;
-        }
-    </style>
-    <style>
         #comm_vue {
             background-color: #ffffff;
         }
@@ -316,9 +166,10 @@
             margin-right: 1rem;
         }
 
-        {#        .tiezi_edit_box {#}
-        {#            margin: 2rem;#}
-        {#        }#}
+        .buttom_page {
+            height: 5rem;
+            margin-bottom: 1rem;
+        }
     </style>
 {% endblock ext_after_css %}
 {% block content %}
@@ -330,7 +181,8 @@
                         <div class="fenlei_list">
                             <p id="sort_all" v-on:click="switch_sort('all')" class="fenlei_active">所有</p>
                             {% for st in edit_box %}
-                                <p id="sort_{{ st.id }}" v-on:click="switch_sort({{ st.id }})">{{ st.name }}</p>
+                                <p id="sort_{{ st.id }}"
+                                   v-on:click="switch_sort({{ st.id }})">{{ st.name }}</p>
                             {% endfor %}
                             <div style="clear: both"></div>
                         </div>
@@ -338,44 +190,26 @@
 
                     <div class="tiezi_list">
                         <div class="tiezi_list_top">
-                            <p class="tiezi_fenlei"><i class="glyphicon glyphicon-th-large"></i>&nbsp;所有</p>
-                            <div class="tiezi_paixu">
-                                <p class="tiezi_paixu_active">时间排序</p>
+                            <p class="tiezi_fenlei">
+                                <i class="glyphicon glyphicon-th-large"></i>&nbsp;
+                                <span>所有</span>
+                            </p>
+                            <div class="tiezi_paixu" id="sort_field_parent">
+                                <p sort="t" v-on:click="sort_click('t')" class="tiezi_paixu_active">时间排序</p>
                                 <p>&nbsp;|&nbsp;</p>
-                                <p>热度排序</p>
+                                <p sort="h" v-on:click="sort_click('h')">热度排序</p>
                             </div>
                             <div style="clear: both"></div>
                         </div>
                         <div id="question_list">
-                            {#                            {% for q in questions %}#}
-                            {#                                <div class="tiezi_main_item">#}
-                            {#                                    <!--每一条评论内容部分-->#}
-                            {#                                    <h4><a href="#"><p>{{ q.title }}</p></a></h4>#}
-                            {#                                    <p class="tiezi_username"><a#}
-                            {#                                            href="#">{{ q.show_name }},<span>{{ q.signatrue }}</span></a></p>#}
-                            {#                                    <div class="tz_gaiyao ">#}
-                            {#                                        <a href="/community/comm/text_view/{{ q.id }}/">#}
-                            {#                                            {{ q.text_txt }}...#}
-                            {#                                        </a>#}
-                            {#                                        <span>#}
-                            {#                                    <button class="tiezi_xsqb" type="button">&nbsp;显示全部&nbsp;</button>#}
-                            {#                                </span>#}
-                            {#                                    </div>#}
-                            {#                                    <div class="tiezi_jgz_pl">#}
-                            {#                                        <button>#}
-                            {#                                            <span class="glyphicon glyphicon-plus"></span>#}
-                            {#                                            加关注#}
-                            {#                                        </button>#}
-                            {#                                        <button>#}
-                            {#                                            <span class="glyphicon glyphicon-comment"></span>#}
-                            {#                                            18 条评论#}
-                            {#                                        </button>#}
-                            {#                                    </div>#}
-                            {#                                </div>#}
-                            {#                            {% endfor %}#}
+
                         </div>
-                        <div>
-{#                            正在加载#}
+                        <div class="buttom_page">
+                            <ul class="pager">
+                                <li v-on:click="question_paging('p')" v-if="page != 0"><a>上一页</a></li>
+                                <li> 第{$ page+1 $}页/共{$ page_number $}页</li>
+                                <li v-on:click="question_paging('n')" v-if="page != page_number-1"><a>下一页</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -417,7 +251,7 @@
                                 <select id="question_sort" v-model="question_sort" class="form-control">
                                     <option value="1">综合交流区</option>
                                     <option value="2">旅行心得区</option>
-                                    <option value="=3">杂谈区</option>
+                                    <option value="3">杂谈区</option>
                                 </select>
                             </div>
                             <div class="col-lg-12">
@@ -444,6 +278,7 @@
 {% block ext_js %}
     <script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
     <script>
+        //function init_vue() {
         var community_vue = new Vue({
             delimiters: ['{$', '$}'],
             el: "#community_index",
@@ -457,6 +292,8 @@
                 "question_main_format": null,
                 "question_sort": "1",
                 "page": 0,
+                "sort": "t",
+                "page_number": 1,
             },
             mounted: function () {
                 var self = this;
@@ -474,40 +311,91 @@
                 self.editor.config.hideLinkImg = true;
                 self.editor.create();
                 self.switch_sort("all");
-                self.windows_scroll_refresh()
+                // self.windows_scroll_refresh()
             },
             methods: {
+                sort_click: function (sort) {
+                    var sort_p = $("#sort_field_parent");
+                    $(".tiezi_paixu_active", sort_p).removeClass("tiezi_paixu_active");
+                    $("[sort=" + sort + "]", sort_p).addClass("tiezi_paixu_active");
+
+                },
                 switch_sort: function (id) {
                     var self = this;
+                    self.page=0;
+                    var s_name = $("#sort_" + id).html();
+                    $("span", ".tiezi_fenlei").html(s_name);
                     $("p", ".fenlei_list").removeClass();
                     $("#sort_" + id).addClass("fenlei_active");
                     self.active_sort = id;
-                    var data = {"sort": id, "page": self.page};
+                    self.set_question()
+
+                },
+                set_question: function () {
+                    var self = this;
+                    var data = {"sort": self.active_sort, "page": self.page};
                     $.get('/community/get_qlist/', data, function (result) {
                         $("#question_list").html(result);
+                        var page_number = $("#question_page_" + self.page).attr("page_data");
+                        self.page_number = parseInt(page_number);
+                        self.init_question_list(self.page)
                     })
                 },
+
+                init_question_list: function (page) {
+                    new Vue({
+                        delimiters: ['{$', '$}'],
+                        el: "#question_page_" + page,
+                        data: {},
+                        methods: {
+                            view_all: function (q_id) {
+                                $(".gaiyao", "#question_" + q_id).css({"display": "none"});
+                                $(".xiangxi", "#question_" + q_id).css({"display": "block"});
+                                $(".close_up", "#question_" + q_id).css({"display": "block"});
+                            },
+                            close_up: function (q_id) {
+                                $(".gaiyao", "#question_" + q_id).css({"display": "block"});
+                                $(".xiangxi", "#question_" + q_id).css({"display": "none"});
+                                $(".close_up", "#question_" + q_id).css({"display": "none"});
+                            }
+                        }
+                    })
+                },
+
+                question_paging: function (o) {
+                    var self = this;
+                    if (o == "n") {
+                        self.page = self.page + 1
+                    } else if (o == 'p') {
+                        self.page = self.page - 1
+                    }
+                   self.set_question()
+
+                },
+
                 windows_scroll_refresh: function () {
                     var self = this;
-                    $(window).scroll(function () {
-                        var s_t = $(window).scrollTop();        //这个方法是当前滚动条滚动的距离
-                        var w_h = $(window).height();           //获取当前窗体的高度
-                        var d_h = $(document).height();         //l获取当前文档的高度
-                        var bot = 50;                           //bot是底部距离的高度
-                        if ((bot + s_t) >= (d_h - w_h)) {
-                            //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
-                            var data = {"sort": self.active_sort, "page": self.page + 1};
-                            $.get('/community/get_qlist/', data, function (result) {
-                                self.page = self.page + 1;
-                                if (result != '') {
-                                    $("#question_list").append(result);
-                                } else {
-                                    console.log(result)
-                                    //$("#question_list").append("没有更多内容了");
-                                }
-                            })
-                        }
-                    });
+                    /*
+                     $(window).scroll(function () {
+                     var s_t = $(window).scrollTop();        //这个方法是当前滚动条滚动的距离
+                     var w_h = $(window).height();           //获取当前窗体的高度
+                     var d_h = $(document).height();         //l获取当前文档的高度
+                     var bot = 50;                           //bot是底部距离的高度
+                     if ((bot + s_t) >= (d_h - w_h)) {
+                     //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
+                     var data = {"sort": self.active_sort, "page": self.page + 1};
+                     $.get('/community/get_qlist/', data, function (result) {
+                     self.page = self.page + 1;
+                     if (result != '') {
+                     $("#question_list").append(result);
+                     } else {
+                     console.log(result)
+                     //$("#question_list").append("没有更多内容了");
+                     }
+                     })
+                     }
+                     });
+                     */
                 },
                 add_question: function () {
                     var self = this;
@@ -532,84 +420,23 @@
                         if (result.error_msg) {
                             alert(result.error_msg)
                         } else {
-                            $("#question_model").modal('hide')
+                            $("#question_model").modal('hide');
+                            self.on_modal_hidden()
                         }
                     })
+                },
+                on_modal_hidden: function () {
+                    this.question_title = '';
+                    this.question_main_text = '';
+                    this.question_main_html = '';
                 },
                 modaa_cancel: function () {
 
                 }
             }
-        })
-    </script>
-    <script>
-        {#        var comm_vue = new Vue({#}
-        {#            delimiters: ['{$', '$}'],#}
-        {#            el: '#comm_vue',#}
-        {#            data: {#}
-        {#                comm_text: '',#}
-        {#                comm_title: '',#}
-        {#                comm_sort: "{{ default_sort }}"#}
-        {#            },#}
-        {#            mounted: function () {#}
-        {#                this.$nextTick(function () {#}
-        {#                    // 代码保证 this.$el 在 document 中#}
-        {#                    setInterval(function () {#}
-        {#                        //   window.location="/community/";#}
-        {#                        console.log('快疯了吧！哈哈！')#}
-        {#                    }, 100)#}
-        {##}
-        {#                })#}
-        {##}
-        {#            },#}
-        {#            methods: {#}
-        {#                show_edit_modal: function (event) {#}
-        {#                    var active = $("#edit_con_form").is(":hidden")#}
-        {#                    if (active == true) {#}
-        {#                        $("#edit_con_form").css({"display": "block"})#}
-        {#                    }#}
-        {#                },#}
-        {#                hidden_edit_form: function (event) {#}
-        {#                    var active = $("#edit_con_form").is(":hidden")#}
-        {#                    if (active == false) {#}
-        {#                        $("#edit_con_form").css({"display": "none"})#}
-        {#                    }#}
-        {#                },#}
-        {#                comm_create: function (e) {#}
-        {#                    e.preventDefault();#}
-        {#                    var self = this#}
-        {#                    if (this.comm_title.replace(/[ ]/g, "") == '') {#}
-        {#                        alert("标题不能为空")#}
-        {#                    } else if (this.comm_title.replace(/[ ]/g, "") == '') {#}
-        {#                        alert("内容不能为空")#}
-        {#                    } else {#}
-        {#                        var data = {#}
-        {#                            "comm_title": self.comm_title,#}
-        {#                            "comm_text": self.comm_text,#}
-        {#                            "comm_sort": self.comm_sort,#}
-        {#                            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),#}
-        {#                        };#}
-        {##}
-        {#                        $.post('/community/create/', data, function (result) {#}
-        {#                            console.log(result);#}
-        {##}
-        {#                            result = JSON.parse(result);#}
-        {#                            if (result.next) {#}
-        {#                                window.location.href = result.next;#}
-        {#                            } else if (result.error_msg) {#}
-        {#                                alert(result.error_msg)#}
-        {#                            } else {#}
-        {#                                self.comm_text = '';#}
-        {#                                self.comm_title = '';#}
-        {#                                $("#edit_con_form").css({"display": "none"})#}
-        {#                                window.location.reload()#}
-        {#                            }#}
-        {#                        });#}
-        {##}
-        {#                    }#}
-        {##}
-        {#                }#}
-        {#            }#}
-        {#        })#}
+        });
+        // }
+        // init_vue()
+
     </script>
 {% endblock ext_js %}

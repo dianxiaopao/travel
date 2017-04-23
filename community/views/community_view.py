@@ -17,7 +17,7 @@ import base.views.base_views as base_view
 
 get_user_data = base_view.UserView().get_user_data
 
-import json, traceback, pytz
+import json, traceback, pytz, math
 
 # Create your views here.
 
@@ -28,9 +28,7 @@ except ImportError:  # django < 1.7
 
 
 class Community(object):
-    def get_questions_list(self, request):
-        sort_id = request.GET.get("sort")
-        page = request.GET.get("page")
+    def get_questions(self, sort_id, page, sort_field):
         page_obj = SysMaterial.objects.filter(key="comm_page_size")
         page_size = int(page_obj[0].value) if page_obj else 10
         order_field = "write_date"
@@ -48,6 +46,9 @@ class Community(object):
                 pass
         text_obj = TopicText.objects.filter(Q(**filter_str)).order_by("priority").order_by(order_field)[
                    page * page_size:(page + 1) * page_size]
+        q_count = TopicText.objects.filter(Q(**filter_str)).count()
+        page_number = int(math.ceil(float(q_count) / page_size))
+
         user_ids = []
         text_ids = []
         for item in text_obj:
@@ -57,7 +58,7 @@ class Community(object):
         # 评论数量还没有
         questions = []
         for item in text_obj:
-            text_txt = item.text_txt[:75] if item.text_txt else ""
+            text_txt = item.text_txt[:150] if item.text_txt else ""
             new_date = item.write_date.astimezone(pytz.timezone('Asia/Shanghai'))
             write_date = str(new_date)[:19]
             write_user = user_data[item.write_user_id]
@@ -74,11 +75,13 @@ class Community(object):
                 "signatrue": write_user["signatrue"],
             }
             questions.append(q_dict)
-        return questions
+        return questions, page_number
 
-    def get_community(self, request):
-        sort = request.GET.get("sort")
-        self.page = 0
+    def get_community(self, request, *args, **kwargs):
+        sort = kwargs.get("sort")
+        page = kwargs.get("page")
+        request.GET.sort = sort
+        request.GET.page = page
         sort_obj = ForumSort.objects.all()
         self.sort_obj = sort_obj
         edit_box = []
@@ -94,9 +97,9 @@ class Community(object):
             }
             edit_box.append(edit_dict)
         self.sort_ids = sort_ids
-
-        user_data = get_user_data(request.user)
-        # questions = self.get_questions_list(request)
+        if request.user.is_active:
+            user_data = get_user_data(request.user)
+        # questions = self.get_questions(sort, page)
         context = {
             'edit_box': edit_box,
             'default_sort': default_sort,
@@ -105,9 +108,14 @@ class Community(object):
         return render(request, 'community.html', context)
 
     def get_question_list(self, request):
-        questions = self.get_questions_list(request)
+        sort_id = request.GET.get("sort")
+        page = request.GET.get("page")
+        sort_f = request.GET.get("sort")
+        questions, page_number = self.get_questions(sort_id, page, sort_f)
         context = {
-            'questions': questions
+            'questions': questions,
+            "page": page,
+            "page_number": page_number if page_number != 0 else 1,
         }
         return render(request, 'question_list.html', context)
 

@@ -1,26 +1,40 @@
-{% for q in questions %}
-    <div class="tiezi_main_item">
-        <!--每一条评论内容部分-->
-        <h4><a href="#"><p>{{ q.title }}</p></a></h4>
-        <p class="tiezi_username"><a
-                href="#">{{ q.show_name }},<span>{{ q.signatrue }}</span></a></p>
-        <div class="tz_gaiyao ">
-            <a href="/community/comm/text_view/{{ q.id }}/">
-                {{ q.text_txt }}...
-            </a>
-            <span>
-                <button class="tiezi_xsqb" type="button">&nbsp;显示全部&nbsp;</button>
-            </span>
+<div id="question_page_{{ page }}" page_data="{{ page_number }}" style="margin: 0;padding: 0">
+    {% for q in questions %}
+        <div class="tiezi_main_item" id="question_{{ q.id }}">
+            <!--每一条评论内容部分-->
+            <h4><a href="#"><p>{{ q.title }}</p></a></h4>
+            <p class="tiezi_username"><a
+                    href="#">{{ q.show_name }},<span>{{ q.signatrue }}</span></a></p>
+            <div class="tz_gaiyao ">
+                <div class="gaiyao" style="display: block">
+                    <a href="/community/comm/text_view/{{ q.id }}/">
+                        {{ q.text_txt }}...
+                    </a>
+                    <span>
+                        <button class="tiezi_xsqb" v-on:click="view_all({{ q.id }})"
+                                type="button">&nbsp;显示全部&nbsp;</button>
+                    </span>
+                </div>
+                <div class="xiangxi" style="display: none">
+                    <a href="/community/comm/text_view/{{ q.id }}/">
+                        {{ q.text_htm|safe }}
+                    </a>
+                </div>
+            </div>
+            <div class="tiezi_jgz_pl">
+                <button>
+                    <span class="glyphicon glyphicon-plus"></span>
+                    加关注
+                </button>
+                <button>
+                    <span class="glyphicon glyphicon-comment"></span>
+                    18 条评论
+                </button>
+                <button v-on:click="close_up({{ q.id }})" class="close_up" style="float: right;display: none">
+                    <span style="transform:rotate(180deg);" class="glyphicon glyphicon-save"></span>
+                    收起
+                </button>
+            </div>
         </div>
-        <div class="tiezi_jgz_pl">
-            <button>
-                <span class="glyphicon glyphicon-plus"></span>
-                加关注
-            </button>
-            <button>
-                <span class="glyphicon glyphicon-comment"></span>
-                18 条评论
-            </button>
-        </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+</div>

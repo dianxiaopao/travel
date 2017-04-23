@@ -53,7 +53,7 @@ def alogin(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/community/')
+                return HttpResponseRedirect('/')
             else:
                 return render(request, 'login.html', {"active_msg": u'账户被禁用'})
         else:
