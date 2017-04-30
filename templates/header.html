@@ -40,13 +40,18 @@
                             {% endif %}
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="/mycenter/note/create/">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;写攻略</a></li>
-                            <li><a href="/home/{{ user.username }}/">
-                                <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;我的主页</a></li>
-                            <li><a href="/loginout/">
-                                <span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;
-                                退出登陆</a></li>
+                            <li><a href="/mycenter/note/create/">写攻略</a></li>
+                            <li>
+                                <a href="/home/people/{{ user.username }}/">
+                                <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;我的主页</a>
+                            </li>
+                            <li>
+                                <a href="/home/setting/"><span class="glyphicon glyphicon-cog">  设置</span></a>
+                            </li>
+                            <li>
+                                <a href="/loginout/">
+                                <span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;退出登陆</a>
+                            </li>
                         </ul>
                     </li>
                 {% else %}

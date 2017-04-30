@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-import os
+import os, smtplib, json
 from django.conf import settings
 from elasticsearch import Elasticsearch
 from django.db import connection
+from email.header import Header
+from email.mime.text import MIMEText
+from email.utils import parseaddr, formataddr
 
 
 def switch_path_relative(absolute_path, keyword):
@@ -58,3 +61,39 @@ def sql_get_pgsql(sql):
         cursor.close()
         raise Exception(u"查询数据库失败！没有得到想要查询到的信息！")
     return data
+
+
+def send_email_on_code(msg_text, to_addr, from_addr="travel@gaomumu.com", password="123456xF"):
+    '''
+
+    :param msg_text:
+    :param from_addr:
+    :param password:
+    :param to_addr:
+    :return:
+    '''
+    to_addr = to_addr.encode("utf-8")
+    msg_text = msg_text.encode("utf-8")
+    from_addr = from_addr.encode("utf-8")
+
+    def _format_addr(s):
+        name, addr = parseaddr(s)
+        return formataddr((Header(name, 'utf-8').encode(), addr))
+
+    msg = MIMEText(msg_text, 'plain', 'utf-8')
+    msg['From'] = _format_addr('小方<%s>' % from_addr)
+    msg['To'] = _format_addr('尊贵的VIP用户<%s>' % to_addr)
+    msg['Subject'] = Header('请输入验证码修改邮箱', 'utf-8').encode()
+    # smtp服务器地址
+    # smtp_server = "smtp.qq.com"
+    smtp_server = "smtp.exmail.qq.com"
+    # server = smtplib.SMTP(smtp_server, 587)
+
+    server = smtplib.SMTP(smtp_server, 25)
+    server.starttls()
+    server.set_debuglevel(1)
+    server.login(from_addr, password)
+    # 发送邮件
+    server.sendmail(from_addr, [to_addr], msg.as_string())
+    server.quit()
+    return "sucessful"
