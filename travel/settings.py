@@ -130,11 +130,11 @@ USE_TZ = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_USE_TLS = False
-EMAIL_HOST = 'smtp.qq.com'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = '469794632@qq.com'
-EMAIL_HOST_PASSWORD = 'ashxffsslbslcaha'
-DEFAULT_FROM_EMAIL = '469794632@qq.com'
+EMAIL_HOST = 'smtp.exmail.qq.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'travel@gaomumu.com'
+EMAIL_HOST_PASSWORD = '123456xF'
+DEFAULT_FROM_EMAIL = 'travel@gaomumu.com'
 
 
 
