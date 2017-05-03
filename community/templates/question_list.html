@@ -2,7 +2,7 @@
     {% for q in questions %}
         <div class="tiezi_main_item" id="question_{{ q.id }}">
             <!--每一条评论内容部分-->
-            <h4><a href="#"><p>{{ q.title }}</p></a></h4>
+            <h4><a href="/community/comm/text_view/{{ q.id }}/"><p>{{ q.title }}</p></a></h4>
             <p class="tiezi_username"><a
                     href="#">{{ q.show_name }},<span>{{ q.signatrue }}</span></a></p>
             <div class="tz_gaiyao ">
@@ -30,8 +30,10 @@
                     {% endif %}
                 </button>
                 <button>
-                    <span class="glyphicon glyphicon-comment"></span>
-                    {{ q.com_numb }} 条评论
+                    <a href="/community/comm/text_view/{{ q.id }}/">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        {{ q.com_numb }} 条评论
+                    </a>
                 </button>
                 <button v-on:click="close_up({{ q.id }})" class="close_up" style="float: right;display: none">
                     <span style="transform:rotate(180deg);" class="glyphicon glyphicon-save"></span>

@@ -288,9 +288,11 @@ class Community(object):
                 item["sub_number"] = 0
 
         # 当前用户的一些信息
-        u_id = request.user.id
-        text["user_icon"] = user_data[u_id]["user_path"]
-        text["user_name"] = user_data[u_id]["show_name"] if user_data[u_id].has_key("show_name") else user_data[u_id][
+        # TODO:当用户没有登录的时候，
+        if request.user.is_active:
+            u_id = request.user.id
+            text["user_icon"] = user_data[u_id]["user_path"]
+            text["user_name"] = user_data[u_id]["show_name"] if user_data[u_id].has_key("show_name") else user_data[u_id][
             "username"]
 
         context = {

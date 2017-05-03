@@ -91,7 +91,7 @@ def send_email_on_code(msg_text, to_addr, from_addr="travel@gaomumu.com", passwo
 
     server = smtplib.SMTP(smtp_server, 25)
     server.starttls()
-    server.set_debuglevel(1)
+    # server.set_debuglevel(1)
     server.login(from_addr, password)
     # 发送邮件
     server.sendmail(from_addr, [to_addr], msg.as_string())
