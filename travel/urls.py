@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^loginout/$', views.loginout),
     url(r'^to_register/$', views.to_register),
     url(r'^register/$', views.register),
+    url(r'^get_tel_code/$', views.get_tel_code),
 
     url(r'^guide/', include(guides_urls.urls)),
     url(r'^mycenter/', include(cemter_urls.urls)),

@@ -6,8 +6,9 @@ from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from base.models.new_user import NewUser
 from django.contrib.auth.models import User
+from base.models.temp_tel_code import TempTelCode
 from hashlib import sha1
-import json, random, datetime, uuid, urllib, hmac, base64, requests
+import json, random, datetime, uuid, urllib, hmac, base64, requests, urllib, urllib2, sys, traceback
 
 try:
     from django.apps import apps as models
@@ -42,13 +43,15 @@ def alogin(request):
     if method == 'post':
         username = request.POST['username']
         password = request.POST['password']
-        try:
-            user1 = User.objects.get(username=username)
-            if hasattr(user1, 'newuser'):
-                # 说明有扩展的用户信息
-                pass
-        except:
-            return render(request, 'login.html', {'user_msg': u"账户不存在"})
+
+        # try:
+        #     user1 = User.objects.get(username=username)
+        #     if hasattr(user1, 'newuser'):
+        #         # 说明有扩展的用户信息
+        #         pass
+        # except:
+        #     return render(request, 'login.html', {'user_msg': u"账户不存在"})
+
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
@@ -111,8 +114,9 @@ def register(request):
                     value = _decode_dict(value)
                 rv[key] = value
             return rv
+
         arg_dict = json.dumps(arg_dict).encode("utf8")
-        arg_dict = json.loads(arg_dict,object_hook=_decode_dict)
+        arg_dict = json.loads(arg_dict, object_hook=_decode_dict)
         p_url = urllib.urlencode(arg_dict)
         string_to_sign = "GET" + "&" + urllib.quote("/", safe='') + "&" + p_url
         sha1_sign = hmac.new("TsyaOU7PxpCipNPwryqF9E3OpBLwAD&", string_to_sign, sha1).digest()
@@ -145,3 +149,53 @@ def register(request):
                     return HttpResponseRedirect('/')
             else:
                 return render(request, 'index.html')
+
+
+def get_tel_code(request):
+    result = {}
+    try:
+        tel = request.POST.get("username")
+        action = request.POST.get("action")
+        try:
+            tel = int(tel)
+        except:
+            raise Exception("手机号码有误！")
+        code = int(random.uniform(100000, 999999))
+        if action == "login":
+            try:
+                new_obj = NewUser.objects.get(telephone=tel)
+                new_obj.auth_code = code
+                new_obj.save()
+            except:
+                raise Exception("没有该手机号")
+        else:
+            new_obj = TempTelCode.objects.update_or_create(code=code, telphone=tel)
+
+        method = request.method
+        host = 'http://sms.market.alicloudapi.com'
+        path = '/singleSendSms'
+        method = 'GET'
+        appcode = '95fd37d3051e4718a9c0689b5f961566'
+        ParamString = '{"code":"%s"}' % str(code)
+        phone = str(tel)
+        SignName = '小方'
+        TemplateCode = 'SMS_63795887'
+        querys = 'ParamString=%s&RecNum=%s&SignName=%s&TemplateCode=%s' % (ParamString, phone, SignName, TemplateCode)
+        bodys = {}
+        url = host + path + '?' + querys
+        req = urllib2.Request(url)
+        req.add_header('Authorization', 'APPCODE ' + appcode)
+        response = urllib2.urlopen(req)
+        content = response.read()
+        content = json.loads(content)
+        if (content["success"] == True):
+            result["sucess"] = True
+    except Exception, e:
+        _trackback = traceback.format_exc()
+        err_msg = e.message
+        if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+            err_msg = e.faultCode
+        result['error_msg'] = err_msg
+        result['trackback'] = _trackback
+    finally:
+        return HttpResponse(json.dumps(result))

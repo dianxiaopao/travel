@@ -44,7 +44,7 @@ def Guide(request, *args, **kwargs):
         new_date = utc_date.astimezone(pytz.timezone('Asia/Shanghai'))
         assay_dict["date"] = str(new_date)[0:19]
         assay_dict["user"] = item.write_user.username if item.write_user else u"不详"
-        assay_dict["abstract"] = item.abstract[0:500]
+        assay_dict["abstract"] = item.abstract[0:500] if item.abstract else ""
         id = str(item.id)
         url = '/guide/view/' + id + "/"
         assay_dict["url"] = url

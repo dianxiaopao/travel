@@ -151,9 +151,8 @@
                         if (result.error_msg) {
                             alert(result.error_msg)
                         } else {
-                            var path = "/" + result.path.toString().split('\\').join('/');
                             data = {
-                                "path": path,
+                                "path": result["path"],
                                 "img_uuid": result.img_uuid,
                                 "old_uuid":result.old_uuid,
                             };

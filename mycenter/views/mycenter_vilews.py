@@ -236,9 +236,8 @@ def upload_img(request):
                                           image_name=img_obj.name)
                     body_text.image_location = 'all'
                     body_text.save()
-                # result["path"] = res_and_obj['result']["path"]
-                # result["img_uuid"] = body_text.uuid
-                result = res_and_obj['result']["path"]
+                result["path"] = "/" + "/".join(res_and_obj['result']["path"].split("\\"))
+                result["img_uuid"] = body_text.uuid
 
         except Exception, e:
             _trackback = traceback.format_exc()
