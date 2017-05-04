@@ -2,7 +2,5 @@
 *.pot
 *.pyc
 local_settings.py
-media/OldImgFile/*
-static/media/images/*
 .idea/*
 */.idea/*
