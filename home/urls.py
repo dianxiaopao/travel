@@ -6,7 +6,7 @@ import views.home
 home_view = views.home.Home()
 
 urlpatterns = [
-    url(r'^people/(?P<username>\w+)/$', home_view.home),
+    url(r'^people/(?P<username>\w+)/(?P<action>\w+)/$', home_view.home),
     url(r'^setting/$', home_view.settings),
     url(r'^setting/get_email_code/$', home_view.get_email_code),
     url(r'^setting/save_new_email/$', home_view.save_new_email),

@@ -9,13 +9,10 @@ from community.models.forum_sort import ForumSort
 from base.models.sys_material import SysMaterial
 from community.models.comment import Comment
 from community.models.guan_zhu import Guan_Zhu
+from community.models.collect_comment import CollectComment
 
 from django.db import models
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from base.views.base_views import UserView
 import base.views.base_views as base_view
-
 get_user_data = base_view.UserView().get_user_data
 
 import json, traceback, pytz, math
@@ -249,6 +246,10 @@ class Community(object):
 
         comm_obj = Comment.objects.filter(parent_id=text_obj.id, parent_type="TopicText", is_active=True,
                                           parent_comment=None).order_by("write_date")
+        sc_obj = CollectComment.objects.filter(topic__in=comm_obj, user_id=request.user.id)
+        collects = []
+        for item in sc_obj:
+            collects.append(item.topic_id)
         u_ids = [request.user.id]
         for item in comm_obj:
             u_ids.append(item.write_user_id)
@@ -272,6 +273,10 @@ class Community(object):
             comm_dict["user_icon"] = user_data[u_id]["user_path"]
             new_date = item.write_date.astimezone(pytz.timezone('Asia/Shanghai'))
             comm_dict["write_date"] = str(new_date)[:19]
+            if item.id in collects:
+                comm_dict["collects"] = True
+            else:
+                comm_dict["collects"] = False
             comm_list.append(comm_dict)
 
         count_l2_obj = Comment.objects.filter(parent_comment__in=l1_comment_ids).values("parent_comment").annotate(
@@ -292,8 +297,9 @@ class Community(object):
         if request.user.is_active:
             u_id = request.user.id
             text["user_icon"] = user_data[u_id]["user_path"]
-            text["user_name"] = user_data[u_id]["show_name"] if user_data[u_id].has_key("show_name") else user_data[u_id][
-            "username"]
+            text["user_name"] = user_data[u_id]["show_name"] if user_data[u_id].has_key("show_name") else \
+                user_data[u_id][
+                    "username"]
 
         context = {
             "text": text,
@@ -317,6 +323,30 @@ class Community(object):
             else:
                 Guan_Zhu.objects.create(topic_id=m_id, gz_user_id=u_id, create_user_id=u_id, write_user_id=u_id)
                 result["action"] = "create"
+
+        except Exception, e:
+            _trackback = traceback.format_exc()
+            err_msg = e.message
+            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                err_msg = e.faultCode
+            result['error_msg'] = err_msg
+            result['trackback'] = _trackback
+        finally:
+            return HttpResponse(json.dumps(result))
+
+    def collect_comment(self, request):
+        result = {}
+        try:
+            id = request.GET.get("id")
+            u_id = request.user.id
+            obj = CollectComment.objects.filter(topic_id=id, user_id=u_id).exists()
+            result["id"] = id
+            if obj:
+                CollectComment.objects.filter(topic_id=id, user_id=u_id).delete()
+                result["action"] = "closed"
+            else:
+                CollectComment.objects.create(topic_id=id, user_id=u_id, create_user_id=u_id, write_user_id=u_id)
+                result["action"] = "created"
 
         except Exception, e:
             _trackback = traceback.format_exc()

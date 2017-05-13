@@ -66,11 +66,11 @@ def sql_get_pgsql(sql):
 def send_email_on_code(msg_text, to_addr, from_addr="travel@gaomumu.com", password="123456xF"):
     '''
 
-    :param msg_text:
-    :param from_addr:
-    :param password:
-    :param to_addr:
-    :return:
+    :param msg_text:发送的邮件内容
+    :param from_addr:发件账号
+    :param password:发件账号的密码
+    :param to_addr:收件箱
+    :return:成功则返回"sucessful"
     '''
     to_addr = to_addr.encode("utf-8")
     msg_text = msg_text.encode("utf-8")

@@ -72,6 +72,18 @@
         .user_Profile-image-content img {
             width: 14rem;
             height: 14rem;
+            overflow: hidden;
+        }
+
+        .user_Profile-image-content input {
+            position: absolute;
+            height: 14em !important;
+            width: 14rem !important;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+            cursor: pointer;
         }
 
         .user_Profile-content {
@@ -248,23 +260,29 @@
             color: black;
         }
 
-
+        .active_tab {
+            border-bottom: 3px solid #0F88EB;
+            font-weight: bold;
+        }
     </style>
 {% endblock ext_after_css %}
 {% block content %}
-    <div class="container" style="min-height: 800px">
-        <div class="user_cover">
+    <div class="container" id="home" style="min-height: 800px">
+        <div class="user_cover" id="user_home_bgk" style="background: url({{ user_home }})">
             <p class="navbar-right">
                 &nbsp;
                 <span class="glyphicon glyphicon-camera"></span>&nbsp;&nbsp;
-                <input type="file" accept="image/gif, image/jpeg, image/png, image/jpg">
+                <input type="file" name="home_img" id="upload_cover_images"
+                       accept="image/gif, image/jpeg, image/png, image/jpg">
                 编辑封面图片
             </p>
         </div>
         <div class="user_Profile">
             <div class="user_Profile-image">
                 <div class="user_Profile-image-content">
-                    <img src="/static/media/icon/sysicon/56dadad0cb434837.jpg" alt="">
+                    <img id="user_title_img" src="{{ user_title }}" alt="">
+                    <input type="file" name="user_title" id="upload_user_title"
+                           accept="image/gif, image/jpeg, image/png, image/jpg">
                 </div>
             </div>
             <div class="user_Profile-content">
@@ -292,7 +310,7 @@
                         <i class="glyphicon glyphicon-chevron-down"></i>
                         &nbsp;&nbsp;<span>更多资料</span>
                     </button>
-                    <button type="button" class="edit_data_btn navbar-right">
+                    <button type="button" @click="edit_personal_data" class="edit_data_btn navbar-right">
                         编辑个人资料
                     </button>
                 </div>
@@ -303,32 +321,61 @@
                 <div class="profile_main_column">
                     <div class="profile_main_head">
                         <ul class="profile_main_ul">
-                            <li style="border-bottom: 3px solid #0F88EB;font-weight: bold"><a href="#">动态</a></li>
-                            <li><a href="#">收藏&nbsp;<span>20</span></a></li>
-                            <li><a href="#">问题&nbsp;<span>5</span></a></li>
-                            <li><a href="#">回答&nbsp;<span>6</span></a></li>
+                            <li {% if action == "dynamic" %} class="active_tab" {% endif %}><a
+                                    href="/home/people/fangxinyun/dynamic/">动态</a></li>
+                            <li {% if action == "collection" %} class="active_tab" {% endif %}><a
+                                    href="/home/people/fangxinyun/collection/">收藏&nbsp;<span>20</span></a></li>
+                            <li {% if action == "problem" %} class="active_tab" {% endif %}><a
+                                    href="/home/people/fangxinyun/problem/">问题&nbsp;<span>{{ problem_count }}</span></a>
+                            </li>
+                            <li {% if action == "answer" %} class="active_tab" {% endif %}><a
+                                    href="/home/people/fangxinyun/answer/">回答&nbsp;<span>6</span></a></li>
                         </ul>
                     </div>
                     <div class="profile_main_activities" style="clear: both;border-top: 1px solid #F0F2F7">
-                        <div class="list_text_head">
-                            <p>我的动态</p>
-                        </div>
-                        <div class="list_text_main">
-                            <div class="list_item">
-                                <div class="list_item_head" style="">
-                                    <div style="">关注了问题</div>
-                                    <div style="">1天前</div>
-                                </div>
-                                <div class="content_item">
-                                    <a href="/home/">
-                                        如果你很爱一个人，但是你却感觉他只是一般般喜欢你，你还会继续吗？
-                                    </a>
-                                </div>
+                        {% if action == 'problem' %}
+                            <div class="list_text_head">
+                                <p>我的提问</p>
                             </div>
-                            <div class="list_item">
+                            <div class="list_text_main">
+                                {% for item in item_list %}
+                                    <div class="list_item">
+                                        <div class="list_item_head" style="">
+                                            <div style="">{{ item.title }}</div>
+                                            <div style="">{{ item.write_date }}</div>
+                                        </div>
+                                        <div class="content_item">
+                                            <a href="/community/comm/text_view/{{ item.id }}/">
+                                                {{ item.text_txt }}
+                                            </a>
+                                        </div>
+                                    </div>
 
+                                {% endfor %}
                             </div>
-                        </div>
+                        {% elif action == 'answer' %}
+                        {% elif action == 'collection' %}
+                        {% elif action == 'dynamic' %}
+                            <div class="list_text_head">
+                                <p>我的动态</p>
+                            </div>
+                            <div class="list_text_main">
+                                <div class="list_item">
+                                    <div class="list_item_head" style="">
+                                        <div style="">关注了问题</div>
+                                        <div style="">1天前</div>
+                                    </div>
+                                    <div class="content_item">
+                                        <a href="/home/">
+                                            如果你很爱一个人，但是你却感觉他只是一般般喜欢你，你还会继续吗？
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="list_item">
+
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -358,3 +405,69 @@
     </div>
 
 {% endblock content %}
+{% block ext_js %}
+    <script src="/static/js/vendor/jquery.ui.widget.js"></script>
+    <script src="/static/js/vendor/jquery.iframe-transport.js"></script>
+    <script src="/static/js/vendor/jquery.fileupload.js"></script>
+    <script src="/static/js/vendor/jquery.fileupload-process.js"></script>
+    <script src="/static/js/vendor/jquery.fileupload-validate.js"></script>
+    <script type="text/javascript">
+        var home_vue = new Vue({
+            delimiters: ['{$', '$}'],
+            el: "#home",
+            data: {},
+            mounted: function () {
+                var self = this;
+                self._init_upload_image()
+
+            },
+            methods: {
+                _init_upload_image: function () {
+                    $("#upload_cover_images").fileupload({
+                        url: '/base/upload_img/',
+                        sequentialUploads: true,
+                        formData: {
+                            "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val(),
+                            "user_id":{{ request.user.id }},
+                            "page": "user_home"
+                        },
+                        add: function (e, data) {
+                            var jqXHR = data.submit().success(function (result, textStatus, jqXHR) {
+                                var res_arr = result.split("|")
+                                if (res_arr.length > 1) {
+                                    alert(res_arr[1])
+                                } else {
+                                    $("#user_home_bgk").css("background", "url(" + result + ")")
+                                }
+                            })
+                        }
+                    });
+                    $("#upload_user_title").fileupload({
+                        url: '/base/upload_img/',
+                        sequentialUploads: true,
+                        formData: {
+                            "csrfmiddlewaretoken": $("input[name='csrfmiddlewaretoken']").val(),
+                            "user_id":{{ request.user.id }},
+                            "page": "user_title"
+                        },
+                        add: function (e, data) {
+                            var jqXHR = data.submit().success(function (result, textStatus, jqXHR) {
+                                var res_arr = result.split("|")
+                                console.log(res_arr)
+                                if (res_arr.length > 1) {
+                                    alert(res_arr[1])
+                                } else {
+                                    $("#user_title_img").attr("src", result)
+
+                                }
+                            })
+                        }
+                    })
+                },
+                edit_personal_data: function () {
+                    console.log("编辑个人资料")
+                }
+            }
+        })
+    </script>
+{% endblock ext_js %}

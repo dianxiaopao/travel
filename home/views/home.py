@@ -2,16 +2,21 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from base.models.new_user import NewUser
+from community.models.topic_text import TopicText
 from django.http import HttpResponse, Http404
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required  # 登陆装饰器
+from django.utils.decorators import method_decorator
 from django.utils import timezone
 from utils import send_email_on_code
+from django.db.models import Count
 import base.views.base_views as base_view
 import traceback, json, smtplib, datetime, random
+import base.views.base_views as base_view
 
 get_user_data = base_view.UserView().get_user_data
 
-# Create your views here.
+get_user_data = base_view.UserView().get_user_data
 
 try:
     from django.apps import apps as models
@@ -23,14 +28,63 @@ class Home(object):
     def __init__(self):
         self.user_valid = False
 
+    def _get_tab_data(self, action, request, user_data):
+        user_id = request.user.id
+        tab_dict = {
+            "item_list": [],
+            "problem_count": 0
+        }
+        if action == "dynamic":
+            pass
+        elif action == "collection":
+            pass
+        elif action == "problem":
+            pro_obj = TopicText.objects.filter(create_user_id=user_id, u_public=True, a_public=True).order_by(
+                "write_date")
+            q_list = []
+            for item in pro_obj:
+                q_dict = {
+                    "id": item.id,
+                    "title": item.name,
+                    "text_htm": item.text_htm,
+                    "text_txt": item.text_txt,
+                    "pviews": item.pviews,
+                    "collection": item.collection,
+                    "write_date": str(item.write_date)[:19],
+                    "show_name": user_data["show_name"],
+                    "signatrue": user_data["signatrue"],
+                }
+                q_list.append(q_dict)
+                tab_dict["item_list"] = q_list
+        elif action == "answer":
+            pass
+        cut_problem_obj = TopicText.objects.filter(create_user_id=user_id).values("create_user").annotate(
+            Count('create_user'))
+        if cut_problem_obj:
+            tab_dict["problem_count"] = cut_problem_obj[0]["create_user__count"]
+
+        return tab_dict
+
+    @method_decorator(login_required)
     def home(self, request, *args, **kwargs):
         username = kwargs.get("username")
+        action = kwargs.get("action")
         try:
             user_obj = User.objects.get(username=username)
         except:
             return render(request, 'login.html')
+        user_data = get_user_data(request.user)
+        tab_data = self._get_tab_data(action, request, user_data)
 
-        return render(request, 'home.html')
+        data = {
+            "action": action,
+            "user_title": user_data["user_path"],
+            "user_home": user_data["home_path"],
+            "problem_count": tab_data["problem_count"],
+            "item_list": tab_data["item_list"]
+        }
+
+        return render(request, 'home.html', context=data)
 
     def settings(self, request):
         user = request.user

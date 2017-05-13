@@ -35,6 +35,7 @@ class UserView(object):
                 user_data["telephone"] = new_user.telephone
                 user_data["auth_code"] = new_user.auth_code
                 user_data["send_date"] = new_user.send_date
+                user_data["home_path"] = new_user.home_path
                 if new_user.signatrue:
                     user_data["signatrue"] = new_user.signatrue
             else:
@@ -51,4 +52,3 @@ class UserView(object):
                 u_data = get_data(item, user_icon_obj)
                 data[item.id] = u_data
         return data
-
