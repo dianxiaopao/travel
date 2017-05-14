@@ -26,6 +26,10 @@ class Material(object):
              'value': '/static/media/icon/sysicon/user_images_ default_160x160.jpg',
              'note': u'评论页的默认用户头像'
              },
+            {'key': 'user_home_img',
+             'value': '/static/media/images/sysimg/default_user_home_images.jpg',
+             'note': u'用户主页默认头像'
+             },
             {"key": "comm_page_size", "value": "10", "note": u"社区首页展示的帖子的条数"},
             {"key": "sort_page_size", "value": "10", "note": u"分类展示帖子的页数"},
             {"key": "image_path", "value": "static", "note": u"文件默认上传的路径"},

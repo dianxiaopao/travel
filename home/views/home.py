@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from base.models.new_user import NewUser
 from community.models.topic_text import TopicText
+from community.models.guan_zhu import Guan_Zhu
+from community.models.comment import Comment
 from django.http import HttpResponse, Http404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required  # 登陆装饰器
@@ -13,8 +15,6 @@ from django.db.models import Count
 import base.views.base_views as base_view
 import traceback, json, smtplib, datetime, random
 import base.views.base_views as base_view
-
-get_user_data = base_view.UserView().get_user_data
 
 get_user_data = base_view.UserView().get_user_data
 
@@ -36,11 +36,35 @@ class Home(object):
         }
         if action == "dynamic":
             pass
-        elif action == "collection":
-            pass
+        elif action == "attention":
+            # todo:此处可做优化
+            gz_obj = Guan_Zhu.objects.filter(gz_user_id=request.user.id).order_by("-write_date")
+            uids = []
+            topic_obj = []
+            write_date_dict = {}
+            for item in gz_obj:
+                uids.append(item.topic.create_user.id)
+                topic_obj.append(item.topic)
+                write_date_dict[item.topic.id] = item.write_date
+            user_data = get_user_data(uids)
+            attentions = []
+            for item in topic_obj:
+                uid = item.create_user.id
+                att_dict = {
+                    "title": item.name,
+                    "text_txt": item.text_txt,
+                    "text_htm": item.text_htm,
+                    "user_name": user_data[uid]["show_name"],
+                    "signatrue": user_data[uid]["signatrue"],
+                    "user_id": uid,
+                    "write_date": str(write_date_dict[item.id])[:19],
+                    "id": item.id
+                }
+                attentions.append(att_dict)
+            tab_dict["item_list"] = attentions
         elif action == "problem":
             pro_obj = TopicText.objects.filter(create_user_id=user_id, u_public=True, a_public=True).order_by(
-                "write_date")
+                "-write_date")
             q_list = []
             for item in pro_obj:
                 q_dict = {
@@ -57,12 +81,41 @@ class Home(object):
                 q_list.append(q_dict)
                 tab_dict["item_list"] = q_list
         elif action == "answer":
-            pass
-        cut_problem_obj = TopicText.objects.filter(create_user_id=user_id).values("create_user").annotate(
-            Count('create_user'))
-        if cut_problem_obj:
-            tab_dict["problem_count"] = cut_problem_obj[0]["create_user__count"]
+            answer = Comment.objects.filter(create_user_id=user_id, parent_type="TopicText", parent_comment=None)
+            answer_dict = {}
+            user_data = get_user_data(request.user)
+            for item in answer:
+                aw_dict = {
+                    "write_date": str(item.write_date)[:19],
+                    "text": item.content,
+                    "user_path": user_data["user_path"],
+                    "show_name": user_data["show_name"],
+                    "signatrue": user_data["signatrue"]
+                }
+                if not answer_dict.has_key(item.parent_id):
+                    answer_dict[item.parent_id] = [aw_dict]
+                else:
+                    answer_dict[item.parent_id].append(aw_dict)
 
+            topic_obj = TopicText.objects.filter(id__in=answer_dict.keys()).order_by("-write_date")
+            topic_list = []
+            for item in topic_obj:
+                topic_dict = {
+                    "id": item.id,
+                    "title": item.name,
+                    "text_htm": item.text_htm,
+                    "text_txt": item.text_txt,
+                    "write_date": str(item.write_date)[:19],
+                    "answer": answer_dict[item.id]
+                }
+                topic_list.append(topic_dict)
+                tab_dict["item_list"] = topic_list
+        problem_count = TopicText.objects.filter(create_user_id=user_id).count()
+        tab_dict["problem_count"] = problem_count
+        attention_count = Guan_Zhu.objects.filter(gz_user_id=user_id).count()
+        tab_dict["attention_count"] = attention_count
+        answer_count = Comment.objects.filter(create_user_id=user_id, parent_type="TopicText").count()
+        tab_dict["answer_count"] = answer_count
         return tab_dict
 
     @method_decorator(login_required)
@@ -75,16 +128,75 @@ class Home(object):
             return render(request, 'login.html')
         user_data = get_user_data(request.user)
         tab_data = self._get_tab_data(action, request, user_data)
-
+        sex = "男"
+        sex_alias = "man"
+        if user_data.has_key("sex"):
+            if user_data["sex"]:
+                sex = "男"
+                sex_alias = "man"
+            else:
+                sex = "女"
+                sex_alias = "woman"
         data = {
             "action": action,
             "user_title": user_data["user_path"],
             "user_home": user_data["home_path"],
             "problem_count": tab_data["problem_count"],
-            "item_list": tab_data["item_list"]
+            "item_list": tab_data["item_list"],
+            "attention_count": tab_data["attention_count"],
+            "answer_count": tab_data["answer_count"],
+            "signatrue": user_data["signatrue"] if user_data.has_key("signatrue") else "",
+            "abstract": user_data["abstract"] if user_data.has_key("abstract") else "",
+            "sex_alias": sex_alias,
+            "show_name": user_data["show_name"],
+            "sex": sex
         }
 
         return render(request, 'home.html', context=data)
+
+    def modify_data(self, request):
+        result = {}
+        try:
+            uid = request.user.id
+            if not uid:
+                raise Exception("登陆信息不存在！")
+            field = request.POST.get("field")
+            data = request.POST.get("data")
+
+            try:
+                new_obj = User.objects.get(id=request.user.id)
+            except:
+                raise Exception("没有查询到当前用户！")
+            user_dict = {
+                "username": new_obj.username,
+                "password": new_obj.password,
+                "last_login": new_obj.last_login,
+                "is_superuser": new_obj.is_superuser,
+                "email": new_obj.email,
+                "first_name": new_obj.first_name,
+                "last_name": new_obj.last_name,
+            }
+            new_obj = NewUser.objects.update_or_create(id=uid, defaults=user_dict)
+            new_obj = new_obj[0]
+            if field == "sex" and data == "man":
+                new_obj.sex = True
+            elif field == "sex" and data == "woman":
+                new_obj.sex = False
+            elif field == "signatrue":
+                new_obj.signatrue = data
+            elif field == "abstract":
+                new_obj.abstract = data
+            new_obj.save()
+            result["successful"] = True
+        except Exception, e:
+            _trackback = traceback.format_exc()
+            err_msg = e.message
+            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                err_msg = e.faultCode
+            result['error_msg'] = err_msg
+            result['trackback'] = _trackback
+        finally:
+            return HttpResponse(json.dumps(result))
 
     def settings(self, request):
         user = request.user

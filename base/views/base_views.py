@@ -20,6 +20,7 @@ class UserView(object):
     def get_user_data(self, users):
         data = {}
         user_icon_obj = SysMaterial.objects.filter(key="user_default_icon_path")
+        user_home_img_obj = SysMaterial.objects.filter(key="user_home_img")
 
         def get_data(user, user_icon_obj):
             user_data = {"username": user.username}
@@ -27,6 +28,8 @@ class UserView(object):
             if user_icon_obj:
                 user_icon_obj = user_icon_obj[0]
                 user_icon_path = user_icon_obj.value
+            if user_home_img_obj:
+                user_home_path = user_home_img_obj[0].value
             user_data["signatrue"] = u"这家伙很懒，什么都没说"
             if hasattr(user, "newuser"):
                 new_user = user.newuser
@@ -35,12 +38,15 @@ class UserView(object):
                 user_data["telephone"] = new_user.telephone
                 user_data["auth_code"] = new_user.auth_code
                 user_data["send_date"] = new_user.send_date
-                user_data["home_path"] = new_user.home_path
-                if new_user.signatrue:
-                    user_data["signatrue"] = new_user.signatrue
+                user_data["home_path"] = new_user.home_path if new_user.home_path else user_home_path
+                user_data["abstract"] = new_user.abstract
+                user_data["sex"] = new_user.sex
+                user_data["signatrue"] = new_user.signatrue
+
             else:
                 user_data["show_name"] = user.first_name + user.last_name
                 user_data["user_path"] = user_icon_path
+                user_data["home_path"] = user_home_path
             return user_data
 
         if isinstance(users, models.Model):
