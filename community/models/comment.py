@@ -9,9 +9,7 @@ class Comment(models.Model):
     parent_type = models.CharField(u'目标类型', max_length=256, null=True, db_index=True)
     parent_comment = models.IntegerField(u'上级评论', null=True, db_index=True)
     target_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='评论目标用户id')
-
     is_active = models.BooleanField(u'是否显示', default=True)
-
     create_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='创建人')
     create_date = models.DateTimeField(u'创建时间', auto_now_add=True)
     write_user = models.ForeignKey('auth.User', blank=True, null=True, related_name='+', verbose_name='更新人')

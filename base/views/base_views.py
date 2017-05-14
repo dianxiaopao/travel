@@ -34,14 +34,14 @@ class UserView(object):
             if hasattr(user, "newuser"):
                 new_user = user.newuser
                 user_data["user_path"] = new_user.avatar_path if new_user.avatar_path else user_icon_path
-                user_data["show_name"] = new_user.show_name
+                user_data["show_name"] = new_user.show_name if new_user.show_name else ""
                 user_data["telephone"] = new_user.telephone
                 user_data["auth_code"] = new_user.auth_code
                 user_data["send_date"] = new_user.send_date
                 user_data["home_path"] = new_user.home_path if new_user.home_path else user_home_path
-                user_data["abstract"] = new_user.abstract
+                user_data["abstract"] = new_user.abstract if new_user.abstract else ""
                 user_data["sex"] = new_user.sex
-                user_data["signatrue"] = new_user.signatrue
+                user_data["signatrue"] = new_user.signatrue if new_user.signatrue else ""
 
             else:
                 user_data["show_name"] = user.first_name + user.last_name
