@@ -255,9 +255,9 @@
                             <div class="col-lg-5">
                                 <label for="question_sort">分类</label>
                                 <select id="question_sort" v-model="question_sort" class="form-control">
-                                    <option value="1">综合交流区</option>
-                                    <option value="2">旅行心得区</option>
-                                    <option value="3">杂谈区</option>
+                                    {% for item in edit_box %}
+                                        <option value="{{ item.id }}">{{ item.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-lg-12">
@@ -269,10 +269,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" v-on:click="modaa_cancel" class="btn btn-default" data-dismiss="modal">
+                        <button type="button" @click="modaa_cancel" class="btn btn-default" data-dismiss="modal">
                             取消
                         </button>
-                        <button type="button" v-on:click="publish_question" class="btn btn-primary">
+                        <button type="button" @click="publish_question" class="btn btn-primary">
                             发布
                         </button>
                     </div>
