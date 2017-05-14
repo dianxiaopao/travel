@@ -25,6 +25,7 @@
     {% include "header.html" %}
 </header>
 <section>
+{% csrf_token %}
     {% block content %}
     <!--这里调用index.html文件显示首页内容-->
     {% endblock content %}

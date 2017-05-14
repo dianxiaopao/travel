@@ -245,7 +245,8 @@
                 valid_email: function () {
                     var self = this;
                     var filter = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-                    var f_res = filter.test(self.email);
+                    var f_res = filter.test(self.new_email);
+                    console.log(self.email);
                     if (f_res === false) {
                         $(".email_valid_msg").fadeIn("slow");
                         self.email_valid = false;

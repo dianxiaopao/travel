@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from base.models.sys_material import SysMaterial
 from mycenter.models.img_material import ImgMaterial
+from base.models.new_user import NewUser
 from django.contrib.contenttypes.models import ContentType
 from community.models.comment import Comment
 from django.http import HttpResponse, Http404, StreamingHttpResponse
@@ -18,7 +19,13 @@ class Upload(object):
     def edit_upload_image(self, request):
         result = None
         try:
-            file_obj = request.FILES.get("wangEditorH5File")
+            page = request.POST.get("page")
+            if page == "user_home":
+                file_obj = request.FILES.get("home_img")
+            elif page == "user_title":
+                file_obj = request.FILES.get("user_title")
+            else:
+                file_obj = request.FILES.get("wangEditorH5File")
             if not file_obj:
                 raise Exception("没有获取到文件对象！")
             path_obj = SysMaterial.objects.filter(key="image_path")
@@ -59,9 +66,18 @@ class Upload(object):
                 create_user=user,
                 write_user=user
             )
-            ImgMaterial.objects.bulk_create([img_obj])
+            img_obj = ImgMaterial.objects.bulk_create([img_obj])
             static_path = switch_path_relative(path, path_obj[0].value)
             result = static_path.encode("utf8")
+            if page == "user_home":
+                user_obj = NewUser.objects.get(id=request.user.id)
+                user_obj.home_path = result
+                user_obj.save()
+            elif page == "user_title":
+                user_obj = NewUser.objects.get(id=request.user.id)
+                user_obj.avatar_path = result
+                user_obj.save()
+
         except Exception, e:
             err_msg = e.message
             if not err_msg and hasattr(e, 'faultCode') and e.faultCode:

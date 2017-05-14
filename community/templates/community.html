@@ -326,6 +326,7 @@
                     $("[sort=" + sort + "]", sort_p).addClass("tiezi_paixu_active");
 
                 },
+
                 switch_sort: function (id) {
                     var self = this;
                     self.page = 0;
@@ -337,6 +338,7 @@
                     self.set_question()
 
                 },
+
                 set_question: function () {
                     var self = this;
                     var data = {"sort": self.active_sort, "page": self.page};
@@ -395,6 +397,7 @@
                     self.set_question()
 
                 },
+
                 add_question: function () {
                     var self = this;
                     if (self.is_active == "True") {
@@ -404,6 +407,7 @@
                     }
 
                 },
+
                 publish_question: function () {
                     var self = this;
                     var data = {
@@ -423,11 +427,13 @@
                         }
                     })
                 },
+
                 on_modal_hidden: function () {
                     this.question_title = '';
                     this.question_main_text = '';
                     this.question_main_html = '';
                 },
+
                 modaa_cancel: function () {
 
                 }

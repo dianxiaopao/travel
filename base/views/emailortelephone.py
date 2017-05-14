@@ -18,15 +18,10 @@ class EmailOrUsernameModelBackend(object):
             try:
                 username = int(username)
                 password = int(password)
-                # TempTelCode.objects.get(telphone=username, code=password)
-                # try:
                 user = NewUser.objects.get(telephone=username, auth_code=password)
                 return user
-                # except:
-                #     return None
             except:
                 return None
-
     def get_user(self, user_id):
         try:
             return User.objects.get(pk=user_id)
