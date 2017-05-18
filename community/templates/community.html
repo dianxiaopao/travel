@@ -185,10 +185,10 @@
                 <div class="col-lg-9">
                     <div class="sheqqu_wenti">
                         <div class="fenlei_list">
-                            <p id="sort_all" v-on:click="switch_sort('all')" class="fenlei_active">所有</p>
+                            <p id="sort_all" @click="switch_sort('all')" class="fenlei_active">所有</p>
                             {% for st in edit_box %}
                                 <p id="sort_{{ st.id }}"
-                                   v-on:click="switch_sort({{ st.id }})">{{ st.name }}</p>
+                                   @click="switch_sort({{ st.id }})">{{ st.name }}</p>
                             {% endfor %}
                             <div style="clear: both"></div>
                         </div>
@@ -201,9 +201,9 @@
                                 <span>所有</span>
                             </p>
                             <div class="tiezi_paixu" id="sort_field_parent">
-                                <p sort="t" v-on:click="sort_click('t')" class="tiezi_paixu_active">时间排序</p>
+                                <p sort="t" @click="sort_click('t')" class="tiezi_paixu_active">时间排序</p>
                                 <p>&nbsp;|&nbsp;</p>
-                                <p sort="h" v-on:click="sort_click('h')">热度排序</p>
+                                <p sort="h" @click="sort_click('h')">热度排序</p>
                             </div>
                             <div style="clear: both"></div>
                         </div>
@@ -212,9 +212,9 @@
                         </div>
                         <div class="buttom_page">
                             <ul class="pager">
-                                <li v-on:click="question_paging('p')" v-if="page != 0"><a>上一页</a></li>
+                                <li @click="question_paging('p')" v-if="page != 0"><a>上一页</a></li>
                                 <li> 第{$ page+1 $}页/共{$ page_number $}页</li>
-                                <li v-on:click="question_paging('n')" v-if="page != page_number-1"><a>下一页</a></li>
+                                <li @click="question_paging('n')" v-if="page != page_number-1"><a>下一页</a></li>
                             </ul>
                         </div>
                     </div>
@@ -225,7 +225,7 @@
                             <img src="/static/media/icon/sysicon/user_images_ default_160x160.jpg" alt="">
                         </div>
                         <div class="tiwen_btn">
-                            <button v-on:click="add_question" type="button" class="btn">
+                            <button @click="add_question" type="button" class="btn">
                                 <i class="glyphicon glyphicon-comment"></i>&nbsp;&nbsp;提问
                             </button>
                         </div>

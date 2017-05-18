@@ -112,7 +112,7 @@
                         <div class="div_label">手机号</div>
                         <div class="item_text">
                             <span>{{ telephone }}</span>
-                            <a href="#">
+                            <a href="#" @click="modify_telephone">
                                 {% if not telephone %}
                                     添加
                                 {% else %}
@@ -196,7 +196,7 @@
                             </div>
                             <div style="float: left;height: 3rem;line-height: 3rem;margin-left: 2rem">
                                 <a id="send_valid_code" @click.prevent="send_valid_code"
-                                   href="#">发送验证码</a>
+                                   href="#">发送验证码1</a>
                             </div>
                             <div id="valid_code_valid" style="height: 1rem;clear: both;color: red">
                                 <p style="display: none">验证码必须填写</p>
@@ -299,7 +299,12 @@
                             $.get("/home/setting/get_email_code/", data, function (result) {
                                 result = JSON.parse(result);
                                 if (result.error_msg) {
-                                    alert(result.error_msg)
+                                    alert(result.error_msg);
+                                    clearInterval(int);
+                                    self.second = 0;
+                                    $("#send_new_code").removeAttr("disabled");
+                                    $("#send_new_code").html("重新发送");
+                                    $("#send_new_code").css("color", "#428BCA");
                                 } else {
                                     $(".email_code").fadeIn("slow");
                                 }
@@ -339,7 +344,7 @@
                 },
                 send_valid_code: function () {
                     var self = this;
-                    if (self.second == 0) {
+                    if (self.second === 0) {
                         $("#send_valid_code").attr("disabled", "true");
                         $("#send_valid_code").css("color", "#999999");
                         self.second = 60;
@@ -358,8 +363,16 @@
                         }, 1000);
                         $.get("/home/setting/send_valid_code/", {"valid": self.select_valid}, function (result) {
                             result = JSON.parse(result);
-                            self.second = 0;
-                            console.log(result);
+                            if (result.error_msg) {
+                                $("#send_valid_code").removeAttr("disabled");
+                                $("#send_valid_code").html("重新发送");
+                                $("#send_valid_code").css("color", "#428BCA");
+                                self.second = 0;
+                                clearInterval(int);
+                                alert(result.error_msg)
+                            } else {
+                                console.log(result);
+                            }
                         })
                     }
                 },
@@ -447,6 +460,9 @@
                             }
                         })
                     }
+                },
+                modify_telephone:function () {
+                    console.log("-----")
                 }
             },
         })

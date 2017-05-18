@@ -12,8 +12,10 @@ class EmailOrUsernameModelBackend(object):
                 user = User.objects.get(**kwargs)
                 if user.check_password(password):
                     return user
-            except User.DoesNotExist:
+            # except User.DoesNotExist:
+            except:
                 return None
+
         if re.match("^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$", username):
             try:
                 username = int(username)
