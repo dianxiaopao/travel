@@ -242,6 +242,10 @@ class Home(object):
             except:
                 raise Exception("没有%s这个用户" % user.username)
 
+            exi_eml = User.objects.filter(email=email).exists()
+            if exi_eml:
+                raise Exception("email已存在请填写新的email！")
+
             auth_code = int(random.uniform(1000, 9999))
             if hasattr(new_obj, "newuser"):
                 new_obj.newuser.auth_code = auth_code

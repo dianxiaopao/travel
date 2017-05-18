@@ -1,20 +1,317 @@
 {% extends "base_with_menu.html" %}
 {% block title %} 首页 {% endblock title %}
+{% block ext_before_css %} {% endblock ext_before_css %}
+{% block ext_after_css %}
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.css">
+    <!--轮播-->
+    <link href="http://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet" media="all">
+    <link href="/static/css/animate.min.css" rel="stylesheet" media="all">
+    <link href="/static/css/bootstrap-touch-slider.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="/static/css/aos.css"/> <!--动画-->
+    <link rel="stylesheet" type="text/css" href="/static/css/demo1.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/ff_index.css">
+{% endblock ext_after_css %}
 {% block content %}
-<div class="container" style="min-height: 60rem">
-    <p>首页</p>
+    <div style="margin: 0;padding: 0" class="f_index">
+        <div id="bootstrap-touch-slider" class="carousel bs-slider fade control-round indicators-line"
+             data-ride="carousel"
+             data-pause="hover" data-interval="5000">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#bootstrap-touch-slider" data-slide-to="0" class="active"></li>
+                <li data-target="#bootstrap-touch-slider" data-slide-to="1"></li>
+                <li data-target="#bootstrap-touch-slider" data-slide-to="2"></li>
+            </ol>
+            <!-- Wrapper For Slides -->
+            <div class="carousel-inner" role="listbox">
+                <!-- Third Slide -->
+                <div class="item active">
 
+                    <!-- Slide Background -->
+                    <img src="/static/images/lgh3.jpg" alt="Bootstrap Touch Slider" class="slide-image"/>
+                    <div class="bs-slider-overlay"></div>
 
+                    <div class="container">
+                        <div class="row">
+                            <!-- Slide Text Layer -->
+                            <div class="slide-text slide_style_center">
+                                <h1 data-animation="animated zoomInRight">欢迎来到一游旅游社区</h1>
+                                <p data-animation="animated fadeInLeft">我们将带你，领略山水之美</p>
+                                <a href="/guide/1/" target="_blank" class="btn btn-default"
+                                   data-animation="animated fadeInLeft">旅行攻略</a>
+                                <a href="/community/all/0/" target="_blank" class="btn btn-primary"
+                                   data-animation="animated fadeInRight">旅行社区</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of Slide -->
 
+                <!-- Second Slide -->
+                <div class="item">
 
+                    <!-- Slide Background -->
+                    <img src="/static/images/lgh1.jpg" alt="Bootstrap Touch Slider" class="slide-image"/>
+                    <div class="bs-slider-overlay"></div>
+                    <!-- Slide Text Layer -->
+                    <div class="slide-text slide_style_center">
+                        <h1 data-animation="animated flipInX">一起去看看这个世界</h1>
+                        <p data-animation="animated lightSpeedIn">不要一个人孤独地前行，我们要一起携手迎接明天.</p>
+                        <a href="#" target="_blank" class="btn btn-default" data-animation="animated fadeInUp">select
+                            one</a>
+                        <a href="#" target="_blank" class="btn btn-primary" data-animation="animated fadeInDown">select
+                            two</a>
+                    </div>
+                </div>
+                <!-- End of Slide -->
 
+                <!-- Third Slide -->
+                <div class="item">
+                    <img src="/static/images/bg.jpg" alt="Bootstrap Touch Slider" class="slide-image"/>
+                    <div class="bs-slider-overlay"></div>
+                    <div class="slide-text slide_style_center">
+                        <h1 data-animation="animated zoomInLeft">关于我们</h1>
+                        <p data-animation="animated fadeInRight">专注旅游攻略，专注旅游社区问答</p>
+                        <a href="#" target="_blank" class="btn btn-default" data-animation="animated fadeInLeft">select
+                            one</a>
+                        <a href="#" target="_blank" class="btn btn-primary" data-animation="animated fadeInRight">select
+                            two</a>
+                    </div>
+                </div>
+                <!-- End of Slide -->
+            </div>
+            <!-- End of Wrapper For Slides -->
+            <a class="left carousel-control" href="#bootstrap-touch-slider" role="button" data-slide="prev">
+                <span class="fa fa-angle-left" aria-hidden="true" style="font-size: 55px"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#bootstrap-touch-slider" role="button" data-slide="next">
+                <span class="fa fa-angle-right" aria-hidden="true" style="font-size: 55px"></span>
+                <span class="sr-only">Next</span>
+            </a>
 
-</div>
-<script src="/static/js/vendor/vue.js"></script>
-<script src="/static/js/vendor-components/file_upload.js"></script>
+        </div>
+        <!-- End  轮播-->
+        <!--热门旅游攻略-->
+        <div class="hot_strategy">
+            <h3 class="text-center">最美不过这里</h3>
+            <div>
+                <div class="hnav clearfix">
+                    <button class="nav-el" id="el-topleft" data-id="ov-topleft">
+                        <img src="/static/images/df1.jpg" class="navel_img"/>
+                        <div class="h_olay">
+                            <span>东方明珠</span>
+                            <span class="icon-eye"></span>
+                        </div>
+                    </button>
+                    <button class="nav-el" id="el-topright" data-id="ov-topright">
+                        <img src="/static/images/djy1.jpg" class="navel_img"/>
+                        <div class="h_olay">
+                            <span>都江堰</span>
+                            <span class="icon-eye"></span>
+                        </div>
+                    </button>
+                    <button class="nav-el" id="el-btmleft" data-id="ov-btmleft">
+                        <img src="/static/images/yn2.jpg" class="navel_img"/>
+                        <div class="h_olay">
+                            <span>丽江古城</span>
+                            <span class="icon-eye"></span>
+                        </div>
+                    </button>
+                    <button class="nav-el" id="el-btmright" data-id="ov-btmright">
+                        <img src="/static/images/xh2.jpg" class="navel_img"/>
+                        <div class="h_olay">
+                            <span>西湖</span>
+                            <span class="icon-eye"></span>
+                        </div>
+                    </button>
+                </div>
+                <!-- Overlay (hidden by default)-->
+                <section class="overlay" id="ov-topleft">
+                    <div class="wrap">
+                        <h1>上海-东方明珠</h1>
+                        <img src="/static/images/df2.jpg" class="hso_img img-responsive"/>
+                        <p>第一最好是不相见，如此便可不至相恋。 <br><br> 第二最好是不相知，如此便可不用相思。<br><br> 但曾相见便相知，相见何如不见时。<br> <br>安得与君相决绝，免教辛苦作相思。
+                        </p>
+                    </div>
+                    <button class="close"><span class="mfg-cancel"></span></button>
+                </section>
+                <section class="overlay" id="ov-topright">
+                    <div class="wrap">
+                        <h1>成都-都江堰</h1>
+                        <img src="/static/images/djy2.jpeg" class="hso_img img-responsive"/>
+                        <p> 不是爱风尘，似被前缘误。<br><br> 花落花开自有时，总赖东君主。<br><br> 去也终须去，住也如何住！<br><br> 若得山花插满头，莫问奴归处。</p>
+                    </div>
 
-<script>
+                    <button class="close"><span class="mfg-cancel"></span></button>
+                </section>
+                <section class="overlay" id="ov-btmleft">
+                    <div class="wrap">
+                        <h1>云南-丽江古城</h1>
+                        <img src="/static/images/yn3.jpg" class="hso_img img-responsive"/>
+                        <p>第一最好是不相见，如此便可不至相恋。 <br><br> 第二最好是不相知，如此便可不用相思。<br><br> 但曾相见便相知，相见何如不见时。<br> <br>安得与君相决绝，免教辛苦作相思。
+                        </p>
+                    </div>
 
-</script>
+                    <button class="close"><span class="mfg-cancel"></span></button>
+                </section>
+                <section class="overlay" id="ov-btmright">
+                    <div class="wrap">
+                        <h1>杭州-西湖</h1>
+                        <img src="/static/images/xh4.jpg" class="hso_img img-responsive"/>
+                        <p> 不是爱风尘，似被前缘误。<br><br> 花落花开自有时，总赖东君主。<br><br> 去也终须去，住也如何住！<br><br> 若得山花插满头，莫问奴归处。</p>
+                    </div>
 
+                    <button class="close"><span class="mfg-cancel"></span></button>
+                </section>
+            </div>
+        </div>
+        <!--AOA动画-->
+        <div class="row">
+            <div class="hero">
+                <div class="hero-center">
+                    <h1 class="text-center">关于旅游社区</h1>
+                    <h2 class="hero__text" aos="fade-up" aos-easing="ease" aos-delay="400">你了解我吗？</h2>
+                </div>
+                <span class="hero__scroll" aos="fade-up" aos-easing="ease" aos-delay="800"> 来看看 <br>
+                <i class="chevron bottom"></i>
+            </span>
+            </div>
+            <section class="section section--code">
+                <div class="container">
+                    <!--<h2 class="section-title">Fade</h2>-->
+                    <div class="code code--small code--left" aos="fade-up" aos-duration="3000">
+                        111
+                    </div>
+                    <div class="code code--small code--right" aos="fade-down" aos-easing="linear" aos-duration="1500">
+                        22
+                    </div>
+                    <div class="code code--small code--left" aos="fade-right" aos-easing="ease-in-sine"
+                         aos-duration="1500">
+                        33
+                    </div>
+                    <div class="code code--small code--right" aos="fade-left">
+                        44
+                    </div>
+                    <div class="code code--small code--left" aos="fade-up-right">
+                        55
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
 {% endblock content %}
+{% block ext_js %}
+    <script src="/static/js/vendor/vue.js"></script>
+    <script src="/static/js/vendor/highlight.min.js"></script>
+
+    <script src="/static/js/vendor-components/file_upload.js"></script>
+    <script src="/static/js/vendor/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/js/vendor/highlight.min.js"></script>
+    <script src="/static/js/vendor/aos.js"></script>
+    <script src="/static/js/vendor/jquery.touchSwipe.min.js"></script>
+    <script src="/static/js/vendor/bootstrap-touch-slider-min.js"></script>
+    <script>
+        (function () {
+            var method;
+            var noop = function () {
+            };
+            var methods = [
+                'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
+                'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
+                'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
+                'timeStamp', 'trace', 'warn'
+            ];
+            var length = methods.length;
+            var console = (window.console = window.console || {});
+
+            while (length--) {
+                method = methods[length];
+
+                // Only stub undefined methods.
+                if (!console[method]) {
+                    console[method] = noop;
+                }
+            }
+        }());
+
+        // Place any jQuery/helper plugins in here.
+        if (!Modernizr.csstransforms3d) {
+            document.getElementsByClassName('hot_strategy')[0].className += ' browser_not_supported'
+        }
+    </script>
+    <script type="text/javascript">
+        $('#bootstrap-touch-slider').bsTouchSlider();
+
+        //热门旅游攻略
+        var AnimEnd = 'animationend webkitAnimationEnd mozAnimationEnd MSAnimationEnd oAnimationEnd';
+        var nav = $('.hnav');
+        var navButton = $('.nav-el');
+        var overlay = $('.overlay');
+
+        /* On menu button click event */
+        $(navButton).click(function (event) {
+            if ($(this).hasClass("inactive")) {
+
+                event.preventDefault();
+
+            } else {
+                /* Remove old previous classes */
+                $(navButton).removeClass('inactive_reverse active_reverse');
+                $(nav).removeClass('fx-box_rotate fx-box_rotate_reverse');
+                $(overlay).removeClass('active active_reverse');
+
+                /* Add classes on defined elements */
+                $(this).siblings().addClass('inactive');
+                $(this).addClass('active');
+                $(nav).addClass('fx-box_rotate');
+
+                /* Activate related overlay */
+                var o_target = $(this).data('id');
+                $('#' + o_target).addClass('active');
+
+                /* Prevent scrolling */
+                $(".hot_strategy").addClass('noscroll');
+
+            }
+
+        });
+
+        /* On close button click event */
+        $(".close").click(function () {
+            /* Add *_reverse classes */
+            $('.active', nav).removeClass('active').addClass('active_reverse');
+            $('.inactive', nav).addClass('inactive_reverse');
+            $('.hnav').addClass('fx-box_rotate_reverse');
+            $(this).parent().addClass('active_reverse');
+
+            /* Remove .noscroll and .inactive when animation is finished */
+            $('.inactive_reverse').bind(AnimEnd, function () {
+                $('.hot_strategy').removeClass('noscroll');
+                $(navButton).removeClass('inactive');
+                $('.inactive_reverse').unbind(AnimEnd);
+
+            });
+
+        });
+    </script>
+    <script>
+        AOS.init({
+            easing: 'ease-out-back',
+            duration: 1000
+        });
+    </script>
+    <script>
+        hljs.initHighlightingOnLoad();
+
+        $('.hero__scroll').on('click', function (e) {
+            $('html, body').animate({
+                scrollTop: $(window).height() + 1300
+            }, 1200);
+        });
+    </script>
+{% endblock ext_js %}
+
