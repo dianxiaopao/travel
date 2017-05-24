@@ -235,16 +235,25 @@ class Home(object):
         result = {}
         try:
             email = request.GET.get("email")
+            telephone = request.GET.get("telephone")
+            type = request.GET.get("type")
             user = request.user
-            to_addr = email.encode("utf-8")
+            if email:
+                to_addr = email.encode("utf-8")
+            if telephone:
+                telephone = telephone.encode("utf-8")
             try:
                 new_obj = User.objects.get(username=user.username)
             except:
                 raise Exception("没有%s这个用户" % user.username)
-
-            exi_eml = User.objects.filter(email=email).exists()
-            if exi_eml:
-                raise Exception("email已存在请填写新的email！")
+            if type == "tel":
+                exi_eml = NewUser.objects.filter(telephone=telephone)
+                if exi_eml:
+                    raise Exception("手机号已存在请填写新的手机号！")
+            else:
+                exi_eml = User.objects.filter(email=email).exists()
+                if exi_eml:
+                    raise Exception("email已存在请填写新的email！")
 
             auth_code = int(random.uniform(1000, 9999))
             if hasattr(new_obj, "newuser"):
@@ -269,7 +278,10 @@ class Home(object):
 
             msg_text = u"本次验证码为：%s" % str(auth_code)
             # 发邮件
-            result["result"] = send_email_on_code(msg_text, to_addr)
+            if type == "tel":
+                result["result"] = self.send_telephone_on_code(request, auth_code, telephone)
+            else:
+                result["result"] = send_email_on_code(msg_text, to_addr)
 
         except Exception, e:
             _trackback = traceback.format_exc()
@@ -295,6 +307,49 @@ class Home(object):
                 if u_obj.auth_code == auth_code:
                     u_obj.email = new_email
                     u_obj.save()
+                    result["result"] = True
+                else:
+                    result["result"] = "验证码不正确"
+        except Exception, e:
+            _trackback = traceback.format_exc()
+            err_msg = e.message
+            if not err_msg and hasattr(e, 'faultCode') and e.faultCode:
+                err_msg = e.faultCode
+            result['error_msg'] = err_msg
+            result['trackback'] = _trackback
+        finally:
+            return HttpResponse(json.dumps(result))
+
+    def save_new_telephone(self, request):
+        result = {}
+        try:
+            auth_code = request.GET.get("auth_code")
+            telephone = request.GET.get("telephone")
+            username = request.user.username
+            new_obj = NewUser.objects.filter(username=username)
+            try:
+                telephone = int(telephone)
+            except:
+                raise Exception("手机号不正确")
+            if not new_obj:
+                result["result"] = "用户名不正确"
+            else:
+                new_obj = new_obj[0]
+                if new_obj.auth_code == auth_code:
+                    user_dict = {
+                        "username": new_obj.username,
+                        "password": new_obj.password,
+                        "last_login": new_obj.last_login,
+                        "is_superuser": new_obj.is_superuser,
+                        "email": new_obj.email,
+                        "first_name": new_obj.first_name,
+                        "last_name": new_obj.last_name,
+                        "send_date": timezone.now(),
+                        "auth_code": auth_code,
+                        "telephone": telephone
+                    }
+                    u_obj = NewUser.objects.update_or_create(id=new_obj.id, defaults=user_dict)
+                    u_obj[0].save()
                     result["result"] = True
                 else:
                     result["result"] = "验证码不正确"

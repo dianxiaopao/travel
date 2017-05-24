@@ -77,7 +77,8 @@
                         <div class="item_text">
                             <div class="group_text">
                                 <span class="active_email">{{ email }}</span>
-                                <a class="modify" href="#" @click.prevent="modify_email('{{ email }}')">
+                                <a class="modify" href="javascript:void(0)"
+                                   @click.prevent="modify_email('{{ email }}')">
                                     {% if not email %}添加{% else %}修改{% endif %}
                                 </a>
                             </div>
@@ -107,17 +108,41 @@
                         </div>
 
                     </div>
-                    <div class="settings_item">
+                    <div class="settings_item" id="telephone">
                         <div class="div_label">手机号</div>
                         <div class="item_text">
-                            <span>{{ telephone }}</span>
-                            <a href="#" @click="modify_telephone">
-                                {% if not telephone %}
-                                    添加
-                                {% else %}
-                                    修改
-                                {% endif %}
-                            </a>
+                            <div>
+                                <span class="active_telephone">{{ telephone }}</span>
+                                <a href="javascript:void(0)" class="modify"
+                                   @click="modify_telephone('{{ telephone }}')">
+                                    {% if not telephone %}
+                                        添加
+                                    {% else %}
+                                        修改
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="get_tel_div" style="display: none">
+                                <div class="email_text">
+                                    <span>
+                                    <input v-model="new_tel" type="text" class="form-control" placeholder="请输入新手机号">
+                                    </span>
+                                </div>
+                                <div class="tel_code" style="display: block">
+                                    <div style="float: left">
+                                        <input style="width:12rem" v-model="auth_code" type="text"
+                                               class="form-control" placeholder="请输入验证码">
+                                    </div>
+                                    <div style="float: left;height: 3rem;line-height: 3rem;cursor: pointer;padding-left: 1rem">
+                                        <a id="send_new_code_tel" @click.prevent="send_tel_valid_code">发送验证码</a>
+                                    </div>
+                                    <div style="clear: left;padding-top: 1rem">
+                                        <button type="button" @click="save_new_telephone" class="btn btn-default">
+                                            保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -126,7 +151,7 @@
                         <div class="div_label">账号密码</div>
                         <div class="item_text">
                             <a id="show_password_box" data-toggle="popover" placement="bottom" data-content="密码修改成功"
-                               @click="show_password_box" href="#">
+                               @click="show_password_box" href="javascript:void(0)">
                                 修改密码
                             </a>
                             <div id="modify_password_content" style="display: none">
@@ -231,6 +256,7 @@
                 "modify_type": null,
                 "password1": "",
                 "password2": "",
+                "new_tel": ""
             },
             mounted: function () {
                 var self = this;
@@ -245,7 +271,6 @@
                     var self = this;
                     var filter = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
                     var f_res = filter.test(self.new_email);
-                    console.log(self.email);
                     if (f_res === false) {
                         $(".email_valid_msg").fadeIn("slow");
                         self.email_valid = false;
@@ -272,9 +297,26 @@
                         self.modify_type = "email";
                     }
                 },
+                modify_telephone: function (telephone) {
+                    var self = this;
+                    if (self.email === "") {
+                        if ($(".get_tel_div").is(':hidden')) {
+                            $(".get_tel_div").fadeIn("slow");
+                            $(".tel_code").fadeIn("slow");
+                            $(".modify", "#telephone").html("取消")
+                        } else {
+                            $(".get_email_div").fadeOut("slow");
+                            $(".tel_code").fadeOut("slow");
+                            $(".modify", "#telephone").html("修改");
+                            self.email = null;
+                        }
+                    } else {
+                        $('#myModal').modal("show");
+                        self.modify_type = "tel";
+                    }
+                },
                 send_new_valid_code: function () {
                     var self = this;
-                    console.log(self.second, self.email_valid)
                     if (self.second == 0 && self.email_valid === true) {
                         $("#send_new_code").attr("disabled", "true");
                         $("#send_new_code").css("color", "#999999");
@@ -294,7 +336,8 @@
                         }, 1000);
                         if (self.email_valid === true) {
                             var data = {
-                                "email": self.new_email.trim()
+                                "email": self.new_email.trim(),
+                                "type": "email"
                             };
                             $.get("/home/setting/get_email_code/", data, function (result) {
                                 result = JSON.parse(result);
@@ -313,6 +356,45 @@
                     }
 
 
+                },
+                send_tel_valid_code: function () {
+                    var self = this;
+                    if (self.second == 0) {
+                        $("#send_new_code_tel").attr("disabled", "true");
+                        $("#send_new_code_tel").css("color", "#999999");
+                        self.second = 60;
+                        var second = 60;
+                        var int = setInterval(function () {
+                            $("#send_new_code_tel").html(second + " 秒后可重发");
+                            second = second - 1;
+                            if (second == 0) {
+                                $("#send_new_code_tel").removeAttr("disabled");
+                                $("#send_new_code_tel").html("重新发送");
+                                $("#send_new_code_tel").css("color", "#428BCA");
+                                self.second = second;
+                                clearInterval(int)
+                            }
+
+                        }, 1000);
+                        var data = {
+                            "telephone": self.new_tel.trim(),
+                            "type": "tel"
+                        };
+                        $.get("/home/setting/get_email_code/", data, function (result) {
+                            result = JSON.parse(result);
+                            if (result.error_msg) {
+                                alert(result.error_msg);
+                                clearInterval(int);
+                                self.second = 0;
+                                $("#send_new_code_tel").removeAttr("disabled");
+                                $("#send_new_code_tel").html("重新发送");
+                                $("#send_new_code_tel").css("color", "#428BCA");
+                            } else {
+                                console.log(result)
+                                $(".email_code").fadeIn("slow");
+                            }
+                        })
+                    }
                 },
                 save_new_email: function () {
                     var self = this;
@@ -341,6 +423,35 @@
                             }
                         })
                     }
+                },
+                save_new_telephone: function () {
+                    var self = this;
+                    var data = {
+                        "telephone": self.new_tel.trim(),
+                        "auth_code": self.auth_code.trim()
+                    };
+
+                        $.get("/home/setting/save_new_telephone/", data, function (result) {
+                            result = JSON.parse(result);
+                            console.log(result)
+                            if (result.error_msg) {
+                                alert(result.error_msg)
+                            } else {
+                                if (result["result"] == true) {
+                                    $(".active_telephone").html(self.new_tel);
+                                    $(".get_tel_div").fadeOut("slow");
+                                   /*
+                                    self.select_valid = self.new_email;
+                                    if ($("#select_valid option")[0] === undefined) {
+                                        $("#select_valid").html('<option value="email">' + self.new_email + '</option>')
+                                    }
+                                    */
+                                    $(".modify", "#telephone").html("修改");
+                                } else {
+                                    alert(result["result"])
+                                }
+                            }
+                        })
                 },
                 send_valid_code: function () {
                     var self = this;
@@ -407,7 +518,11 @@
                             } else if (self.modify_type == "password") {
                                 $('#myModal').modal("hide");
                                 $("#modify_password_content").fadeIn("slow");
+                            } else if (self.modify_type == "tel") {
+                                $('#myModal').modal("hide");
+                                $(".get_tel_div", "#telephone").fadeIn("slow");
                             }
+
                         })
                     }
                 },
@@ -461,9 +576,7 @@
                         })
                     }
                 },
-                modify_telephone: function () {
-                    console.log("-----")
-                }
+
             },
         })
     </script>
