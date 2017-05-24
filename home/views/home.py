@@ -13,7 +13,7 @@ from django.utils import timezone
 from utils import send_email_on_code
 from django.db.models import Count
 import base.views.base_views as base_view
-import traceback, json, smtplib, datetime, random
+import traceback, json, smtplib, datetime, random, urllib2
 import base.views.base_views as base_view
 
 get_user_data = base_view.UserView().get_user_data
@@ -312,31 +312,34 @@ class Home(object):
         result = {}
         try:
             valid = request.GET.get("valid")
+
+            try:
+                new_obj = User.objects.get(username=request.user.username)
+            except:
+                raise Exception("没有查询到当前用户！")
+            email = new_obj.email.encode("utf-8")
+            auth_code = int(random.uniform(1000, 9999))
+
+            user_dict = {
+                "username": new_obj.username,
+                "password": new_obj.password,
+                "last_login": new_obj.last_login,
+                "is_superuser": new_obj.is_superuser,
+                "email": new_obj.email,
+                "first_name": new_obj.first_name,
+                "last_name": new_obj.last_name,
+                "auth_code": auth_code,
+                "send_date": timezone.now()
+
+            }
+            u_obj = NewUser.objects.update_or_create(id=new_obj.id, defaults=user_dict)
+            u_obj[0].save()
+
             if valid == "email":
-                try:
-                    new_obj = User.objects.get(username=request.user.username)
-                except:
-                    raise Exception("没有查询到当前用户！")
-                email = new_obj.email.encode("utf-8")
-                auth_code = int(random.uniform(1000, 9999))
-
-                user_dict = {
-                    "username": new_obj.username,
-                    "password": new_obj.password,
-                    "last_login": new_obj.last_login,
-                    "is_superuser": new_obj.is_superuser,
-                    "email": new_obj.email,
-                    "first_name": new_obj.first_name,
-                    "last_name": new_obj.last_name,
-                    "auth_code": auth_code,
-                    "send_date": timezone.now()
-
-                }
-                u_obj = NewUser.objects.update_or_create(id=new_obj.id, defaults=user_dict)
-                u_obj[0].save()
-
                 msg_text = u"本次验证码为：%s" % str(auth_code)
                 result["result"] = send_email_on_code(msg_text, email)
+            else:
+                result["result"] = self.send_telephone_on_code(request, auth_code, u_obj[0].telephone)
         except Exception, e:
             _trackback = traceback.format_exc()
             err_msg = e.message
@@ -346,6 +349,29 @@ class Home(object):
             result['trackback'] = _trackback
         finally:
             return HttpResponse(json.dumps(result))
+
+    def send_telephone_on_code(self, request, code, tel):
+        method = request.method
+        host = 'http://sms.market.alicloudapi.com'
+        path = '/singleSendSms'
+        method = 'GET'
+        appcode = '95fd37d3051e4718a9c0689b5f961566'
+        ParamString = '{"code":"%s"}' % str(code)
+        phone = str(tel)
+        SignName = '小方'
+        TemplateCode = 'SMS_63795887'
+        querys = 'ParamString=%s&RecNum=%s&SignName=%s&TemplateCode=%s' % (ParamString, phone, SignName, TemplateCode)
+        bodys = {}
+        url = host + path + '?' + querys
+        req = urllib2.Request(url)
+        req.add_header('Authorization', 'APPCODE ' + appcode)
+        response = urllib2.urlopen(req)
+        content = response.read()
+        content = json.loads(content)
+        if (content["success"] == True):
+            return True
+        else:
+            return False
 
     def valid_email_tel(self, request):
         result = {}

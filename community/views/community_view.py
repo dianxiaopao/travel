@@ -13,6 +13,7 @@ from community.models.collect_comment import CollectComment
 
 from django.db import models
 import base.views.base_views as base_view
+
 get_user_data = base_view.UserView().get_user_data
 
 import json, traceback, pytz, math

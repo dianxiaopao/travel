@@ -47,7 +47,6 @@
         }
 
     </style>
-
 {% endblock ext_after_css %}
 {% block content %}
     <div id="setting" style="min-height: 800px">
@@ -196,7 +195,7 @@
                             </div>
                             <div style="float: left;height: 3rem;line-height: 3rem;margin-left: 2rem">
                                 <a id="send_valid_code" @click.prevent="send_valid_code"
-                                   href="#">发送验证码1</a>
+                                   href="javascript:void(0)">发送验证码</a>
                             </div>
                             <div id="valid_code_valid" style="height: 1rem;clear: both;color: red">
                                 <p style="display: none">验证码必须填写</p>
@@ -275,7 +274,8 @@
                 },
                 send_new_valid_code: function () {
                     var self = this;
-                    if (self.second == 0) {
+                    console.log(self.second, self.email_valid)
+                    if (self.second == 0 && self.email_valid === true) {
                         $("#send_new_code").attr("disabled", "true");
                         $("#send_new_code").css("color", "#999999");
                         self.second = 60;
@@ -461,7 +461,7 @@
                         })
                     }
                 },
-                modify_telephone:function () {
+                modify_telephone: function () {
                     console.log("-----")
                 }
             },
