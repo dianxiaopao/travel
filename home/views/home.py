@@ -410,11 +410,11 @@ class Home(object):
         host = 'http://sms.market.alicloudapi.com'
         path = '/singleSendSms'
         method = 'GET'
-        appcode = '95fd37d3051e4718a9c0689b5f961566'
+        appcode = ''
         ParamString = '{"code":"%s"}' % str(code)
         phone = str(tel)
         SignName = '小方'
-        TemplateCode = 'SMS_63795887'
+        TemplateCode = ''
         querys = 'ParamString=%s&RecNum=%s&SignName=%s&TemplateCode=%s' % (ParamString, phone, SignName, TemplateCode)
         bodys = {}
         url = host + path + '?' + querys
